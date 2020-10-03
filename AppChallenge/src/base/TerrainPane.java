@@ -25,6 +25,7 @@ public class TerrainPane extends StackPane {
 		NumberBinding min = Bindings.min(widthProperty(), heightProperty());
 		grid.maxWidthProperty().bind(min);
 		grid.maxHeightProperty().bind(min);
+		grid.setMinSize(0, 0);
 	}
 	
 	public TerrainGrid getGrid() {

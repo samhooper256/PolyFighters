@@ -1,6 +1,6 @@
 package base;
 
-import fxutils.Borders;
+import fxutils.*;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
@@ -13,6 +13,7 @@ public class TerrainTile extends StackPane {
 	public TerrainTile() {
 		super();
 		setBorder(Borders.of(Color.PURPLE));
+		setMinSize(0, 0);
 	}
 	
 }
