@@ -8,6 +8,7 @@ import javafx.stage.Stage;
 
 /**
  * @author Sam Hooper
+ * @author Ayuj Verma
  *
  */
 public class Main extends Application {
