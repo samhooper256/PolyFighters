@@ -15,7 +15,7 @@ public abstract class EnemyUnit implements Unit {
 	}
 	
 	@Override
-	public List<Ability> getAbilities() {
+	public List<Ability> getAbilitiesUnmodifiable() {
 		return abilities;
 	}
 

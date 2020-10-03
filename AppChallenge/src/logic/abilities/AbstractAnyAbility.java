@@ -1,4 +1,7 @@
-package logic;
+package logic.abilities;
+
+import logic.Ability;
+import logic.Unit;
 
 /**
  * @author Sam Hooper

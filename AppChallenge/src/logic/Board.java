@@ -1,5 +1,7 @@
 package logic;
 
+import java.util.Collection;
+
 /**
  * @author Sam Hooper
  *
@@ -14,6 +16,14 @@ public class Board {
 	private final BoardTile[][] tiles;
 	private final int rows, cols;
 	
+	/** Creates a new {@code Board} with {@code size} rows and {@code size} columns. All of the tiles on the board will be empty, solid tiles
+	 * by default.*/
+	public Board(int size) {
+		this(size, size);
+	}
+	
+	/** Creates a new {@code Board} with the given amount of rows and columns. All of the tiles on the board will be empty, solid tiles
+	 * by default. */
 	public Board(int rows, int cols) {
 		verifySize(rows, cols);
 		this.rows = rows;
@@ -42,5 +52,31 @@ public class Board {
 				tiles[i][j] = new BoardTile(this, TileType.SOLID);
 			}
 		}
+	}
+	
+	/**
+	 * Returns the legal spots that the given {@link TeamUnit} currently has for the given {@link Ability} as a {@link Collection}
+	 * (row, col) ordered pairs.
+	 * @param unit
+	 * @param ability
+	 * @return
+	 * @throws IllegalArgumentException if the given {@code TeamUnit} is not on this board.
+	 */
+	public Collection<int[]> getLegalSpotsFor(TeamUnit unit, Ability ability) {
+		if(unit.getBoard() != this)
+			throw new IllegalArgumentException("The unit " + unit + " is not on this board.");
+		return unit.getLegalSpots(ability);
+	}
+	
+	public int getRows() {
+		return rows;
+	}
+	
+	public int getCols() {
+		return cols;
+	}
+	
+	public BoardTile tileAt(int row, int col) {
+		return tiles[row][col];
 	}
 }

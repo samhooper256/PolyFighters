@@ -25,7 +25,6 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		System.out.println(Main.class.getResourceAsStream("/resources/boxplot.png"));
 		primaryStage.setTitle(TITLE);
 		Level scene = new Level();
 		primaryStage.setScene(scene);
