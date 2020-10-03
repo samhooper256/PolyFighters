@@ -7,6 +7,8 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 /**
+ * The {@link Application} class for the project. No instances of this class should be created. It only has a public constructor
+ * because it is required to by {@code Application}.
  * @author Sam Hooper
  * @author Ayuj Verma
  *

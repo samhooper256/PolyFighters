@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 import base.Main;
 
 /**
- * Utility class for creating {@link Image} objects from resource files.
+ * Utility class for creating {@link javafx.scene.image. Image} objects from resource files.
  * @author Sam Hooper
  *
  */
