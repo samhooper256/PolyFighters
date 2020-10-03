@@ -15,7 +15,7 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 	
-	public static final String TITLE = "<title>";
+	public static final String TITLE = "Congressional App Challenge";
 	
 	private static final String RESOURCES_PREFIX = "/resources/";
 	
