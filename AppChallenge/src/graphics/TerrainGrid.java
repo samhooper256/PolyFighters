@@ -1,4 +1,4 @@
-package base;
+package graphics;
 
 import javafx.scene.layout.*;
 

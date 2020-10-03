@@ -1,4 +1,4 @@
-package base;
+package graphics;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;

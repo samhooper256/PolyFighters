@@ -1,4 +1,4 @@
-package base;
+package graphics;
 
 import fxutils.*;
 import javafx.scene.layout.StackPane;

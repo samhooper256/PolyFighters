@@ -1,4 +1,4 @@
-package base;
+package graphics;
 
 import java.io.InputStream;
 import java.util.Optional;
