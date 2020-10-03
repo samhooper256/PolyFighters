@@ -8,12 +8,14 @@ import javafx.stage.Stage;
  *
  */
 public class Main extends Application {
+	public static final String TITLE = "<title>";
 	public static void main(String[] args) {
 		Application.launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		primaryStage.setTitle(TITLE);
 		primaryStage.show();
 	}
 }
