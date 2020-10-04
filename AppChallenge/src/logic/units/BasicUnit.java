@@ -33,7 +33,7 @@ public class BasicUnit extends AbstractTeamUnit {
 	}
 
 	@Override
-	public boolean canTraversable(TileType type) {
+	public boolean canTraverse(TileType type) {
 		return traversableTileTypes.contains(type);
 	}
 

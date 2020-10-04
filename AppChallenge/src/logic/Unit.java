@@ -3,13 +3,19 @@ package logic;
 import java.util.Collection;
 
 /**
- * A unit on a {@link Board}. May be either a {@link TeamUnit} or an {@link EnemyUnit}.
+ * </p>A unit on a {@link Board}. May be either a {@link TeamUnit} or an {@link EnemyUnit}.</p>
+ * 
+ * <p>A {@code Unit} <i>can traverse</i> a {@link TileType} T if and only if {@code canTraverse(T)} returns {@code true}.
+ * See {@link #canTraverse(TileType)}).</p>
+ * 
+ * 
  * @author Sam Hooper
  *
  */
 public interface Unit extends GameObject {
 	Collection<Ability> getAbilitiesUnmodifiable();
-	boolean canTraversable(TileType type);
+	
+	boolean canTraverse(TileType type);
 	/**
 	 * @return the {@link Board} that this unit is on, or {@code null} if this unit is not on a {@code Board}.
 	 */
