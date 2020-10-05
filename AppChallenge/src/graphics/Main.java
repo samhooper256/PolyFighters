@@ -54,6 +54,7 @@ public class Main extends Application {
 		primaryStage.setTitle(TITLE);
 		Level scene = new Level();
 		primaryStage.setScene(scene);
+		scene.getTerrainPane().getGridWrap().getGrid().addUnit(new BasicUnit(), 1, 1);
 		primaryStage.show();
 	}
 }

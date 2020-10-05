@@ -93,7 +93,7 @@ public class StepMove extends AbstractAnyAbility {
 				int nr = tile[0] + step[0], nc = tile[1] + step[1];
 				int boardRow = nr + unitRow - distance, boardCol = nc + unitCol - distance;
 				if(!board.inBounds(boardRow, boardCol) || beenInList[nr][nc]) continue;
-				TileType type = board.tileAt(boardRow, boardCol).getType();
+				TileType type = board.getTileAt(boardRow, boardCol).getType();
 				if(canTraverse(type)) {
 					tilesToVisit.add(new int[] {nr, nc, tile[2] - 1});
 					beenInList[nr][nc] = true;

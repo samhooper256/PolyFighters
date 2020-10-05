@@ -76,7 +76,47 @@ public class Board {
 		return cols;
 	}
 	
-	public BoardTile tileAt(int row, int col) {
+	public BoardTile getTileAt(int row, int col) {
 		return tiles[row][col];
+	}
+	
+	/**
+	 * Returns the {@link Unit} at the indicated tile, or {@code null} if no {@code Unit} is on that tile.
+	 */
+	public Unit getUnitAt(int row, int col) {
+		return tiles[row][col].getUnit();
+	}
+	
+	/**
+	 * Returns {@code true} if there is a {@link Unit} on the indicated tile, {@code false} otherwise.
+	 */
+	public boolean hasUnit(int row, int col) {
+		return tiles[row][col].hasUnit();
+	}
+	
+	/**
+	 * Adds the given {@link Unit} to this {@code Board} at the given location, updating the {@code Unit}'s associated {@code Board} and
+	 * row and column values as necessary.
+	 * @throws IllegalArgumentException if there is already a {@code Unit} on the indicated tile.
+	 */
+	public void addUnit(Unit unit, int row, int col) {
+		if(hasUnit(row, col))
+			throw new IllegalArgumentException(String.format("There is already a unit on the tile at (%d, %d)", row, col));
+		setUnit(unit, row, col);
+	}
+	
+	/**
+	 * Sets the {@link BoardTile} at the indicated location to have the given {@link Unit}, updating the {@code Unit}'s associated {@code Board} and
+	 * row and column values as necessary. Replaces any existing unit on the given tile.
+	 * @param unit
+	 * @param row
+	 * @param col
+	 */
+	public void setUnit(Unit unit, int row, int col) {
+		unit.setBoard(this);
+		unit.setRow(row);
+		unit.setCol(col);
+		tiles[row][col].removeUnitIfPresent();
+		tiles[row][col].addUnit(unit);
 	}
 }

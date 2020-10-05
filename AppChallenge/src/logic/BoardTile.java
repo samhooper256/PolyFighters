@@ -61,7 +61,7 @@ public class BoardTile {
 			throw new IllegalArgumentException("The object " + object + " was not on the tile.");
 	}
 	
-	/** Returns {@code null} if there is no {@link Unit} on this tile.
+	/** Returns the {@link Unit} on the tile, or {@code null} if there is no {@code Unit} on this tile.
 	 * @return
 	 */
 	public Unit getUnit() {
@@ -72,5 +72,33 @@ public class BoardTile {
 			}
 		}
 		return null;
+	}
+	
+	public boolean hasUnit() {
+		return getUnit() != null;
+	}
+	
+	/** If there is a {@link Unit} on this {@code BoardTile}, removes that {@code Unit}. Otherwise, does nothing.
+	 *  <b>This method DOES NOT adjust the row and column values of the {@code Unit} removed, nor does it update
+	 *  that {@code Unit}'s  associated {@link Board}.</b>*/
+	public void removeUnitIfPresent() {
+		for(int i = objects.size() - 1; i >= 0; i--) {
+			GameObject obj = objects.get(i);
+			if(obj instanceof Unit) {
+				objects.remove(i);
+				return;
+			}
+		}
+	}
+	
+	/**
+	 * Adds the given {@link Unit} to the top of this {@code BoardTile}. <b>This method DOES NOT adjust the row and column
+	 * values of the {@code Unit} removed, nor does it update that {@code Unit}'s  associated {@link Board}.</b>
+	 * @throws IllegalStateException if there is already a {@code Unit} on this {@code BoardTile}.
+	 */
+	public void addUnit(Unit unit) {
+		if(hasUnit())
+			throw new IllegalStateException("There is already a unit on this tile");
+		objects.add(unit);
 	}
 }

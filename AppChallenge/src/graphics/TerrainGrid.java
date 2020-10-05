@@ -59,7 +59,7 @@ public class TerrainGrid extends GridPane {
 	private void initTiles() {
 		for(int i = 0; i < rows; i++) {
 			for(int j = 0; j < cols; j++) {
-				TerrainTile tile = TerrainTile.forBoardTile(backingBoard.tileAt(i, j));
+				TerrainTile tile = TerrainTile.forBoardTile(backingBoard.getTileAt(i, j));
 				/*//Test/demo code for moving units around:
 				//TODO remove this lambda:
 				tile.setOnMouseClicked(mouseEvent -> {
@@ -78,5 +78,10 @@ public class TerrainGrid extends GridPane {
 	
 	public Board getBoard() {
 		return backingBoard;
+	}
+	
+	public void addUnit(Unit unit, int row, int col) {
+		backingBoard.addUnit(unit, row, col);
+		terrainTiles[row][col].getUnitPane().setUnit(unit);
 	}
 }

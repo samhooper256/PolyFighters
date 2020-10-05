@@ -59,6 +59,7 @@ public class UnitPane extends StackPane {
 	public UnitPane() {
 		super();
 		unitWrap = new ImageWrap();
+		getChildren().add(unitWrap);
 	}
 	
 	public void setUnit(Unit unit) {

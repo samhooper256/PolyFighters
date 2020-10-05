@@ -8,6 +8,8 @@ import logic.TeamUnit;
 import logic.TileType;
 
 /**
+ * Abstract base class that classes implementing {@link TeamUnit} may extend to make implementation easier.
+ * 
  * @author Sam Hooper
  *
  */
@@ -28,19 +30,26 @@ abstract class AbstractTeamUnit implements TeamUnit {
 	/** {@code -1} if not on a board. */
 	protected int col;
 	
-	public AbstractTeamUnit() {
+	protected AbstractTeamUnit() {
 		this(null, -1, -1, new ArrayList<>());
 	}
-	public AbstractTeamUnit(List<Ability> abilities) {
+	protected AbstractTeamUnit(List<Ability> abilities) {
 		this(null, -1, -1, abilities);
 	}
-	public AbstractTeamUnit(Board board, int row, int col) {
+	protected AbstractTeamUnit(Board board, int row, int col) {
 		this(board, row, col, new ArrayList<>());
 	}
 	
-	public AbstractTeamUnit(Board board, int row, int col, List<Ability> abilities) {
+	/**
+	 * 
+	 * @param board the {@code Board} that this {@code Unit} is associated with, or {@code null} if this unit is not yet assoicated with one.
+	 * @param row
+	 * @param col
+	 * @param abilities the list of this {@code Unit}'s abilities. Must not be {@code null}.
+	 */
+	protected AbstractTeamUnit(Board board, int row, int col, List<Ability> abilities) {
 		this.abilities = Objects.requireNonNull(abilities);
-		this.board = Objects.requireNonNull(board);
+		this.board = board;
 		this.traversableTileTypes = EnumSet.noneOf(TileType.class);
 		this.row = row;
 		this.col = col;
@@ -57,16 +66,33 @@ abstract class AbstractTeamUnit implements TeamUnit {
 	}
 	
 	@Override
+	public void setBoard(Board board) {
+		this.board = board;
+	}
+	
+	/**
+	 * Returns the 0-based row index of this {@code Unit} on its {@link Board}, or {@code -1} if this {@code Unit} is not on a {@code Board}.
+	 */
+	@Override
 	public int getRow() {
-		if(!isOnBoard())
-			throw new IllegalArgumentException("This unit is not on a board");
 		return row;
 	}
 	
+	/**
+	 * Returns the 0-based column index of this {@code Unit} on its {@link Board}, or {@code -1} if this {@code Unit} is not on a {@code Board}.
+	 */
 	@Override
 	public int getCol() {
-		if(!isOnBoard())
-			throw new IllegalArgumentException("This unit is not on a board");
 		return col;
+	}
+	
+	@Override
+	public void setRow(int row) {
+		this.row = row;
+	}
+	
+	@Override
+	public void setCol(int col) {
+		this.col = col;
 	}
 }

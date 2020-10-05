@@ -20,8 +20,8 @@ public class BasicUnit extends AbstractTeamUnit {
 	
 	private StepMove stepMoveAbility;
 	
-	public BasicUnit(Board board, int row, int col) {
-		super(board, row, col);
+	public BasicUnit() {
+		super();
 		this.traversableTileTypes.addAll(DEFAULT_TRAVERSABLE_TILETYPES);
 		this.stepMoveAbility = new StepMove(this, DEFAULT_MOVE_DISTANCE);
 		this.abilities.add(stepMoveAbility);
