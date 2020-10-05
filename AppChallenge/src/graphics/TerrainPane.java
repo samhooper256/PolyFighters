@@ -2,7 +2,9 @@ package graphics;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
+
+import fxutils.ImageWrap;
 
 /**
  * The {@link StackPane} that will contain the {@link TerrainGrid} for a {@link Level}.
@@ -10,25 +12,26 @@ import javafx.scene.layout.StackPane;
  *
  */
 public class TerrainPane extends StackPane {
-	private final TerrainGrid grid;
+	private final TerrainGridWrap gridWrap;
+	final ImageWrap imageWrap = new ImageWrap("BasicUnit.png");
 	public TerrainPane() {
 		super();
-		grid = new TerrainGrid(8);
-		getChildren().add(grid);
-		bindGrid();
+		gridWrap = new TerrainGridWrap(8);
+		getChildren().add(gridWrap);
+		bindGridWrap();
 		
 	}
 	
 	/** Must only be called from the constructor. {@link #grid} must be initialized.*/
-	private void bindGrid() {
+	private void bindGridWrap() {
 		//StackPane resizes children to be as large as possible, ignoring their pref widths/heights.
 		NumberBinding min = Bindings.min(widthProperty(), heightProperty());
-		grid.maxWidthProperty().bind(min);
-		grid.maxHeightProperty().bind(min);
-		grid.setMinSize(0, 0);
+		gridWrap.maxWidthProperty().bind(min);
+		gridWrap.maxHeightProperty().bind(min);
+		gridWrap.setMinSize(0, 0);
 	}
 	
-	public TerrainGrid getGrid() {
-		return grid;
+	public TerrainGridWrap getGridWrap() {
+		return gridWrap;
 	}
 }
