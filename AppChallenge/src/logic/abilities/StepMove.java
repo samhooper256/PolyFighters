@@ -1,7 +1,6 @@
 package logic.abilities;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import logic.Board;
 import logic.TileType;
@@ -57,14 +56,12 @@ public class StepMove extends AbstractAnyAbility {
 	}
 	
 	/** Returns {@code true} if this ability can traverse in the given {@link TileType} (that is, if the unit that possesses this {@code Ability}
-	 * can traverse the given {@code TileType} using this ability), {@code false} otherwise.
+	 * can use it on a tile with the given {@code TileType}), {@code false} otherwise.
 	 * @param type the type of the tile
 	 * @return {@code true} if the given {@code TileType} can be traversed using this {@code Ability}, {@code false} otherwise.
 	 */
 	public boolean canTraverse(TileType type) {
-		if(traversableTileTypes == null)
-			return unit.canTraverse(type);
-		return traversableTileTypes.contains(type);
+		return unit.canTraverse(type) && (traversableTileTypes == null || traversableTileTypes.contains(type));
 	}
 	
 	public void setDistance(int distance) {
