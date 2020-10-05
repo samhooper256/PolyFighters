@@ -23,4 +23,5 @@ public class TerrainGridWrap extends StackPane {
 	public TerrainGrid getGrid() {
 		return grid;
 	}
+	
 }

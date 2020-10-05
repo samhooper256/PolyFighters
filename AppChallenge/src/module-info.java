@@ -7,4 +7,5 @@ module appChallenge {
 	requires javafx.controls;
 	
 	exports graphics;
+	exports logic;
 }

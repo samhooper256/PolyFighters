@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import logic.Board;
+import logic.units.BasicUnit;
 
 /**
  * The {@link Application} class for the project. No instances of this class should be created. It only has a public constructor
@@ -18,18 +20,6 @@ public class Main extends Application {
 	public static final String TITLE = "Congressional App Challenge";
 	
 	private static final String RESOURCES_PREFIX = "/resources/";
-	
-	public static void main(String[] args) {
-		Application.launch(args);
-	}
-
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		primaryStage.setTitle(TITLE);
-		Level scene = new Level();
-		primaryStage.setScene(scene);
-		primaryStage.show();
-	}
 	
 	/**
 	 * Produces an {@link Optional} of the {@link InputStream} for a resource in the "resources" folder.
@@ -54,6 +44,16 @@ public class Main extends Application {
 			throw new IllegalArgumentException("The resource at " + RESOURCES_PREFIX + filename + " does not exist");
 		return stream.get();
 	}
-	
-	
+
+	public static void main(String[] args) {
+		Application.launch(args);
+	}
+
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		primaryStage.setTitle(TITLE);
+		Level scene = new Level();
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	}
 }

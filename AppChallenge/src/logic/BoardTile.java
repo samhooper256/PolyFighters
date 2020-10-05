@@ -15,7 +15,7 @@ public class BoardTile {
 	/** A list of the things that are on this tile. They are ordered from bottom to top (so, for example, the {@link GameObject} at
 	 * index 0 is below all the remaining objects in the list)
 	 */
-	private final List<GameObject> objects;
+	private final ArrayList<GameObject> objects;
 	
 	private TileType type;
 	
@@ -59,5 +59,18 @@ public class BoardTile {
 	public void removeObject(GameObject object) {
 		if(!objects.remove(object))
 			throw new IllegalArgumentException("The object " + object + " was not on the tile.");
+	}
+	
+	/** Returns {@code null} if there is no {@link Unit} on this tile.
+	 * @return
+	 */
+	public Unit getUnit() {
+		for(int i = objects.size() - 1; i >= 0; i--) {
+			GameObject obj = objects.get(i);
+			if(obj instanceof Unit) {
+				return (Unit) obj;
+			}
+		}
+		return null;
 	}
 }

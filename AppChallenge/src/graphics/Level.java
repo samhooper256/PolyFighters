@@ -14,7 +14,7 @@ public class Level extends Scene {
 	private static final int DEFAULT_WIDTH = 600, DEFAULT_HEIGHT = 400;
 	
 	private final StackPane root;
-	private BorderPane borderPane;
+	private final BorderPane borderPane;
 	/** The left component of {@link #borderPane} */
 	private Pane left;
 	private TerrainPane terrainPane;
@@ -44,5 +44,9 @@ public class Level extends Scene {
 	/** It is static so that we can call it inside the "super" call in the constructor. */
 	private static StackPane makeRoot() {
 		return new StackPane();
+	}
+	
+	public TerrainPane getTerrainPane() {
+		return terrainPane;
 	}
 }

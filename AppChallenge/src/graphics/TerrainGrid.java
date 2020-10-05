@@ -1,6 +1,8 @@
 package graphics;
 
 import javafx.scene.layout.*;
+import logic.Board;
+import logic.Unit;
 
 /**
  * @author Sam Hooper
@@ -9,6 +11,8 @@ import javafx.scene.layout.*;
 public class TerrainGrid extends GridPane {
 	
 	private final int rows, cols;
+	private final Board backingBoard;
+	private final TerrainTile[][] terrainTiles;
 	
 	/** Creates a new {@code TerrainGrid} with {@code size} rows and {@code size} columns. */
 	public TerrainGrid(int size) {
@@ -20,6 +24,8 @@ public class TerrainGrid extends GridPane {
 		super();
 		this.rows = rows;
 		this.cols = cols;
+		backingBoard = new Board(rows, cols);
+		terrainTiles = new TerrainTile[rows][cols];
 		initConstraints();
 		initTiles();
 	}
@@ -49,11 +55,11 @@ public class TerrainGrid extends GridPane {
 	}
 	
 	/** Creates the tiles for this {@code TerrainGrid}. Must only be called from the constructor.
-	 * {@link #rows} and {@link #cols} must be initialized.*/
+	 * {@link #rows}, {@link #cols}, and {@link #backingBoard} must be initialized.*/
 	private void initTiles() {
 		for(int i = 0; i < rows; i++) {
 			for(int j = 0; j < cols; j++) {
-				TerrainTile tile = new TerrainTile();
+				TerrainTile tile = TerrainTile.forBoardTile(backingBoard.tileAt(i, j));
 				/*//Test/demo code for moving units around:
 				//TODO remove this lambda:
 				tile.setOnMouseClicked(mouseEvent -> {
@@ -63,9 +69,14 @@ public class TerrainGrid extends GridPane {
 					pane.testWrap.setLayoutY(tile.getLayoutY());
 				});
 				*/
+				terrainTiles[i][j] = tile;
 				GridPane.setConstraints(tile, j, i); //this method takes (col, row) instead of (row, col). That's why j comes before i.
 				getChildren().add(tile);
 			}
 		}
+	}
+	
+	public Board getBoard() {
+		return backingBoard;
 	}
 }
