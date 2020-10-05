@@ -19,6 +19,8 @@ public class Level extends Scene {
 	private Pane left;
 	private TerrainPane terrainPane;
 	
+	private final Theme theme = Theme.TEST_THEME;
+	
 	public Level() {
 		this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 	}

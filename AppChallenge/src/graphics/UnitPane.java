@@ -15,30 +15,11 @@ import logic.units.BasicUnit;
  */
 public class UnitPane extends StackPane {
 	
-	public static final class UnitInfo {
-		private final String filename;
-		private Image image; //lazy initialized, so not final
-		private UnitInfo(String filename) {
-			Objects.requireNonNull(filename);
-			this.filename = filename;
-			image = null;
-		}
-		
-		public String getFilename() {
-			return filename;
-		}
-		public Image getImage() {
-			if(image == null)
-				image = Images.getImage(filename);
-			return image;
-		}
-	}
-	
-	private static final Map<Class<? extends Unit>, UnitInfo> infoMap;
+	private static final Map<Class<? extends Unit>, ImageInfo> infoMap;
 	
 	static {
 		infoMap = new HashMap<>();
-		infoMap.put(BasicUnit.class, new UnitInfo("BasicUnit.png"));
+		infoMap.put(BasicUnit.class, new ImageInfo("BasicUnit.png"));
 	}
 	
 	public static Image imageFor(Unit unit) {
@@ -46,7 +27,7 @@ public class UnitPane extends StackPane {
 	}
 	
 	public static Image imageFor(Class<? extends Unit> unitClazz) {
-		UnitInfo info = infoMap.get(unitClazz);
+		ImageInfo info = infoMap.get(unitClazz);
 		if(info == null)
 			throw new IllegalArgumentException("There is no image associated with: " + unitClazz);
 		return info.getImage();
