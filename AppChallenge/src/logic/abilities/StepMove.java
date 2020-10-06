@@ -5,6 +5,7 @@ import java.util.*;
 import logic.Board;
 import logic.TileType;
 import logic.Unit;
+import utils.IntRef;
 
 /**
  * <p>Represents a form of movement where the unit can move a set number of steps in any direction. The <i>distance</i> of a {@code StepMove}
@@ -27,7 +28,7 @@ public class StepMove extends AbstractAnyAbility {
 	
 	private static final int[][] STEPS = {{-1,0}, {0,1}, {1,0}, {0,-1}};
 	
-	private int distance;
+	private IntRef distance;
 	/** If {@code null}, the {@link TileType}s traversable by this ability are the same as the unit's. */
 	private EnumSet<TileType> traversableTileTypes;
 	
@@ -46,7 +47,7 @@ public class StepMove extends AbstractAnyAbility {
 	public StepMove(Unit unit, int distance, EnumSet<TileType> traversableTileTypes) {
 		super(unit);
 		verifyDistance(distance);
-		this.distance = distance;
+		this.distance = new IntRef(distance);
 		this.traversableTileTypes = traversableTileTypes;
 	}
 	
@@ -65,16 +66,17 @@ public class StepMove extends AbstractAnyAbility {
 	}
 	
 	public void setDistance(int distance) {
-		this.distance = distance;
+		this.distance.set(distance);
 	}
 	
-	public final int getDistance() {
+	public IntRef distanceProperty() {
 		return distance;
 	}
 
 	@Override
 	public Collection<int[]> getLegals() {
 		final Board board = unit.getBoard();
+		final int distance = this.distance.get();
 		final int boardSize = Math.max(board.getRows(), board.getCols());
 		final int boxSize = Math.min(distance * 2 + 1, boardSize * 2 + 1);
 		final boolean[][] beenInList = new boolean[boxSize][boxSize]; //coordintes are relative the location of the unit, with the unit at the center.

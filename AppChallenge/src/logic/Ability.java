@@ -14,6 +14,8 @@ import java.util.Collection;
  * as length-2 {@code int[]} objects) that represent the tiles on the board where this ability could be legally used by its unit. The returned
  * Collection should not contain any duplicates (ordered pairs with the same two {@code int}s in the same order), but the return type is not
  * {@link Set} so as to allow implementors as much freedom as possible.</p>
+ * 
+ * <p><b>The {@code equals} method of all classes implementing this interface must test for object identity using the == operator.</b></p>
  * @author Sam Hooper
  *
  */
