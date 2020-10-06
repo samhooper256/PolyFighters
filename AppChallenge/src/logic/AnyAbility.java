@@ -1,9 +1,12 @@
 package logic;
 
 /**
- * An {@link Ability} that both team units or enemy units can use.
+ * <p>An {@link Ability} that both {@link TeamUnit}s and {@link EnemyUnit}s can use.</p>
+ * 
+ * <p>Implementing classes may consider extending the abstract class {@link logic.abilities.AbstractAnyAbility} to make
+ * implementation easier.</p>
+ * 
  * @author Sam Hooper
- *
  */
 public interface AnyAbility extends Ability {
 

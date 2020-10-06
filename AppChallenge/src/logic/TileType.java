@@ -1,7 +1,7 @@
 package logic;
 
 /**
- * Enum for the different kinds of tiles.
+ * Enum for the different types of {@link BoardTile}s.
  * @author Sam Hooper
  *
  */

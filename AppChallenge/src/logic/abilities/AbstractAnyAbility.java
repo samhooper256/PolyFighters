@@ -1,13 +1,14 @@
 package logic.abilities;
 
-import logic.Ability;
+import logic.AnyAbility;
 import logic.Unit;
 
 /**
+ * <p> An abstract class that implements {@link AnyAbility} that provides some of the implementation for that interface.</p>
  * @author Sam Hooper
  *
  */
-abstract class AbstractAnyAbility implements Ability{
+public abstract class AbstractAnyAbility implements AnyAbility {
 	
 	protected final Unit unit;
 	

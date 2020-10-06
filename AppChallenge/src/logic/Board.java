@@ -1,6 +1,7 @@
 package logic;
 
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * @author Sam Hooper
@@ -118,5 +119,19 @@ public class Board {
 		unit.setCol(col);
 		tiles[row][col].removeUnitIfPresent();
 		tiles[row][col].addUnit(unit);
+	}
+	
+	/**
+	 * <p>Returns {@code true} if {@code unit} is on this {@code Board}, {@code false} otherwise. {@code unit} must not be {@code null}.</p>
+	 */
+	public boolean isOnBoard(Unit unit) {
+		Objects.requireNonNull(unit);
+		for(int i = 0; i < tiles.length; i++) {
+			for(int j = 0; j < tiles[i].length; j++) {
+				if(unit.equals(tiles[i][j].getUnit()))
+					return true;
+			}
+		}
+		return false;
 	}
 }
