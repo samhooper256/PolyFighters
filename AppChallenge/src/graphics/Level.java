@@ -12,8 +12,10 @@ import javafx.scene.paint.Color;
  */
 public class Level extends Scene {
 	private static final int DEFAULT_WIDTH = 600, DEFAULT_HEIGHT = 400;
+	private static final int MIN_STACKROOT_WIDTH = 640, MIN_STACKROOT_HEIGHT = 360; //16:9 ratio
 	
-	private final StackPane root;
+	private final Pane root;
+	private final StackPane stackRoot;
 	private final BorderPane borderPane;
 	/** The left component of {@link #borderPane} */
 	private Pane left;
@@ -37,15 +39,22 @@ public class Level extends Scene {
 		borderPane.setLeft(left);
 		borderPane.setCenter(terrainPane);
 		
-		root = (StackPane) getRoot();
-		root.setBorder(Borders.of(Color.RED));
-		root.setBackground(Backgrounds.of(Color.SKYBLUE));
-		root.getChildren().add(0, borderPane);
+		root = (Pane) getRoot();
+		
+		stackRoot = new StackPane();
+		stackRoot.setMinSize(MIN_STACKROOT_WIDTH, MIN_STACKROOT_HEIGHT);
+		stackRoot.prefWidthProperty().bind(this.widthProperty());
+		stackRoot.prefHeightProperty().bind(this.heightProperty());
+		stackRoot.setBorder(Borders.of(Color.RED));
+		stackRoot.setBackground(Backgrounds.of(Color.SKYBLUE));
+		stackRoot.getChildren().add(0, borderPane);
+		
+		root.getChildren().add(stackRoot);
 	}
 	
 	/** It is static so that we can call it inside the "super" call in the constructor. */
-	private static StackPane makeRoot() {
-		return new StackPane();
+	private static Pane makeRoot() {
+		return new Pane();
 	}
 	
 	public TerrainPane getTerrainPane() {
