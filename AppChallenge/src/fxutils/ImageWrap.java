@@ -3,6 +3,8 @@ package fxutils;
 import javafx.scene.image.*;
 
 /**
+ * A subclass of {@link ImageView} whose image can be resized. This class can be used to display an image that is resized to fill the space
+ * allotted to it.
  * @author Sam Hooper
  *
  */
@@ -10,8 +12,8 @@ public class ImageWrap extends ImageView {
 	
 	public static final int DEFAULT_MIN_WIDTH = 40;
 	public static final int DEFAULT_MIN_HEIGHT = 40;
-	public static final int MAX_WIDTH = 40;
-	public static final int MAX_HEIGHT = 40;
+	public static final int MAX_WIDTH = 16384;
+	public static final int MAX_HEIGHT = 16384;
 	
 	private final int minWidth, minHeight;
 	
@@ -43,18 +45,18 @@ public class ImageWrap extends ImageView {
 	}
 	
 	/** Creates a new {@code ImageWrap} with the given image, a minimum width of {@link #DEFAULT_MIN_WIDTH},
-	 * and a minimum height of {@link #DEFAULT_MIN_HEIGHT}. The given image may be null.*/
+	 * and a minimum height of {@link #DEFAULT_MIN_HEIGHT}. The given image may be {@code null}.*/
 	public ImageWrap(Image image) {
 		this(image, DEFAULT_MIN_WIDTH, DEFAULT_MIN_HEIGHT);
 	}
 	
 	/** Creates a new {@code ImageWrap} with the given image, a minimum width of {@code minWidth},
-	 * and a minimum height of {@code minHeight}. The given image may be null.*/
+	 * and a minimum height of {@code minHeight}. The given image may be {@code null}.*/
 	public ImageWrap(Image image, int minWidth, int minHeight) {
-		setImage(image);
 		this.minWidth = minWidth;
         this.minHeight = minHeight;
 		setPreserveRatio(false);
+		setImage(image);
 	}
 
     @Override
@@ -81,8 +83,7 @@ public class ImageWrap extends ImageView {
     }
 
     @Override
-    public double prefHeight(double width)
-    {
+    public double prefHeight(double width) {
         Image im = getImage();
         if (im == null)
         	return minHeight(width);
