@@ -1,6 +1,7 @@
 package graphics;
 
 import fxutils.*;
+import javafx.beans.property.DoublePropertyBase;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
@@ -23,6 +24,26 @@ public class Level extends Scene {
 	private Pane left;
 	private TerrainPane terrainPane;
 	
+	/**The Property that {@link #stackRoot}'s widthProperty will be bound to. */
+	private final DoublePropertyBase stackRootWidth = new DoublePropertyBase() {
+		@Override
+		public double get() {
+			return Math.max(MIN_STACKROOT_WIDTH, Level.this.getWidth());
+		}
+		@Override public Object getBean() { return null; }
+		@Override public String getName() { return "stackRootWidth"; }
+	};
+	
+	/**The Property that {@link #stackRoot}'s heightProperty will be bound to. */
+	private final DoublePropertyBase stackRootHeight = new DoublePropertyBase() {
+		@Override
+		public double get() {
+			return Math.max(MIN_STACKROOT_HEIGHT, Level.this.getHeight());
+		}
+		@Override public Object getBean() { return null; }
+		@Override public String getName() { return "stackRootHeight"; }
+	};
+	
 	private final Theme theme = Theme.TEST_THEME;
 	
 	public Level() {
@@ -38,7 +59,7 @@ public class Level extends Scene {
 		terrainPane.setBorder(Borders.of(Color.BLACK));
 		
 		infoPanel = new InfoPanel();
-		infoPanel.prefWidthProperty().bind(Level.this.widthProperty().multiply(INFO_SCREEN_PERCENT));
+		infoPanel.prefWidthProperty().bind(stackRootWidth.multiply(INFO_SCREEN_PERCENT));
 		
 		borderPane = new BorderPane();
 		borderPane.setLeft(left);
@@ -49,8 +70,8 @@ public class Level extends Scene {
 		
 		stackRoot = new StackPane();
 		stackRoot.setMinSize(MIN_STACKROOT_WIDTH, MIN_STACKROOT_HEIGHT);
-		stackRoot.prefWidthProperty().bind(this.widthProperty());
-		stackRoot.prefHeightProperty().bind(this.heightProperty());
+		stackRoot.prefWidthProperty().bind(stackRootWidth);
+		stackRoot.prefHeightProperty().bind(stackRootHeight);
 		stackRoot.setBorder(Borders.of(Color.RED));
 		stackRoot.setBackground(Backgrounds.of(Color.SKYBLUE));
 		stackRoot.getChildren().add(0, borderPane);
@@ -61,10 +82,6 @@ public class Level extends Scene {
 	/** It is static so that we can call it inside the "super" call in the constructor. */
 	private static Pane makeRoot() {
 		return new Pane();
-	}
-	
-	private class RootPane extends Pane {
-		
 	}
 	
 	public TerrainPane getTerrainPane() {

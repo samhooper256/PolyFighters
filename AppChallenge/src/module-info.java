@@ -4,7 +4,8 @@
  */
 module appChallenge {
 	requires transitive javafx.graphics;
-	requires javafx.controls;
+	requires transitive javafx.controls;
+	requires transitive javafx.base;
 	
 	exports graphics;
 	exports logic;
