@@ -11,8 +11,8 @@ import javafx.scene.paint.Color;
  *
  */
 public class Level extends Scene {
-	private static final int DEFAULT_WIDTH = 600, DEFAULT_HEIGHT = 400;
 	private static final int MIN_STACKROOT_WIDTH = 640, MIN_STACKROOT_HEIGHT = 360; //16:9 ratio
+	private static final int DEFAULT_WIDTH = MIN_STACKROOT_WIDTH, DEFAULT_HEIGHT = MIN_STACKROOT_HEIGHT;
 	
 	private final Pane root;
 	private final StackPane stackRoot;
