@@ -13,10 +13,12 @@ import javafx.scene.paint.Color;
 public class Level extends Scene {
 	private static final int MIN_STACKROOT_WIDTH = 640, MIN_STACKROOT_HEIGHT = 360; //16:9 ratio
 	private static final int DEFAULT_WIDTH = MIN_STACKROOT_WIDTH, DEFAULT_HEIGHT = MIN_STACKROOT_HEIGHT;
+	private static final double INFO_SCREEN_PERCENT = 0.15; //percentage of the screen the InfoPanel will take up
 	
 	private final Pane root;
 	private final StackPane stackRoot;
 	private final BorderPane borderPane;
+	private final InfoPanel infoPanel;
 	/** The left component of {@link #borderPane} */
 	private Pane left;
 	private TerrainPane terrainPane;
@@ -35,8 +37,12 @@ public class Level extends Scene {
 		terrainPane = new TerrainPane();
 		terrainPane.setBorder(Borders.of(Color.BLACK));
 		
+		infoPanel = new InfoPanel();
+		infoPanel.prefWidthProperty().bind(Level.this.widthProperty().multiply(INFO_SCREEN_PERCENT));
+		
 		borderPane = new BorderPane();
 		borderPane.setLeft(left);
+		borderPane.setRight(infoPanel);
 		borderPane.setCenter(terrainPane);
 		
 		root = (Pane) getRoot();
@@ -55,6 +61,10 @@ public class Level extends Scene {
 	/** It is static so that we can call it inside the "super" call in the constructor. */
 	private static Pane makeRoot() {
 		return new Pane();
+	}
+	
+	private class RootPane extends Pane {
+		
 	}
 	
 	public TerrainPane getTerrainPane() {
