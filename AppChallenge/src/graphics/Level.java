@@ -87,4 +87,8 @@ public class Level extends Scene {
 	public TerrainPane getTerrainPane() {
 		return terrainPane;
 	}
+	
+	public InfoPanel getInfoPanel() {
+		return infoPanel;
+	}
 }

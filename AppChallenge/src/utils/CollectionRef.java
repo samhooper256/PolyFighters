@@ -46,6 +46,15 @@ public class CollectionRef<E> {
 	}
 	
 	/**
+	 * Returns {@code true} if this {@code CollectionRef} had that listener and it has been removed, {@code false} otherwise.
+	 */
+	public boolean removeAddListener(SingleListener<E> addListener) {
+		if(addListeners == null)
+			return false;
+		return addListeners.remove(addListener);
+	}
+	
+	/**
 	 * Removes the element from the list that this {@code ListRef} refers to.
 	 * The listeners are only run if an item was removed.
 	 * @param item
@@ -70,6 +79,15 @@ public class CollectionRef<E> {
 		if(removeListeners == null)
 			removeListeners = new ArrayList<>();
 		removeListeners.add(removeListener);
+	}
+	
+	/**
+	 * Returns {@code true} if this {@code CollectionRef} had that listener and it has been removed, {@code false} otherwise.
+	 */
+	public boolean removeRemoveListener(SingleListener<E> removeListener) {
+		if(removeListeners == null)
+			return false;
+		return removeListeners.remove(removeListener);
 	}
 	
 	public boolean contains(E item) {

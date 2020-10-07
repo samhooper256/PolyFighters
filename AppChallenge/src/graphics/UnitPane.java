@@ -23,8 +23,13 @@ public class UnitPane extends StackPane {
 	private static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {
 		UnitWrap source = (UnitWrap) mouseEvent.getSource();
 		UnitPane pane = source.getEnclosingInstance();
+		Unit unit = pane.getUnit();
 		Level level = Main.currentLevel();
-		//TODO display Ability info in the AbilityPanel for the unit
+		InfoPanel infoPanel = level.getInfoPanel();
+		AbilityPanel abilityPanel = infoPanel.getAbilityPanel();
+		for(Ability ability : unit.getAbilitiesUnmodifiable()) {
+			abilityPanel.addPane(pane.abilityPaneFor(ability));
+		}
 	};
 	
 	static {
@@ -68,6 +73,7 @@ public class UnitPane extends StackPane {
 	public UnitPane() {
 		super();
 		unitWrap = new UnitWrap();
+		unitWrap.setOnMouseClicked(clickHandler);
 		getChildren().add(unitWrap);
 	}
 	
@@ -77,7 +83,7 @@ public class UnitPane extends StackPane {
 			paneMap.put(ability, AbilityPane.of(ability));
 	}
 	
-	public AbilityPane paneFor(final Ability ability) {
+	public AbilityPane abilityPaneFor(final Ability ability) {
 		AbilityPane pane = paneMap.get(ability);
 		if(pane != null)
 			return pane;
@@ -86,10 +92,30 @@ public class UnitPane extends StackPane {
 		return pane;
 	}
 	
+	/**
+	 * {@code unit} must not be {@code null}. Note that {@link #removeUnit()} can be used to remove the unit from this pane.
+	 * @param unit
+	 */
 	public void setUnit(Unit unit) {
+		Objects.requireNonNull(unit);
+		if(this.unit != null)
+			removeListeners();
 		this.unit = unit;
+		addListeners();
 		clearAndFillPaneMap();
 		unitWrap.setImage(imageFor(unit));
+	}
+
+	/** Removes the listeners from {@code this.unit} */
+	private void removeListeners() {
+		this.unit.abilityCollectionRef().removeAddListener(addListener);
+		this.unit.abilityCollectionRef().removeRemoveListener(removeListener);
+	}
+
+	/** Adds the listeners from {@code this.unit} */
+	private void addListeners() {
+		this.unit.abilityCollectionRef().addAddListener(addListener);
+		this.unit.abilityCollectionRef().addRemoveListener(removeListener);
 	}
 	
 	/**

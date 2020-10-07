@@ -11,4 +11,12 @@ public class AbilityPanel extends VBox {
 	public AbilityPanel() {
 		super();
 	}
+	
+	public void addPane(AbilityPane pane) {
+		getChildren().add(pane);
+	}
+	
+	public void clearPanes() {
+		getChildren().clear();
+	}
 }
