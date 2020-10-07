@@ -118,7 +118,7 @@ public class Board {
 		unit.setRow(row);
 		unit.setCol(col);
 		tiles[row][col].removeUnitIfPresent();
-		tiles[row][col].addUnit(unit);
+		tiles[row][col].addUnitOrThrow(unit);
 	}
 	
 	/**

@@ -24,7 +24,6 @@ public interface Ability {
 	/**
 	 * Returns the unit of this ability, or {@code null} if this {@code Ability} has no {@code Unit}.
 	 * Every {@code Ability} is associated with 0 or 1 {@code Unit}(s) at any given time.
-	 * @return
 	 */
 	Unit getUnit();
 	
@@ -34,8 +33,12 @@ public interface Ability {
 	 * {@code b} such that {@code Arrays.equals(a, b)}).
 	 * 
 	 * <p>Behavior of this method is undefined if {@code getUnit() == null} (that is, if this {@code Ability} does not currently have a {@link Unit}).</p>
-	 * @return
 	 */
 	Collection<int[]> getLegals();
 	
+	/**
+	 * Creates a {@link Move} that when executed (by invoking {@link Move#execute(Board)}) will use this {@code Ability} on the appropriate
+	 * {@link Board}. Behavior is undefined if the destination row and column do not indicate a legal move.
+	 */
+	Move createMoveFor(int destRow, int destCol);
 }

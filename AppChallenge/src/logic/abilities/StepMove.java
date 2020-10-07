@@ -3,8 +3,10 @@ package logic.abilities;
 import java.util.*;
 
 import logic.Board;
+import logic.Move;
 import logic.TileType;
 import logic.Unit;
+import logic.actions.Relocate;
 import utils.IntRef;
 
 /**
@@ -104,5 +106,13 @@ public class StepMove extends AbstractAnyAbility implements MoveAbility {
 			}			
 		}
 		return allLegals;
+	}
+	
+	/**
+	 * Creates the {@link Move} object for the given destination tile even if it is illegal.
+	 */
+	@Override
+	public Move createMoveFor(int destRow, int destCol) {
+		return new Move(new Relocate(unit.getRow(), unit.getCol(), destRow, destCol));
 	}
 }

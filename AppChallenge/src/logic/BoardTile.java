@@ -4,7 +4,7 @@ import java.util.*;
 
 /**
  * A tile in a {@link Board}. Each board tile knows what board it is a part of. The {@code Board} that a {@code BoardTile} is a part
- * of is set at construction time and cannot be changed afterwards.
+ * of is set at construction time and cannot be changed afterwards. A {@code BoardTile} can have a maximum of one {@code Unit} on it.
  * 
  * @author Sam Hooper
  *
@@ -78,25 +78,26 @@ public class BoardTile {
 		return getUnit() != null;
 	}
 	
-	/** If there is a {@link Unit} on this {@code BoardTile}, removes that {@code Unit}. Otherwise, does nothing.
+	/** If there is a {@link Unit} on this {@code BoardTile}, removes that {@code Unit} and returns it.
+	 *  Otherwise, does nothing but return {@code null}.
 	 *  <b>This method DOES NOT adjust the row and column values of the {@code Unit} removed, nor does it update
 	 *  that {@code Unit}'s  associated {@link Board}.</b>*/
-	public void removeUnitIfPresent() {
+	public Unit removeUnitIfPresent() {
 		for(int i = objects.size() - 1; i >= 0; i--) {
 			GameObject obj = objects.get(i);
 			if(obj instanceof Unit) {
 				objects.remove(i);
-				return;
+				return (Unit) obj;
 			}
 		}
+		return null;
 	}
-	
 	/**
 	 * Adds the given {@link Unit} to the top of this {@code BoardTile}. <b>This method DOES NOT adjust the row and column
 	 * values of the {@code Unit} removed, nor does it update that {@code Unit}'s  associated {@link Board}.</b>
 	 * @throws IllegalStateException if there is already a {@code Unit} on this {@code BoardTile}.
 	 */
-	public void addUnit(Unit unit) {
+	public void addUnitOrThrow(Unit unit) {
 		if(hasUnit())
 			throw new IllegalStateException("There is already a unit on this tile");
 		objects.add(unit);
