@@ -20,22 +20,22 @@ public class UnitPane extends StackPane {
 	
 	private static final Map<Class<? extends Unit>, ImageInfo> infoMap;
 	
-	private static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {
-		UnitWrap source = (UnitWrap) mouseEvent.getSource();
-		UnitPane pane = source.getEnclosingInstance();
-		Unit unit = pane.getUnit();
-		Level level = Main.currentLevel();
-		InfoPanel infoPanel = level.getInfoPanel();
-		AbilityPanel abilityPanel = infoPanel.getAbilityPanel();
-		for(Ability ability : unit.getAbilitiesUnmodifiable()) {
-			abilityPanel.addPane(pane.abilityPaneFor(ability));
-		}
-	};
-	
 	static {
 		infoMap = new HashMap<>();
 		infoMap.put(BasicUnit.class, new ImageInfo("BasicUnit.png"));
 	}
+	
+	private static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {
+		UnitPane pane = ((UnitWrap) mouseEvent.getSource()).getEnclosingInstance();
+		Unit unit = pane.getUnit();
+		InfoPanel infoPanel = Main.currentLevel().getInfoPanel();
+		infoPanel.clearContent();
+		AbilityPanel abilityPanel = infoPanel.getAbilityPanel();
+		for(Ability ability : unit.getAbilitiesUnmodifiable()) {
+			abilityPanel.addPane(pane.abilityPaneFor(ability));
+		}
+		infoPanel.displayAbilityPanel();
+	};
 	
 	public static Image imageFor(Unit unit) {
 		return imageFor(unit.getClass());
@@ -48,9 +48,14 @@ public class UnitPane extends StackPane {
 		return info.getImage();
 	}
 	
+	private class UnitWrap extends ImageWrap {
+		UnitPane getEnclosingInstance() {
+			return UnitPane.this;
+		}
+	}
+	
 	private final HashMap<Ability, AbilityPane> paneMap = new HashMap<>();
 	private final UnitWrap unitWrap;
-	
 	private final SingleListener<Ability> addListener = ability -> {
 		if(paneMap.containsKey(ability))
 			throw new IllegalStateException("Duplicate Abilities detected");
@@ -62,12 +67,6 @@ public class UnitPane extends StackPane {
 	};
 	
 	private Unit unit;
-	
-	private class UnitWrap extends ImageWrap {
-		UnitPane getEnclosingInstance() {
-			return UnitPane.this;
-		}
-	}
 	
 	/** Creates an empty {@code UnitPane} with no {@link Unit} on it. */
 	public UnitPane() {

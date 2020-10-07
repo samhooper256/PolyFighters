@@ -27,5 +27,4 @@ public interface TeamUnit extends Unit {
 	 */
 	Collection<int[]> getLegalSpots(Ability ability);
 	
-	
 }

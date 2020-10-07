@@ -27,8 +27,15 @@ public class InfoPanel extends StackPane {
 		defaultContent.getChildren().add(label);
 	}
 	
-	/**Sets the content of this {@code InfoPanel} to its default state.*/
+	/**Clears the content of this {@code InfoPanel}.*/
 	public void clearContent() {
+		getChildren().clear();
+	}
+	
+	/**
+	 * Sets the content of this {@code InfoPanel} to its default state.
+	 */
+	public void setToDefaultState() {
 		getChildren().clear();
 		getChildren().add(defaultContent);
 	}

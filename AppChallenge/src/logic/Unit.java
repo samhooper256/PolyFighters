@@ -37,6 +37,8 @@ public interface Unit extends GameObject {
 	
 	CollectionRef<Ability> abilityCollectionRef();
 	
+	
+	
 	/** Returns {@code true} if this {@code Unit} can traverse {@link BoardTile}s of the given {@link TileType}. */
 	boolean canTraverse(TileType type);
 	

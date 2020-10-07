@@ -21,7 +21,7 @@ import utils.IntRef;
  * @author Sam Hooper
  *
  */
-public class StepMove extends AbstractAnyAbility {
+public class StepMove extends AbstractAnyAbility implements MoveAbility {
 
 	public static final int MAX_DISTANCE = 120;
 	public static final int MIN_DISTANCE = 1;
