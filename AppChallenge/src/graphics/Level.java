@@ -12,18 +12,21 @@ import javafx.scene.paint.Color;
  *
  */
 public class Level extends Scene {
-	private static final int MIN_STACKROOT_WIDTH = 640, MIN_STACKROOT_HEIGHT = 360; //16:9 ratio
+	private static final int MIN_STACKROOT_WIDTH = 640, MIN_STACKROOT_HEIGHT = 360; //16:9 ratio TODO maybe make these proportional to the user's screen dimensions?
 	private static final int DEFAULT_WIDTH = MIN_STACKROOT_WIDTH, DEFAULT_HEIGHT = MIN_STACKROOT_HEIGHT;
 	private static final double INFO_SCREEN_PERCENT = 0.15; //percentage of the screen the InfoPanel will take up
+	
+	/**
+	 * {@code Level.current()} is equivalent to {@link Main#currentLevel()}.
+	 */
+	public static final Level current() {
+		return Main.currentLevel();
+	}
 	
 	private final Pane root;
 	private final StackPane stackRoot;
 	private final BorderPane borderPane;
 	private final InfoPanel infoPanel;
-	/** The left component of {@link #borderPane} */
-	private Pane left;
-	private TerrainPane terrainPane;
-	
 	/**The Property that {@link #stackRoot}'s widthProperty will be bound to. */
 	private final DoublePropertyBase stackRootWidth = new DoublePropertyBase() {
 		@Override
@@ -33,7 +36,6 @@ public class Level extends Scene {
 		@Override public Object getBean() { return null; }
 		@Override public String getName() { return "stackRootWidth"; }
 	};
-	
 	/**The Property that {@link #stackRoot}'s heightProperty will be bound to. */
 	private final DoublePropertyBase stackRootHeight = new DoublePropertyBase() {
 		@Override
@@ -44,7 +46,10 @@ public class Level extends Scene {
 		@Override public String getName() { return "stackRootHeight"; }
 	};
 	
-	private final Theme theme = Theme.TEST_THEME;
+	
+	/** The left component of {@link #borderPane} */
+	private Pane left;
+	private TerrainPane terrainPane;
 	
 	public Level() {
 		this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -79,7 +84,7 @@ public class Level extends Scene {
 		root.getChildren().add(stackRoot);
 	}
 	
-	/** It is static so that we can call it inside the "super" call in the constructor. */
+	/* It is static so that we can call it inside the "super" call in the constructor. */
 	private static Pane makeRoot() {
 		return new Pane();
 	}

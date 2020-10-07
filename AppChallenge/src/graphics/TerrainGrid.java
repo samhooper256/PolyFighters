@@ -60,15 +60,6 @@ public class TerrainGrid extends GridPane {
 		for(int i = 0; i < rows; i++) {
 			for(int j = 0; j < cols; j++) {
 				TerrainTile tile = TerrainTile.forBoardTile(backingBoard.getTileAt(i, j), Theme.TEST_THEME); //TODO use level theme
-				/*//Test/demo code for moving units around:
-				//TODO remove this lambda:
-				tile.setOnMouseClicked(mouseEvent -> {
-					System.out.println("Clicked");
-					TerrainGridWrap pane = ((TerrainGridWrap) TerrainGrid.this.getParent());
-					pane.testWrap.setLayoutX(tile.getLayoutX());
-					pane.testWrap.setLayoutY(tile.getLayoutY());
-				});
-				*/
 				terrainTiles[i][j] = tile;
 				GridPane.setConstraints(tile, j, i); //this method takes (col, row) instead of (row, col). That's why j comes before i.
 				getChildren().add(tile);

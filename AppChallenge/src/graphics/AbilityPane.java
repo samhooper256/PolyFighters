@@ -15,6 +15,7 @@ import logic.abilities.StepMove;
  *
  */
 public abstract class AbilityPane extends StackPane	{
+	
 	private static Map<Class<? extends Ability>, Function<Ability, AbilityPane>> paneFactories;
 	
 	static {
@@ -37,7 +38,7 @@ public abstract class AbilityPane extends StackPane	{
 				System.out.println("StepMove selected");
 				TerrainGrid grid = Main.currentLevel().getTerrainPane().getGrid();
 				for(int[] legalSpot : ability.getLegals()) {
-					grid.getTileAt(legalSpot[0], legalSpot[1]).highlight(highlightColor());
+					grid.getTileAt(legalSpot[0], legalSpot[1]).highlightOrThrow(highlightColor());
 				}
 			}
 
@@ -101,6 +102,6 @@ public abstract class AbilityPane extends StackPane	{
 	public abstract void deselect();
 	
 	public Paint highlightColor() {
-		return Color.LAWNGREEN;
+		return TerrainTile.DEFAULT_HIGHLIGHT;
 	}
 }
