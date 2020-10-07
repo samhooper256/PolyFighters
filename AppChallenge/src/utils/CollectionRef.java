@@ -10,22 +10,22 @@ import java.util.function.Supplier;
  * @author Sam Hooper
  *
  */
-public class ListRef<E> {
-	private List<E> list;
+public class CollectionRef<E> {
+	private Collection<E> collection;
 	
 	private ArrayList<SingleListener<E>> addListeners; //only constructed when a listener is actually added.
 	private ArrayList<SingleListener<E>> removeListeners; //only constructed when a listener is actually added.
 	
-	public ListRef(List<E> list) {
-		this.list = list;
+	public CollectionRef(Collection<E> collection) {
+		this.collection = collection;
 	}
 	
-	public ListRef(Supplier<List<E>> listFactory) {
-		this.list = listFactory.get();
+	public CollectionRef(Supplier<Collection<E>> collectionFactory) {
+		this.collection = collectionFactory.get();
 	}
 	
 	public boolean add(E item) {
-		if(list.add(item)) {
+		if(collection.add(item)) {
 			runAddListeners(item);
 			return true;
 		}
@@ -52,7 +52,7 @@ public class ListRef<E> {
 	 * @return {@code true} if an item was removed, {@code false} otherwise.
 	 */
 	public boolean remove(E item) {
-		if(list.remove(item)) {
+		if(collection.remove(item)) {
 			runRemoveListeners(item);
 			return true;
 		}
@@ -73,10 +73,10 @@ public class ListRef<E> {
 	}
 	
 	public boolean contains(E item) {
-		return list.contains(item);
+		return collection.contains(item);
 	}
 	
-	public List<E> getUnmodifiable() {
-		return Collections.unmodifiableList(list);
+	public Collection<E> getUnmodifiable() {
+		return Collections.unmodifiableCollection(collection);
 	}
 }

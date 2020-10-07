@@ -6,7 +6,7 @@ import logic.Ability;
 import logic.Board;
 import logic.TeamUnit;
 import logic.TileType;
-import utils.ListRef;
+import utils.CollectionRef;
 
 /**
  * Abstract base class that classes implementing {@link TeamUnit} may extend to make implementation easier.
@@ -16,7 +16,7 @@ import utils.ListRef;
  */
 public abstract class AbstractTeamUnit implements TeamUnit {
 	
-	protected final ListRef<Ability> abilities;
+	protected final CollectionRef<Ability> abilities;
 	
 	/**
 	 * An {@link EnumSet} containing all of the {@link TileType}s that this unit can traverse.
@@ -49,7 +49,7 @@ public abstract class AbstractTeamUnit implements TeamUnit {
 	 * @param abilities the list of this {@code Unit}'s abilities. Must not be {@code null}.
 	 */
 	protected AbstractTeamUnit(Board board, int row, int col, List<Ability> abilities) {
-		this.abilities = new ListRef<>(Objects.requireNonNull(abilities));
+		this.abilities = new CollectionRef<>(Objects.requireNonNull(abilities));
 		this.board = board;
 		this.traversableTileTypes = EnumSet.noneOf(TileType.class);
 		this.row = row;
@@ -77,7 +77,7 @@ public abstract class AbstractTeamUnit implements TeamUnit {
 	}
 	
 	@Override
-	public ListRef<Ability> abilityListRef() {
+	public CollectionRef<Ability> abilityCollectionRef() {
 		return abilities;
 	}
 	

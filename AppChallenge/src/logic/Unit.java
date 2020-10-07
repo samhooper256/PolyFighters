@@ -2,6 +2,8 @@ package logic;
 
 import java.util.Collection;
 
+import utils.CollectionRef;
+
 /**
  * </p>A unit on a {@link Board}. This interface must not be implemented directly; rather, one of its subinterfaces {@link TeamUnit} or {@link EnemyUnit}
  * should be implemented instead.</p>
@@ -29,7 +31,11 @@ public interface Unit extends GameObject {
 	/**
 	 * @return an unmodifiable {@link Collection} containing this {@code Unit's} abilities.
 	 */
-	Collection<Ability> getAbilitiesUnmodifiable();
+	default Collection<Ability> getAbilitiesUnmodifiable() {
+		return abilityCollectionRef().getUnmodifiable();
+	}
+	
+	CollectionRef<Ability> abilityCollectionRef();
 	
 	/** Returns {@code true} if this {@code Unit} can traverse {@link BoardTile}s of the given {@link TileType}. */
 	boolean canTraverse(TileType type);
