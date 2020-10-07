@@ -3,7 +3,9 @@ package graphics;
 import java.util.*;
 
 import fxutils.ImageWrap;
+import javafx.event.EventHandler;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import logic.Ability;
 import logic.Unit;
@@ -17,6 +19,13 @@ import utils.SingleListener;
 public class UnitPane extends StackPane {
 	
 	private static final Map<Class<? extends Unit>, ImageInfo> infoMap;
+	
+	private static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {
+		UnitWrap source = (UnitWrap) mouseEvent.getSource();
+		UnitPane pane = source.getEnclosingInstance();
+		Level level = Main.currentLevel();
+		//TODO display Ability info in the AbilityPanel for the unit
+	};
 	
 	static {
 		infoMap = new HashMap<>();
@@ -35,7 +44,8 @@ public class UnitPane extends StackPane {
 	}
 	
 	private final HashMap<Ability, AbilityPane> paneMap = new HashMap<>();
-	private final ImageWrap unitWrap;
+	private final UnitWrap unitWrap;
+	
 	private final SingleListener<Ability> addListener = ability -> {
 		if(paneMap.containsKey(ability))
 			throw new IllegalStateException("Duplicate Abilities detected");
@@ -48,11 +58,16 @@ public class UnitPane extends StackPane {
 	
 	private Unit unit;
 	
+	private class UnitWrap extends ImageWrap {
+		UnitPane getEnclosingInstance() {
+			return UnitPane.this;
+		}
+	}
 	
 	/** Creates an empty {@code UnitPane} with no {@link Unit} on it. */
 	public UnitPane() {
 		super();
-		unitWrap = new ImageWrap();
+		unitWrap = new UnitWrap();
 		getChildren().add(unitWrap);
 	}
 	

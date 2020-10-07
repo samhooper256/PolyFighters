@@ -21,6 +21,8 @@ public class Main extends Application {
 	
 	private static final String RESOURCES_PREFIX = "/resources/";
 	
+	private static Stage primaryStage;
+	
 	/**
 	 * Produces an {@link Optional} of the {@link InputStream} for a resource in the "resources" folder.
 	 * If the resource could not be located, the returned {@code Optional} will be empty. Otherwise, it
@@ -51,10 +53,25 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		Main.primaryStage = primaryStage;
 		primaryStage.setTitle(TITLE);
 		Level scene = new Level();
 		primaryStage.setScene(scene);
 		scene.getTerrainPane().getGridWrap().getGrid().addUnit(new BasicUnit(), 1, 1);
 		primaryStage.show();
+	}
+	
+	public static Stage getStage() {
+		return primaryStage;
+	}
+	
+	/**
+	 * Returns the current {@link Level} that is being displayed, or {@code null} if no level
+	 * is currently being displayed.
+	 */
+	public static Level currentLevel() {
+		if(primaryStage.getScene() instanceof Level)
+			return (Level) primaryStage.getScene();
+		return null;
 	}
 }
