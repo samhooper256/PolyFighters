@@ -1,9 +1,11 @@
 package graphics;
 
 import fxutils.*;
-import javafx.scene.image.Image;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import logic.BoardTile;
 
 /**
@@ -11,6 +13,9 @@ import logic.BoardTile;
  *
  */
 public class TerrainTile extends StackPane {
+	
+	public static final double DEFAULT_HIGHLIGHT_OPACITY = .5;
+	
 	private final ImageWrap tileWrap;
 	private final UnitPane unitPane;
 	
@@ -31,4 +36,20 @@ public class TerrainTile extends StackPane {
 		return unitPane;
 	}
 	
+	/**
+	 * Highlights this tile in the color indicated by the given {@link Paint} at the given opacity.
+	 * @param color
+	 */
+	public void highlight(Paint color, double opacity) {
+		Rectangle rect = new Rectangle();
+		rect.setFill(color);
+		rect.setOpacity(opacity);
+		rect.widthProperty().bind(TerrainTile.this.widthProperty());
+		rect.heightProperty().bind(TerrainTile.this.heightProperty());
+		getChildren().add(rect);
+	}
+	
+	public void highlight(Paint color) {
+		highlight(color, DEFAULT_HIGHLIGHT_OPACITY);
+	}
 }

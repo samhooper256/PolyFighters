@@ -31,4 +31,12 @@ public class TerrainPane extends StackPane {
 	public TerrainGridWrap getGridWrap() {
 		return gridWrap;
 	}
+	
+	/**
+	 * {@code t.getGrid()} is equivalent to {@code t.getGridWrap().getGrid()}.
+	 * @return
+	 */
+	public TerrainGrid getGrid() {
+		return gridWrap.getGrid();
+	}
 }

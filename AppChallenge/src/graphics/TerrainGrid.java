@@ -80,6 +80,10 @@ public class TerrainGrid extends GridPane {
 		return backingBoard;
 	}
 	
+	public TerrainTile getTileAt(int row, int col) {
+		return terrainTiles[row][col];
+	}
+	
 	public void addUnit(Unit unit, int row, int col) {
 		backingBoard.addUnit(unit, row, col);
 		terrainTiles[row][col].getUnitPane().setUnit(unit);
