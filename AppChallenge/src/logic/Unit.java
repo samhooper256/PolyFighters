@@ -15,6 +15,9 @@ import java.util.Collection;
  * Behavior of the getter methods is undefined if the {@code Unit} is not on a {@code Board}. Note that the method {@link #hasBoard()} can
  * be used to check if a {@code Unit} is on a {@code Board}.</p>
  * 
+ * <p>Every {@code Unit} has a set of abilities, represented by a {@link Collection} of {@code Ability} objects that can be retrieved by calling {@link #getAbilitiesUnmodifiable()}.
+ * A {@code Unit}'s {@code Collection} of abilities must contain no two abilities <b>a</b> and <b>b</b> such that {@code a == b}.</p>
+ * 
  * <p>A {@code Unit} <b>U</b> <i>can traverse</i> a {@link TileType} <b>T</b> if and only if {@code U.canTraverse(T)} returns {@code true}.
  * (See {@link #canTraverse(TileType)}).</p>
  * 

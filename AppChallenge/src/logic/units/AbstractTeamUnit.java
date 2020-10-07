@@ -6,6 +6,7 @@ import logic.Ability;
 import logic.Board;
 import logic.TeamUnit;
 import logic.TileType;
+import utils.ListRef;
 
 /**
  * Abstract base class that classes implementing {@link TeamUnit} may extend to make implementation easier.
@@ -13,9 +14,9 @@ import logic.TileType;
  * @author Sam Hooper
  *
  */
-abstract class AbstractTeamUnit implements TeamUnit {
+public abstract class AbstractTeamUnit implements TeamUnit {
 	
-	protected final List<Ability> abilities;
+	protected final ListRef<Ability> abilities;
 	
 	/**
 	 * An {@link EnumSet} containing all of the {@link TileType}s that this unit can traverse.
@@ -48,16 +49,41 @@ abstract class AbstractTeamUnit implements TeamUnit {
 	 * @param abilities the list of this {@code Unit}'s abilities. Must not be {@code null}.
 	 */
 	protected AbstractTeamUnit(Board board, int row, int col, List<Ability> abilities) {
-		this.abilities = Objects.requireNonNull(abilities);
+		this.abilities = new ListRef<>(Objects.requireNonNull(abilities));
 		this.board = board;
 		this.traversableTileTypes = EnumSet.noneOf(TileType.class);
 		this.row = row;
 		this.col = col;
 	}
 	
+	/**
+	 * If this {@code Unit} does not have the indicated {@link Ability}, adds that {@code Ability} to this {@code Unit}'s
+	 * set of {@code Abilities} and returns {@code true}. Otherwise, returns {@code false}.
+	 * @param ability
+	 * @return {@code true} if the ability was added, {@code false} otherwise.
+	 */
+	public boolean addAbility(Ability ability) {
+		if(hasAbility(ability))
+			return false;
+		abilities.add(ability);
+		return true;
+	}
+	
+	/**
+	 * Returns {@code true} if {@code ability} is a member of this {@code Unit}'s set of abilities, {@code false} otherwise.
+	 */
+	public boolean hasAbility(Ability ability) {
+		return abilities.contains(ability);
+	}
+	
 	@Override
-	public List<Ability> getAbilitiesUnmodifiable() {
-		return Collections.unmodifiableList(abilities);
+	public ListRef<Ability> abilityListRef() {
+		return abilities;
+	}
+	
+	@Override
+	public Collection<Ability> getAbilitiesUnmodifiable() {
+		return abilities.getUnmodifiable();
 	}
 	
 	@Override

@@ -2,7 +2,17 @@ package logic;
 
 import java.util.Collection;
 
+import utils.ListRef;
+
+import logic.units.AbstractTeamUnit;
+
 /**
+ * <p>A {@link Unit} belonging to the player. {@code TeamUnit}s are encouraged to maintain their
+ * list of abilities as a {@code ListRef<Ability>} (see {@link ListRef}).</p>
+ * 
+ * <p>Implementing classes may consider extending the {@link AbstractTeamUnit} to make implementation
+ * easier.</p>
+ * 
  * @author Sam Hooper
  *
  */
@@ -16,4 +26,6 @@ public interface TeamUnit extends Unit {
 	 * @throws IllegalArgumentException if this unit does not have the given ability.
 	 */
 	Collection<int[]> getLegalSpots(Ability ability);
+	
+	ListRef<Ability> abilityListRef();
 }
