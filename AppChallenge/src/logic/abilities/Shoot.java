@@ -1,7 +1,9 @@
 package logic.abilities;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
+import logic.Board;
 import logic.Move;
 import logic.Unit;
 import utils.IntRef;
@@ -16,26 +18,49 @@ public class Shoot extends AbstractAnyAbility{
 		this.bulletDamage = new IntRef(bd);
 	}
 	
-	public static void shoot() {
-		
-	}
-	
-	public IntRef damageProperty() {
+	public IntRef damageProperty() 
+	{
 		return bulletDamage;
 	}
+	
+	public static void shoot() 
+	{
+		//for(int[] arr: unit.getLegals())
+		{
+			
+		}
+	}
+	
 
 	@Override
 	public Collection<int[]> getLegals() 
 	{
-		/*
-		final Board board = unit.getBoard();
-		final int distance = this.distance.get();
-		final int boardSize = Math.max(board.getRows(), board.getCols());
-		final int boxSize = Math.min(distance * 2 + 1, boardSize * 2 + 1);
-		final boolean[][] beenInList = new boolean[boxSize][boxSize];  
-		*/
+		Board b = unit.getBoard();
+		int rows = b.getRows();
+		int cols = b.getCols();
+		int uRow = unit.getRow();
+		int uCol = unit.getCol();
+		ArrayList<int[]> arr = new ArrayList<int[]>();
 		
-		return null; //TODO actual return value
+		for(int r = uRow; r <= uRow; r++)
+		{
+			for(int c = 0; c < cols; c++)
+			{
+				int[] tempArr = new int[]{r, c};
+				arr.add(tempArr);
+			}
+		}
+		
+		for(int c = uCol; c <= uCol; c++)
+		{
+			for(int r = 0; r < rows; r++)
+			{
+				int[] tempArr = new int[]{r, c};
+				arr.add(tempArr);
+			}
+		}
+		
+		return arr;
 	}
 
 	@Override
