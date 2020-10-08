@@ -121,6 +121,10 @@ public class Board {
 		tiles[row][col].addUnitOrThrow(unit);
 	}
 	
+	/**
+	 * Adds the given {@link Obstacle} to this {@code Board}. Updates the row, col, and board
+	 * pointers of the {@code Obstacle} as necessary.
+	 */
 	public void addObstacle(Obstacle obstacle, int row, int col) {
 		obstacle.setBoard(this);
 		obstacle.setRow(row);

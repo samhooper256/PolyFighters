@@ -7,6 +7,8 @@ import javafx.application.Application;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import logic.Board;
+import logic.ObstacleSize;
+import logic.obstacles.ObstacleBase;
 import logic.units.BasicUnit;
 
 /**
@@ -58,7 +60,9 @@ public class Main extends Application {
 		primaryStage.setTitle(TITLE);
 		Level scene = new Level();
 		primaryStage.setScene(scene);
-		scene.getTerrainPane().getGridWrap().getGrid().addUnit(new BasicUnit(), 1, 1);
+		TerrainGrid grid = scene.getTerrainPane().getGridWrap().getGrid();
+		grid.addUnit(new BasicUnit(), 1, 1);
+		grid.addObstacle(new ObstacleBase(ObstacleSize.SMALL, 3), 2, 2);
 		primaryStage.show();
 	}
 	

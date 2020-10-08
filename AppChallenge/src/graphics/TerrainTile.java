@@ -76,8 +76,12 @@ public class TerrainTile extends StackPane {
 	public void addObstalcePane(ObstaclePane pane) {
 		ObservableList<Node> children = getChildren();
 		int addIndex = children.size();
-		for(int i = children.size() - 1; i >= 0; i--)
-			addIndex--;
+		for(int i = children.size() - 1; i >= 0; i--) {
+			if(children.get(i) instanceof Unit)
+				addIndex--;
+			else
+				break;
+		}
 		children.add(addIndex, pane);
 	}
 	
