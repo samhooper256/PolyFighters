@@ -29,12 +29,16 @@ public class UnitPane extends StackPane {
 		UnitPane pane = ((UnitWrap) mouseEvent.getSource()).getEnclosingInstance();
 		Unit unit = pane.getUnit();
 		InfoPanel infoPanel = Main.currentLevel().getInfoPanel();
-		infoPanel.clearContent();
 		AbilityPanel abilityPanel = infoPanel.getAbilityPanel();
-		for(Ability ability : unit.getAbilitiesUnmodifiable()) {
-			abilityPanel.addPane(pane.abilityPaneFor(ability));
+		if(abilityPanel.getUnit() != unit) {
+			infoPanel.clearContent();
+			for(Ability ability : unit.getAbilitiesUnmodifiable()) {
+				abilityPanel.addPane(pane.abilityPaneFor(ability));
+			}
+			abilityPanel.setUnit(unit);
 		}
 		infoPanel.displayAbilityPanel();
+		mouseEvent.consume();
 	};
 	
 	public static Image imageFor(Unit unit) {
@@ -118,14 +122,17 @@ public class UnitPane extends StackPane {
 	}
 	
 	/**
-	 * @return {@code true} if this {@code UnitPane} had a {@code Unit} and it has been removed, {@code false} otherwise.
+	 * Removes and returns the {@link Unit} on this {@code UnitPane}, or returns {@code null} if there was no {@code Unit} on this {@code UnitPane}.
 	 */
-	public boolean removeUnit() {
+	public Unit removeUnit() {
 		if(unit == null)
-			return false;
+			return null;
 		unitWrap.setImage(null);
+		removeListeners();
 		paneMap.clear();
-		return true;
+		Unit unitTemp = unit;
+		unit = null;
+		return unitTemp;
 	}
 	
 	public Unit getUnit() {

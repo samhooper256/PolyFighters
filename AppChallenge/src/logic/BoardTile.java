@@ -16,15 +16,26 @@ public class BoardTile {
 	 * index 0 is below all the remaining objects in the list)
 	 */
 	private final ArrayList<GameObject> objects;
+	private final int row, col;
 	
 	private TileType type;
 	
 	/** Creates a {@code BoardTile} of the given {@code TileType} that is a part of the given {@code Board}.
 	 */
-	public BoardTile(Board board, TileType type) {
+	public BoardTile(int row, int col, Board board, TileType type) {
+		this.row = row;
+		this.col = col;
 		this.board = Objects.requireNonNull(board);
 		this.type = Objects.requireNonNull(type);
 		this.objects = new ArrayList<>();
+	}
+	
+	public int getRow() {
+		return row;
+	}
+	
+	public int getCol() {
+		return col;
 	}
 	
 	public Board getBoard() {

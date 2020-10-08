@@ -50,7 +50,7 @@ public class Board {
 	private void initBoardTiles() {
 		for(int i = 0; i < rows; i++) {
 			for(int j = 0; j < cols; j++) {
-				tiles[i][j] = new BoardTile(this, TileType.SOLID);
+				tiles[i][j] = new BoardTile(i, j, this, TileType.SOLID);
 			}
 		}
 	}

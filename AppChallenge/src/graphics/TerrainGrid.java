@@ -1,8 +1,8 @@
 package graphics;
 
 import javafx.scene.layout.*;
-import logic.Board;
-import logic.Unit;
+import logic.*;
+import logic.actions.*;
 
 /**
  * @author Sam Hooper
@@ -78,5 +78,24 @@ public class TerrainGrid extends GridPane {
 	public void addUnit(Unit unit, int row, int col) {
 		backingBoard.addUnit(unit, row, col);
 		terrainTiles[row][col].getUnitPane().setUnit(unit);
+	}
+	
+	public void executeMove(final Move move) {
+		Level.current().getInfoPanel().getAbilityPanel().getSelectedAbilityPane().deselect();
+		for(Action a : move.getActionsUnmodifiable()) {
+			if(a instanceof Relocate) {
+				Relocate r = (Relocate) a;
+				r.execute(backingBoard);
+				TerrainTile startTile = terrainTiles[r.getStartRow()][r.getStartCol()];
+				UnitPane startUnitPane = startTile.getUnitPane();
+				Unit unit = startUnitPane.removeUnit();
+				TerrainTile destTile = terrainTiles[r.getDestRow()][r.getDestCol()];
+				UnitPane destUnitPane = destTile.getUnitPane();
+				destUnitPane.setUnit(unit);
+			}
+			else {
+				throw new UnsupportedOperationException("Unsupported action type: " + a.getClass());
+			}
+		}
 	}
 }

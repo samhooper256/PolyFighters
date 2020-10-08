@@ -12,8 +12,12 @@ import javafx.scene.layout.*;
 public class InfoPanel extends StackPane {
 	private final VBox defaultContent;
 	private final AbilityPanel abilityPanel;
+	
+	private boolean abilityPanelShowing;
+	
 	public InfoPanel() {
 		super();
+		abilityPanelShowing = false;
 		defaultContent = new VBox();
 		initDefaultContent();
 		abilityPanel = new AbilityPanel();
@@ -29,6 +33,13 @@ public class InfoPanel extends StackPane {
 	
 	/**Clears the content of this {@code InfoPanel}.*/
 	public void clearContent() {
+		if(abilityPanelShowing) {
+			abilityPanelShowing = false;
+			AbilityPane pane = abilityPanel.getSelectedAbilityPane();
+			if(pane != null) {
+				pane.deselect();
+			}
+		}
 		getChildren().clear();
 	}
 	
@@ -36,7 +47,7 @@ public class InfoPanel extends StackPane {
 	 * Sets the content of this {@code InfoPanel} to its default state.
 	 */
 	public void setToDefaultState() {
-		getChildren().clear();
+		clearContent();
 		getChildren().add(defaultContent);
 	}
 	
@@ -49,9 +60,17 @@ public class InfoPanel extends StackPane {
 	}
 	
 	/**
-	 * Adds the {@link AbilityPanel} associated with this {@code InfoPanel} to the top of its stack.
+	 * Adds the {@link AbilityPanel} associated with this {@code InfoPanel} to the top of its stack if it is not already on the stack.
+	 * Otherwise, does nothing.
 	 */
 	public void displayAbilityPanel() {
-		getChildren().add(abilityPanel);
+		if(!abilityPanelShowing) {
+			getChildren().add(abilityPanel);
+			abilityPanelShowing = true;
+		}
+	}
+	
+	public boolean isAbilityPanelShowing() {
+		return abilityPanelShowing;
 	}
 }

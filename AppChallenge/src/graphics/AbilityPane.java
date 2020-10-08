@@ -34,17 +34,28 @@ public abstract class AbilityPane extends StackPane	{
 			}
 
 			@Override
-			public void select() {
+			public void selectAction() {
 				System.out.println("StepMove selected");
-				TerrainGrid grid = Main.currentLevel().getTerrainPane().getGrid();
-				for(int[] legalSpot : ability.getLegals()) {
-					grid.getTileAt(legalSpot[0], legalSpot[1]).highlightOrThrow(highlightColor());
+				Level.current().getInfoPanel().getAbilityPanel().setSelectedAbilityPane(this);
+				TerrainGrid grid = Level.current().getTerrainPane().getGrid();
+				legalsCache = ability.getLegals();
+				for(int[] legalSpot : legalsCache) {
+					final TerrainTile tile = grid.getTileAt(legalSpot[0], legalSpot[1]);
+					tile.highlightOrThrow(highlightColor());
+					tile.setUseCandidate(true);
 				}
 			}
 
 			@Override
-			public void deselect() {
-				System.out.println("StepMove deselected");
+			public void deselectAction() {
+				Level.current().getInfoPanel().getAbilityPanel().clearSelectedAbilityPane();
+				TerrainGrid grid = Level.current().getTerrainPane().getGrid();
+				for(int[] legalSpot : legalsCache) {
+					final TerrainTile tile = grid.getTileAt(legalSpot[0], legalSpot[1]);
+					tile.clearAllHighlights();
+					tile.setUseCandidate(false);
+				}
+				System.out.println("StepMove deselected"); //TODO finish this method and make sure it gets called.
 			}
 		});
 	}
@@ -58,7 +69,8 @@ public abstract class AbilityPane extends StackPane	{
 	}
 	
 	protected final Ability ability;
-	
+	/** can optionally be used by subclasses store the legal moves computed in the select method for use in the deselect method. */
+	protected Collection<int[]> legalsCache = null;
 	private boolean selected;
 	
 	protected AbilityPane(Ability ability) {
@@ -69,11 +81,9 @@ public abstract class AbilityPane extends StackPane	{
 				return;
 			if(isSelected()) {
 				deselect();
-				selected = false;
 			}
 			else {
 				select();
-				selected = true;
 			}
 			mouseEvent.consume();
 		});
@@ -87,19 +97,32 @@ public abstract class AbilityPane extends StackPane	{
 		return selected;
 	}
 	
+	public final void select() {
+		if(!isSelected()) {
+			selectAction();
+			selected = true;
+		}
+	}
+	
+	public final void deselect() {
+		if(isSelected()) {
+			deselectAction();
+			selected = false;
+		}
+	}
 	/**
 	 * Invoked when the user selects this {@code AbilityPane}. It should display which tiles the player can click on to
 	 * make a legal move with the {@link Ability} represented by this {@code AbilityPane}. {@link #isSelected()} is {@code false}
 	 * immediately before this method is invoked and is set to {@code true} immediately after this method is invoked.
 	 */
-	public abstract void select();
+	public abstract void selectAction();
 	
 	/**
 	 * Invoked when the user deselects this {@code AbilityPane}. It should hide everything that was displayed by the previous
-	 * {@link #select()} call. {@link #isSelected()} is {@code true} immediately before this method is invoked and is set to
-	 * {@code false} immediately after this method is invoked.
+	 * {@link #selectAction()} call. It must also call {@link AbilityPanel#clearSelectedAbilityPane()}. {@link #isSelected()} is
+	 * {@code true} immediately before this method is invoked and is set to {@code false} immediately after this method is invoked.
 	 */
-	public abstract void deselect();
+	public abstract void deselectAction();
 	
 	public Paint highlightColor() {
 		return TerrainTile.DEFAULT_HIGHLIGHT;

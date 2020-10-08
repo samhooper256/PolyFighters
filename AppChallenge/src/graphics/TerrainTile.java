@@ -1,37 +1,85 @@
 package graphics;
 
+import java.util.Iterator;
+
 import fxutils.*;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.*;
-import logic.BoardTile;
+import logic.*;
 
 /**
+ * <p>A {@code TerrainTile} can be made a <i>use candidate</i> which means that it, when clicked on, will execute the {@link Move} produced
+ * by the currently selected {@link Ability} with this tile as the destination.</p>
  * @author Sam Hooper
  *
  */
 public class TerrainTile extends StackPane {
 	
 	public static final Paint DEFAULT_HIGHLIGHT = Color.LAWNGREEN;
+	public static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {
+		TerrainTile source = (TerrainTile) mouseEvent.getSource();
+		if(source.isUseCandidate()) {
+			Level level = Level.current();
+			Move move = level.getInfoPanel().getAbilityPanel().getSelectedAbilityPane().getAbility().createMoveFor(source.getRow(), source.getCol());
+			level.getTerrainPane().getGrid().executeMove(move);
+		}
+		else {
+			Level.current().getInfoPanel().clearContent();
+			//TODO - show tile info
+		}
+		mouseEvent.consume(); //there's nothing below the tile, so we consume it here.
+	};
+	
 	private final ImageWrap tileWrap;
 	private final UnitPane unitPane;
-	public int highlightCount = 0;
+	private final int row, col;
+	
+	private int highlightCount;
+	private boolean isUseCandidate;
 	
 	public static TerrainTile forBoardTile(BoardTile boardTile, Theme theme) {
-		return new TerrainTile(theme); //TODO - make this actually reflect the given boardTile.
+		return new TerrainTile(boardTile.getRow(), boardTile.getCol(), theme); //TODO - make this actually reflect the given boardTile.
 	}
 	
-	private TerrainTile(Theme theme) {
+	private TerrainTile(int row, int col, Theme theme) {
 		super();
+		this.row = row;
+		this.col = col;
 		highlightCount = 0;
+		isUseCandidate = false;
 		tileWrap = new ImageWrap(theme.tileImage());
 		setBorder(Borders.of(Color.PURPLE));
 		setMinSize(0, 0);
 		unitPane = new UnitPane();
+		setOnMouseClicked(clickHandler);
 		getChildren().addAll(tileWrap, unitPane);
+	}
+	
+	public int getRow() {
+		return row;
+	}
+	
+	public int getCol() {
+		return col;
 	}
 	
 	public UnitPane getUnitPane() {
 		return unitPane;
+	}
+	
+	/**
+	 * If the given value if {@code true}, Makes this {@code TerrainTile} a use candidate. Otherwise,
+	 * makes this {@code TerrainTile} not a use candidate.
+	 */
+	public void setUseCandidate(boolean value) {
+		isUseCandidate = value;
+	}
+	
+	public boolean isUseCandidate() {
+		return isUseCandidate;
 	}
 	
 	/**
@@ -52,6 +100,17 @@ public class TerrainTile extends StackPane {
 		highlightOrThrow(color, Highlight.DEFAULT_HIGHLIGHT_OPACITY);
 	}
 	
+	public void clearAllHighlights() {
+		for(Iterator<Node> itr = getChildren().iterator(); itr.hasNext();) {
+			Node next = itr.next();
+			if(next instanceof Highlight) {
+				itr.remove();
+				highlightCount--;
+			}
+		}
+		assert highlightCount == 0;
+	}
+	
 	/**
 	 * Returns {@code true} if there is at least one {@link Highlight} applied to this {@code TerrainTile}, {@code false} otherwise.
 	 */
@@ -66,4 +125,5 @@ public class TerrainTile extends StackPane {
 	public int getHighlightCount() {
 		return highlightCount;
 	}
+	
 }

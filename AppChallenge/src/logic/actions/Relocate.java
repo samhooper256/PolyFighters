@@ -20,6 +20,25 @@ public class Relocate implements Action {
 		this.destCol = destCol;
 	}
 	
+	public int getStartRow() {
+		return startRow;
+	}
+	
+	public int getStartCol() {
+		return startCol;
+	}
+	
+	public int getDestRow() {
+		return destRow;
+	}
+	
+	public int getDestCol() {
+		return destCol;
+	}
+
+	/**
+	 * Updates the {@link Unit}'s row and column values appropriately.
+	 */
 	@Override
 	public void execute(Board board) {
 		BoardTile startTile = board.getTileAt(startRow, startCol);
@@ -27,6 +46,8 @@ public class Relocate implements Action {
 		if(unit == null)
 			throw new IllegalStateException("No unit on the start tile.");
 		board.getTileAt(destRow, destCol).addUnitOrThrow(unit); //throws IllegalStateException for us
+		unit.setRow(destRow);
+		unit.setCol(destCol);
 	}
 
 }
