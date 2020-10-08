@@ -12,6 +12,8 @@ import javafx.scene.paint.Color;
  *
  */
 public class Level extends Scene {
+	public static final Theme DEFAULT_THEME = Theme.TEST_THEME;
+	
 	private static final int MIN_STACKROOT_WIDTH = 640, MIN_STACKROOT_HEIGHT = 360; //16:9 ratio TODO maybe make these proportional to the user's screen dimensions?
 	private static final int DEFAULT_WIDTH = MIN_STACKROOT_WIDTH, DEFAULT_HEIGHT = MIN_STACKROOT_HEIGHT;
 	private static final double INFO_SCREEN_PERCENT = 0.15; //percentage of the screen the InfoPanel will take up
@@ -27,6 +29,10 @@ public class Level extends Scene {
 	private final StackPane stackRoot;
 	private final BorderPane borderPane;
 	private final InfoPanel infoPanel;
+	/** The left component of {@link #borderPane} */
+	private final Pane left;
+	private final TerrainPane terrainPane;
+	private final Theme theme;
 	/**The Property that {@link #stackRoot}'s widthProperty will be bound to. */
 	private final DoublePropertyBase stackRootWidth = new DoublePropertyBase() {
 		@Override
@@ -47,20 +53,21 @@ public class Level extends Scene {
 	};
 	
 	
-	/** The left component of {@link #borderPane} */
-	private Pane left;
-	private TerrainPane terrainPane;
+	
+	
 	
 	public Level() {
-		this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		this(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_THEME);
 	}
 	
-	public Level(int width, int height) {
+	public Level(int width, int height, Theme theme) {
 		super(makeRoot(), width, height);
+		
+		this.theme = theme;
 		
 		left = new VBox(new Button("Button 1"));
 		
-		terrainPane = new TerrainPane();
+		terrainPane = new TerrainPane(theme);
 		terrainPane.setBorder(Borders.of(Color.BLACK));
 		borderPane = new BorderPane();
 		
@@ -95,5 +102,9 @@ public class Level extends Scene {
 	
 	public InfoPanel getInfoPanel() {
 		return infoPanel;
+	}
+	
+	public Theme getTheme() {
+		return theme;
 	}
 }

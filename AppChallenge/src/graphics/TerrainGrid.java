@@ -13,15 +13,17 @@ public class TerrainGrid extends GridPane {
 	private final int rows, cols;
 	private final Board backingBoard;
 	private final TerrainTile[][] terrainTiles;
+	private final Theme theme;
 	
 	/** Creates a new {@code TerrainGrid} with {@code size} rows and {@code size} columns. */
-	public TerrainGrid(int size) {
-		this(size, size);
+	public TerrainGrid(Theme theme, int size) {
+		this(theme, size, size);
 	}
 	
 	/** Creates a new {@code TerrainGrid} with the given amount of rows and columns */
-	public TerrainGrid(int rows, int cols) {
+	public TerrainGrid(Theme theme, int rows, int cols) {
 		super();
+		this.theme = theme;
 		this.rows = rows;
 		this.cols = cols;
 		backingBoard = new Board(rows, cols);
@@ -59,7 +61,7 @@ public class TerrainGrid extends GridPane {
 	private void initTiles() {
 		for(int i = 0; i < rows; i++) {
 			for(int j = 0; j < cols; j++) {
-				TerrainTile tile = TerrainTile.forBoardTile(backingBoard.getTileAt(i, j), Theme.TEST_THEME); //TODO use level theme
+				TerrainTile tile = TerrainTile.forBoardTile(this, backingBoard.getTileAt(i, j)); //TODO use level theme
 				terrainTiles[i][j] = tile;
 				GridPane.setConstraints(tile, j, i); //this method takes (col, row) instead of (row, col). That's why j comes before i.
 				getChildren().add(tile);
@@ -80,6 +82,11 @@ public class TerrainGrid extends GridPane {
 		terrainTiles[row][col].getUnitPane().setUnit(unit);
 	}
 	
+	public void addObstacle(Obstacle obstacle, int row, int col) {
+		backingBoard.addObstacle(obstacle, row, col);
+		terrainTiles[row][col].addObstalcePane(new ObstaclePane(obstacle, theme));
+	}
+	
 	public void executeMove(final Move move) {
 		Level.current().getInfoPanel().getAbilityPanel().getSelectedAbilityPane().deselect();
 		for(Action a : move.getActionsUnmodifiable()) {
@@ -97,5 +104,9 @@ public class TerrainGrid extends GridPane {
 				throw new UnsupportedOperationException("Unsupported action type: " + a.getClass());
 			}
 		}
+	}
+
+	public Theme getTheme() {
+		return theme;
 	}
 }

@@ -3,6 +3,7 @@ package graphics;
 import java.util.Iterator;
 
 import fxutils.*;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -36,21 +37,23 @@ public class TerrainTile extends StackPane {
 	private final ImageWrap tileWrap;
 	private final UnitPane unitPane;
 	private final int row, col;
+	private final TerrainGrid grid;
 	
 	private int highlightCount;
 	private boolean isUseCandidate;
 	
-	public static TerrainTile forBoardTile(BoardTile boardTile, Theme theme) {
-		return new TerrainTile(boardTile.getRow(), boardTile.getCol(), theme); //TODO - make this actually reflect the given boardTile.
+	public static TerrainTile forBoardTile(TerrainGrid grid, BoardTile boardTile) {
+		return new TerrainTile(grid, boardTile.getRow(), boardTile.getCol()); //TODO - make this actually reflect the given boardTile.
 	}
 	
-	private TerrainTile(int row, int col, Theme theme) {
+	private TerrainTile(TerrainGrid grid, int row, int col) {
 		super();
+		this.grid = grid;
 		this.row = row;
 		this.col = col;
 		highlightCount = 0;
 		isUseCandidate = false;
-		tileWrap = new ImageWrap(theme.tileImage());
+		tileWrap = new ImageWrap(grid.getTheme().tileImage());
 		setBorder(Borders.of(Color.PURPLE));
 		setMinSize(0, 0);
 		unitPane = new UnitPane();
@@ -68,6 +71,14 @@ public class TerrainTile extends StackPane {
 	
 	public UnitPane getUnitPane() {
 		return unitPane;
+	}
+	
+	public void addObstalcePane(ObstaclePane pane) {
+		ObservableList<Node> children = getChildren();
+		int addIndex = children.size();
+		for(int i = children.size() - 1; i >= 0; i--)
+			addIndex--;
+		children.add(addIndex, pane);
 	}
 	
 	/**
@@ -124,6 +135,10 @@ public class TerrainTile extends StackPane {
 	 */
 	public int getHighlightCount() {
 		return highlightCount;
+	}
+	
+	public TerrainGrid getGrid() {
+		return grid;
 	}
 	
 }
