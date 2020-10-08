@@ -3,8 +3,10 @@ package logic;
 import java.util.*;
 
 /**
- * A tile in a {@link Board}. Each board tile knows what board it is a part of. The {@code Board} that a {@code BoardTile} is a part
- * of is set at construction time and cannot be changed afterwards. A {@code BoardTile} can have a maximum of one {@code Unit} on it.
+ * <p>A tile in a {@link Board}. Each {@code BoardTile} knows what {@code Board} it is a part of. The {@code Board} that a {@code BoardTile} is a part
+ * of is set at construction time and cannot be changed afterwards. A {@code BoardTile} can have a maximum of one {@link Unit} on it and may have any number
+ * of {@link Obstacle}s on it. If a {@code BoardTile} has both a {@code Unit} and one or more {@code Obstacle}s, the {@code Unit} will be on top of
+ * all of the {@code Obstacle}s.
  * 
  * @author Sam Hooper
  *
@@ -50,10 +52,6 @@ public class BoardTile {
 		this.type = type;
 	}
 	
-	public void addObject(GameObject object) {
-		objects.add(object);
-	}
-	
 	/** Removes the given {@link GameObject} from this tile, if it is present. Returns {@code true}
 	 * if the object was present and has been removed, and {@code false} if it was not present.
 	 * @throws IllegalArgumentException if the given {@code GameObject} is not on this {@code BoardTile}.
@@ -65,7 +63,6 @@ public class BoardTile {
 	
 	/** Removes the given {@link GameObject} from this tile.
 	 * @throws IllegalArgumentException if the given {@code GameObject} is not on this {@code BoardTile}.
-	 * @param object
 	 */
 	public void removeObject(GameObject object) {
 		if(!objects.remove(object))
@@ -112,5 +109,37 @@ public class BoardTile {
 		if(hasUnit())
 			throw new IllegalStateException("There is already a unit on this tile");
 		objects.add(unit);
+	}
+	
+	public void addObstacle(Obstacle obstacle) {
+		int addIndex = objects.size();
+		for(int i = objects.size() - 1; i >= 0; i--) {
+			if(objects.get(i) instanceof Unit) {
+				addIndex--;
+			}
+		}
+		objects.add(addIndex, obstacle);
+	}
+	
+	/**
+	 * Returns {@code true} if this {@code BoardTile} has at least one {@link Obstacle}, {@code false} otherwise.
+	 */
+	public boolean hasObstacle() {
+		for(int i = 0; i < objects.size(); i++)
+			if(objects.get(i) instanceof Obstacle)
+				return true;
+		return false;
+	}
+	
+	/**
+	 * Returns {@code true} if this {@code BoardTile} has one or more {@link Obstacle}s of the given {@link ObstacleSize}, {@code false} otherwise.
+	 */
+	public boolean hasObstacle(ObstacleSize size) {
+		for(int i = 0; i < objects.size(); i++) {
+			GameObject obj = objects.get(i);
+			if(obj instanceof Obstacle && ((Obstacle) obj).getSize() == size)
+				return true;
+		}
+		return false;
 	}
 }

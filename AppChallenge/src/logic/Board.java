@@ -98,11 +98,11 @@ public class Board {
 	/**
 	 * Adds the given {@link Unit} to this {@code Board} at the given location, updating the {@code Unit}'s associated {@code Board} and
 	 * row and column values as necessary.
-	 * @throws IllegalArgumentException if there is already a {@code Unit} on the indicated tile.
+	 * @throws IllegalStateException if there is already a {@code Unit} on the indicated tile.
 	 */
 	public void addUnit(Unit unit, int row, int col) {
 		if(hasUnit(row, col))
-			throw new IllegalArgumentException(String.format("There is already a unit on the tile at (%d, %d)", row, col));
+			throw new IllegalStateException(String.format("There is already a unit on the tile at (%d, %d)", row, col));
 		setUnit(unit, row, col);
 	}
 	
@@ -119,6 +119,13 @@ public class Board {
 		unit.setCol(col);
 		tiles[row][col].removeUnitIfPresent();
 		tiles[row][col].addUnitOrThrow(unit);
+	}
+	
+	public void addObstacle(Obstacle obstacle, int row, int col) {
+		obstacle.setBoard(this);
+		obstacle.setRow(row);
+		obstacle.setCol(col);
+		tiles[row][col].addObstacle(obstacle);
 	}
 	
 	/**

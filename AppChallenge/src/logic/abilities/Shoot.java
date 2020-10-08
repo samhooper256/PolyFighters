@@ -10,15 +10,18 @@ public class Shoot extends AbstractAnyAbility{
 	private IntRef bulletDamage;
 	
 	
-	public Shoot(int bd, Unit unit)
+	public Shoot(Unit unit, int bd)
 	{
 		super(unit);
 		this.bulletDamage = new IntRef(bd);
 	}
 	
-	public static void shoot()
-	{
+	public static void shoot() {
 		
+	}
+	
+	public IntRef damageProperty() {
+		return bulletDamage;
 	}
 
 	@Override

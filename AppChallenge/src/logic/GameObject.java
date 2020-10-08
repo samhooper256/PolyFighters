@@ -51,4 +51,14 @@ public interface GameObject {
 		return getBoard() != null;
 	}
 	
+	/** 
+	 * Sets the row value of this {@code Unit}. The given value <b>must</b> line up with its actual location on its associated {@link Board}.
+	 */
+	void setRow(int row);
+	
+	/** 
+	 * Sets the row value of this {@code Unit}. The given value <b>must</b> line up with its actual location on its associated {@link Board}.
+	 */
+	void setCol(int col);
+	
 }

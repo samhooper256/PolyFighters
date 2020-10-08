@@ -62,11 +62,11 @@ public class Level extends Scene {
 		
 		terrainPane = new TerrainPane();
 		terrainPane.setBorder(Borders.of(Color.BLACK));
+		borderPane = new BorderPane();
 		
 		infoPanel = new InfoPanel();
-		infoPanel.prefWidthProperty().bind(stackRootWidth.multiply(INFO_SCREEN_PERCENT));
+		infoPanel.prefWidthProperty().bind(borderPane.widthProperty().multiply(INFO_SCREEN_PERCENT));
 		
-		borderPane = new BorderPane();
 		borderPane.setLeft(left);
 		borderPane.setRight(infoPanel);
 		borderPane.setCenter(terrainPane);

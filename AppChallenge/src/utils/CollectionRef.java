@@ -32,6 +32,16 @@ public class CollectionRef<E> {
 		return false;
 	}
 	
+	/**
+	 * Adds all of the given items to this {@code CollectionRef}. Calling this method is equivalent to calling 
+	 * {@link #add(Object)} on each of the given items in the order they are given. Note that this method uses
+	 * a non-reifiable vararg parameter, so take care to avoid heap pollution.
+	 */
+	public void addAll(@SuppressWarnings("unchecked") E... items) {
+		for(E item : items)
+			add(item);
+	}
+	
 	private void runAddListeners(E item) {
 		if(addListeners == null)
 			return;

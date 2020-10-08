@@ -33,16 +33,4 @@ public interface Unit extends GameObject {
 	/** Returns {@code true} if this {@code Unit} can traverse {@link BoardTile}s of the given {@link TileType}. */
 	boolean canTraverse(TileType type);
 	
-	/** 
-	 * Sets the row value of this {@code Unit}. The given value <b>must</b> line up with its actual location on its associated {@link Board} at the time of
-	 * invocation as described by {@link #getRow()}.
-	 */
-	void setRow(int row);
-	
-	/** 
-	 * Sets the row value of this {@code Unit}. The given value <b>must</b> line up with its actual location on its associated {@link Board} at the time of
-	 * invocation as described by {@link #getCol()}.
-	 */
-	void setCol(int col);
-	
 }

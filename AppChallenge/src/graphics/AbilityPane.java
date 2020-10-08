@@ -9,6 +9,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import logic.Ability;
+import logic.abilities.Shoot;
 import logic.abilities.StepMove;
 /**
  * @author Sam Hooper
@@ -32,30 +33,17 @@ public abstract class AbilityPane extends StackPane	{
 					label.setText("Step Move: " + newValue);
 				});
 			}
-
-			@Override
-			public void selectAction() {
-				System.out.println("StepMove selected");
-				Level.current().getInfoPanel().getAbilityPanel().setSelectedAbilityPane(this);
-				TerrainGrid grid = Level.current().getTerrainPane().getGrid();
-				legalsCache = ability.getLegals();
-				for(int[] legalSpot : legalsCache) {
-					final TerrainTile tile = grid.getTileAt(legalSpot[0], legalSpot[1]);
-					tile.highlightOrThrow(highlightColor());
-					tile.setUseCandidate(true);
-				}
-			}
-
-			@Override
-			public void deselectAction() {
-				Level.current().getInfoPanel().getAbilityPanel().clearSelectedAbilityPane();
-				TerrainGrid grid = Level.current().getTerrainPane().getGrid();
-				for(int[] legalSpot : legalsCache) {
-					final TerrainTile tile = grid.getTileAt(legalSpot[0], legalSpot[1]);
-					tile.clearAllHighlights();
-					tile.setUseCandidate(false);
-				}
-				System.out.println("StepMove deselected"); //TODO finish this method and make sure it gets called.
+		});
+		paneFactories.put(Shoot.class, a -> new AbilityPane(a) {
+			{
+				Shoot shoot = (Shoot) a;
+				VBox vBox = new VBox();
+				getChildren().add(vBox);
+				Label label = new Label("Shoot with Damage: " + shoot.damageProperty().get());
+				vBox.getChildren().add(label);
+				shoot.damageProperty().addChangeListener((oldValue, newValue) -> {
+					label.setText("Shoot with Damage: " + newValue);
+				});
 			}
 		});
 	}
@@ -115,14 +103,31 @@ public abstract class AbilityPane extends StackPane	{
 	 * make a legal move with the {@link Ability} represented by this {@code AbilityPane}. {@link #isSelected()} is {@code false}
 	 * immediately before this method is invoked and is set to {@code true} immediately after this method is invoked.
 	 */
-	public abstract void selectAction();
+	public void selectAction() {
+		Level.current().getInfoPanel().getAbilityPanel().setSelectedAbilityPane(this);
+		TerrainGrid grid = Level.current().getTerrainPane().getGrid();
+		legalsCache = ability.getLegals();
+		for(int[] legalSpot : legalsCache) {
+			final TerrainTile tile = grid.getTileAt(legalSpot[0], legalSpot[1]);
+			tile.highlightOrThrow(highlightColor());
+			tile.setUseCandidate(true);
+		}
+	}
 	
 	/**
 	 * Invoked when the user deselects this {@code AbilityPane}. It should hide everything that was displayed by the previous
 	 * {@link #selectAction()} call. It must also call {@link AbilityPanel#clearSelectedAbilityPane()}. {@link #isSelected()} is
 	 * {@code true} immediately before this method is invoked and is set to {@code false} immediately after this method is invoked.
 	 */
-	public abstract void deselectAction();
+	public void deselectAction() {
+		Level.current().getInfoPanel().getAbilityPanel().clearSelectedAbilityPane();
+		TerrainGrid grid = Level.current().getTerrainPane().getGrid();
+		for(int[] legalSpot : legalsCache) {
+			final TerrainTile tile = grid.getTileAt(legalSpot[0], legalSpot[1]);
+			tile.clearAllHighlights();
+			tile.setUseCandidate(false);
+		}
+	}
 	
 	public Paint highlightColor() {
 		return TerrainTile.DEFAULT_HIGHLIGHT;
