@@ -42,22 +42,17 @@ public class Shoot extends AbstractAnyAbility{
 		int uCol = unit.getCol();
 		ArrayList<int[]> arr = new ArrayList<int[]>();
 		
-		for(int r = uRow; r <= uRow; r++)
+		for(int c = 0; c < cols; c++)
 		{
-			for(int c = 0; c < cols; c++)
-			{
-				int[] tempArr = new int[]{r, c};
-				arr.add(tempArr);
-			}
+			int[] tempArr = new int[]{uRow, c};
+			arr.add(tempArr);
 		}
-		
-		for(int c = uCol; c <= uCol; c++)
+	
+	
+		for(int r = 0; r < rows; r++)
 		{
-			for(int r = 0; r < rows; r++)
-			{
-				int[] tempArr = new int[]{r, c};
-				arr.add(tempArr);
-			}
+			int[] tempArr = new int[]{r, uCol};
+			arr.add(tempArr);
 		}
 		
 		return arr;

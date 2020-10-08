@@ -129,7 +129,7 @@ public class Board {
 		obstacle.setBoard(this);
 		obstacle.setRow(row);
 		obstacle.setCol(col);
-		tiles[row][col].addObstacle(obstacle);
+		tiles[row][col].addObstacleOrThrow(obstacle);
 	}
 	
 	/**

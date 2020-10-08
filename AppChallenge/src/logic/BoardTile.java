@@ -4,9 +4,8 @@ import java.util.*;
 
 /**
  * <p>A tile in a {@link Board}. Each {@code BoardTile} knows what {@code Board} it is a part of. The {@code Board} that a {@code BoardTile} is a part
- * of is set at construction time and cannot be changed afterwards. A {@code BoardTile} can have a maximum of one {@link Unit} on it and may have any number
- * of {@link Obstacle}s on it. If a {@code BoardTile} has both a {@code Unit} and one or more {@code Obstacle}s, the {@code Unit} will be on top of
- * all of the {@code Obstacle}s.
+ * of is set at construction time and cannot be changed afterwards. A {@code BoardTile} can have a maximum of one {@link Unit} on it and a maximum of one
+ * {@link Obstacle} on it. If a {@code BoardTile} has a {@code Unit}, it will be on top of all other {@link GameObject}s on the {@code BoardTile}.
  * 
  * @author Sam Hooper
  *
@@ -111,18 +110,22 @@ public class BoardTile {
 		objects.add(unit);
 	}
 	
-	public void addObstacle(Obstacle obstacle) {
+	/**
+	 * Adds the given {@link Obstacle} to the top of this {@code BoardTile}. <b>This method DOES NOT adjust the row, column, or board
+	 * pointers of the {@code Obstacle} removed.</b>
+	 * @throws IllegalStateException if there is already an {@code Obstacle} on this {@code BoardTile}.
+	 */
+	public void addObstacleOrThrow(Obstacle obstacle) {
+		if(hasObstacle())
+			throw new IllegalStateException("There is already an obstacle on this tile.");
 		int addIndex = objects.size();
-		for(int i = objects.size() - 1; i >= 0; i--) {
-			if(objects.get(i) instanceof Unit) {
-				addIndex--;
-			}
-		}
+		if(objects.size() > 0 && objects.get(objects.size() - 1) instanceof Unit)
+			addIndex--;
 		objects.add(addIndex, obstacle);
 	}
 	
 	/**
-	 * Returns {@code true} if this {@code BoardTile} has at least one {@link Obstacle}, {@code false} otherwise.
+	 * Returns {@code true} if this {@code BoardTile} has an {@link Obstacle}, {@code false} otherwise.
 	 */
 	public boolean hasObstacle() {
 		for(int i = 0; i < objects.size(); i++)
@@ -132,7 +135,8 @@ public class BoardTile {
 	}
 	
 	/**
-	 * Returns {@code true} if this {@code BoardTile} has one or more {@link Obstacle}s of the given {@link ObstacleSize}, {@code false} otherwise.
+	 * Returns {@code true} if this {@code BoardTile} has an {@link Obstacle} and that {@code Obstacle} has that given size,
+	 * {@code false} otherwise.
 	 */
 	public boolean hasObstacle(ObstacleSize size) {
 		for(int i = 0; i < objects.size(); i++) {
