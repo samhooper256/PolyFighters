@@ -21,6 +21,17 @@ public class ObstaclePane extends StackPane {
 		getChildren().add(obstacleWrap);
 	}
 	
+	public ObstaclePane() {
+		this.obstacle = null;
+		obstacleWrap = new ImageWrap();
+		getChildren().add(obstacleWrap);
+	}
+	
+	public void setObstacle(Obstacle obstacle, Theme theme) {
+		this.obstacle = obstacle;
+		obstacleWrap.setImage(theme.imageFor(obstacle));
+	}
+	
 	public Obstacle getObstacle() {
 		return obstacle;
 	}

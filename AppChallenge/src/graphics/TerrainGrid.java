@@ -82,9 +82,9 @@ public class TerrainGrid extends GridPane {
 		terrainTiles[row][col].getUnitPane().setUnit(unit);
 	}
 	
-	public void addObstacle(Obstacle obstacle, int row, int col) {
+	public void addObstacleOrThrow(Obstacle obstacle, int row, int col) {
 		backingBoard.addObstacle(obstacle, row, col);
-		terrainTiles[row][col].addObstalcePane(new ObstaclePane(obstacle, theme));
+		terrainTiles[row][col].addObstacleOrThrow(obstacle);
 	}
 	
 	public void executeMove(final Move move) {

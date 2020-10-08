@@ -36,6 +36,7 @@ public class TerrainTile extends StackPane {
 	
 	private final ImageWrap tileWrap;
 	private final UnitPane unitPane;
+	private final ObstaclePane obstaclePane;
 	private final int row, col;
 	private final TerrainGrid grid;
 	
@@ -58,7 +59,8 @@ public class TerrainTile extends StackPane {
 		setMinSize(0, 0);
 		unitPane = new UnitPane();
 		setOnMouseClicked(clickHandler);
-		getChildren().addAll(tileWrap, unitPane);
+		obstaclePane = new ObstaclePane();
+		getChildren().addAll(tileWrap, obstaclePane, unitPane);
 	}
 	
 	public int getRow() {
@@ -73,16 +75,8 @@ public class TerrainTile extends StackPane {
 		return unitPane;
 	}
 	
-	public void addObstalcePane(ObstaclePane pane) {
-		ObservableList<Node> children = getChildren();
-		int addIndex = children.size();
-		for(int i = children.size() - 1; i >= 0; i--) {
-			if(children.get(i) instanceof Unit)
-				addIndex--;
-			else
-				break;
-		}
-		children.add(addIndex, pane);
+	public void addObstacleOrThrow(Obstacle obstacle) {
+		obstaclePane.setObstacle(obstacle, getTheme());
 	}
 	
 	/**
@@ -143,6 +137,10 @@ public class TerrainTile extends StackPane {
 	
 	public TerrainGrid getGrid() {
 		return grid;
+	}
+	
+	public Theme getTheme() {
+		return getGrid().getTheme();
 	}
 	
 }

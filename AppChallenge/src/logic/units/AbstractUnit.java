@@ -6,6 +6,7 @@ import logic.Ability;
 import logic.Board;
 import logic.TeamUnit;
 import logic.TileType;
+import logic.Unit;
 import utils.CollectionRef;
 
 /**
@@ -14,7 +15,7 @@ import utils.CollectionRef;
  * @author Sam Hooper
  *
  */
-public abstract class AbstractTeamUnit implements TeamUnit {
+public abstract class AbstractUnit implements Unit {
 	
 	protected final CollectionRef<Ability> abilities;
 	
@@ -31,13 +32,13 @@ public abstract class AbstractTeamUnit implements TeamUnit {
 	/** {@code -1} if not on a board. */
 	protected int col;
 	
-	protected AbstractTeamUnit() {
+	protected AbstractUnit() {
 		this(null, -1, -1, new ArrayList<>());
 	}
-	protected AbstractTeamUnit(List<Ability> abilities) {
+	protected AbstractUnit(List<Ability> abilities) {
 		this(null, -1, -1, abilities);
 	}
-	protected AbstractTeamUnit(Board board, int row, int col) {
+	protected AbstractUnit(Board board, int row, int col) {
 		this(board, row, col, new ArrayList<>());
 	}
 	
@@ -48,12 +49,24 @@ public abstract class AbstractTeamUnit implements TeamUnit {
 	 * @param col
 	 * @param abilities the list of this {@code Unit}'s abilities. Must not be {@code null}.
 	 */
-	protected AbstractTeamUnit(Board board, int row, int col, List<Ability> abilities) {
+	protected AbstractUnit(Board board, int row, int col, List<Ability> abilities) {
 		this.abilities = new CollectionRef<>(Objects.requireNonNull(abilities));
 		this.board = board;
 		this.traversableTileTypes = EnumSet.noneOf(TileType.class);
 		this.row = row;
 		this.col = col;
+	}
+	
+	@Override
+	public boolean canTraverse(TileType type) {
+		return traversableTileTypes.contains(type);
+	}
+	
+	@Override
+	public Collection<int[]> getLegalSpots(Ability ability) {
+		if(!abilities.contains(ability))
+			throw new IllegalArgumentException("This unit does not have the given ability");
+		return ability.getLegals();
 	}
 	
 	/**

@@ -3,6 +3,7 @@ package logic.units;
 import java.util.*;
 
 import logic.Ability;
+import logic.TeamUnit;
 import logic.TileType;
 import logic.abilities.Shoot;
 import logic.abilities.StepMove;
@@ -11,7 +12,7 @@ import logic.abilities.StepMove;
  * @author Sam Hooper
  *
  */
-public class BasicUnit extends AbstractTeamUnit {
+public class BasicUnit extends AbstractUnit implements TeamUnit {
 	
 	public static final String NAME = "BasicUnit";
 	
@@ -33,18 +34,6 @@ public class BasicUnit extends AbstractTeamUnit {
 	@Override
 	public String getName() {
 		return NAME;
-	}
-
-	@Override
-	public boolean canTraverse(TileType type) {
-		return traversableTileTypes.contains(type);
-	}
-
-	@Override
-	public Collection<int[]> getLegalSpots(Ability ability) {
-		if(!abilities.contains(ability))
-			throw new IllegalArgumentException("This unit does not have the given ability");
-		return ability.getLegals();
 	}
 	
 	public StepMove getStepMoveAbility() {

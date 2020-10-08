@@ -9,7 +9,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import logic.Ability;
 import logic.Unit;
-import logic.units.BasicUnit;
+import logic.units.*;
 import utils.SingleListener;
 
 /**
@@ -23,6 +23,7 @@ public class UnitPane extends StackPane {
 	static {
 		infoMap = new HashMap<>();
 		infoMap.put(BasicUnit.class, new ImageInfo("BasicUnit.png"));
+		infoMap.put(BasicEnemy.class, new ImageInfo("BasicEnemy.png"));
 	}
 	
 	private static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {
