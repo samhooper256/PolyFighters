@@ -9,4 +9,5 @@ module appChallenge {
 	
 	exports graphics;
 	exports logic;
+	exports logic.abilities;
 }

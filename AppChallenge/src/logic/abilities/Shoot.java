@@ -8,7 +8,7 @@ import logic.Move;
 import logic.Unit;
 import utils.IntRef;
 
-public class Shoot extends AbstractAnyAbility{
+public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility {
 	private IntRef bulletDamage;
 	
 	
