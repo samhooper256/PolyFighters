@@ -16,6 +16,7 @@ public class BasicUnit extends AbstractUnit implements TeamUnit {
 	
 	public static final String NAME = "BasicUnit";
 	
+	private static final int DEFAULT_MAX_HEALTH = 3;
 	private static final int DEFAULT_MOVE_DISTANCE = 3;
 	private static final int DEFAULT_SHOOT_DAMAGE = 1;
 	private static final EnumSet<TileType> DEFAULT_TRAVERSABLE_TILETYPES = EnumSet.of(TileType.SOLID);
@@ -24,7 +25,7 @@ public class BasicUnit extends AbstractUnit implements TeamUnit {
 	private final Shoot shootAbility;
 	
 	public BasicUnit() {
-		super();
+		super(DEFAULT_MAX_HEALTH);
 		this.traversableTileTypes.addAll(DEFAULT_TRAVERSABLE_TILETYPES);
 		this.stepMoveAbility = new StepMove(this, DEFAULT_MOVE_DISTANCE);
 		this.shootAbility = new Shoot(this, DEFAULT_SHOOT_DAMAGE);

@@ -4,12 +4,14 @@ import java.util.*;
 
 import fxutils.ImageWrap;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import logic.Ability;
 import logic.Unit;
 import logic.units.*;
+import utils.IntChangeListener;
 import utils.SingleListener;
 
 /**
@@ -17,6 +19,13 @@ import utils.SingleListener;
  *
  */
 public class UnitPane extends StackPane {
+	
+	private static final ImageInfo healthPointInfo = new ImageInfo("HealthPoint.png");
+	private static final ImageInfo missingHealthPointInfo = new ImageInfo("MissingHealthPoint.png");
+	
+	private static final double HEALTH_BAR_PERCENT = .1;
+	private static final double HEALTH_BAR_SPACING = 2;
+	
 	
 	private static final Map<Class<? extends Unit>, ImageInfo> infoMap;
 	
@@ -61,6 +70,8 @@ public class UnitPane extends StackPane {
 	
 	private final HashMap<Ability, AbilityPane> paneMap = new HashMap<>();
 	private final UnitWrap unitWrap;
+	private final BorderPane healthBarPane;
+	private final HBox healthBar;
 	private final SingleListener<Ability> addListener = ability -> {
 		if(paneMap.containsKey(ability))
 			throw new IllegalStateException("Duplicate Abilities detected");
@@ -70,6 +81,9 @@ public class UnitPane extends StackPane {
 		if(paneMap.remove(ability) == null)
 			throw new IllegalStateException("Could not remove ability that does not exist");
 	};
+	private final IntChangeListener healthListener = (oldValue, newValue) -> {
+		clearAndfillHealthBar();
+	};
 	
 	private Unit unit;
 	
@@ -78,7 +92,14 @@ public class UnitPane extends StackPane {
 		super();
 		unitWrap = new UnitWrap();
 		unitWrap.setOnMouseClicked(clickHandler);
-		getChildren().add(unitWrap);
+		healthBarPane = new BorderPane();
+		healthBar = new HBox(HEALTH_BAR_SPACING);
+		healthBar.setVisible(false);
+		healthBar.setAlignment(Pos.CENTER);
+		healthBar.prefHeightProperty().bind(healthBarPane.heightProperty().multiply(HEALTH_BAR_PERCENT));
+		healthBarPane.setBottom(healthBar);
+		healthBarPane.setPickOnBounds(false);
+		getChildren().addAll(unitWrap, healthBarPane);
 	}
 	
 	private void clearAndFillPaneMap() {
@@ -99,6 +120,7 @@ public class UnitPane extends StackPane {
 	/**
 	 * {@code unit} must not be {@code null}. Note that {@link #removeUnit()} can be used to remove the unit from this pane.
 	 * @param unit
+	 * @throws NullPointerException if the given {@link Unit} is {@code null}.
 	 */
 	public void setUnit(Unit unit) {
 		Objects.requireNonNull(unit);
@@ -107,19 +129,44 @@ public class UnitPane extends StackPane {
 		this.unit = unit;
 		addListeners();
 		clearAndFillPaneMap();
+		clearAndfillHealthBar();
 		unitWrap.setImage(imageFor(unit));
+		healthBar.setVisible(true);
 	}
 
 	/** Removes the listeners from {@code this.unit} */
 	private void removeListeners() {
 		this.unit.abilityCollectionRef().removeAddListener(addListener);
 		this.unit.abilityCollectionRef().removeRemoveListener(removeListener);
+		this.unit.healthProperty().removeChangeListener(healthListener);
 	}
 
 	/** Adds the listeners from {@code this.unit} */
 	private void addListeners() {
 		this.unit.abilityCollectionRef().addAddListener(addListener);
 		this.unit.abilityCollectionRef().addRemoveListener(removeListener);
+		this.unit.healthProperty().addChangeListener(healthListener);
+	}
+	
+	private void clearAndfillHealthBar() {
+		System.out.println("Entered clear and fill health");
+		healthBar.getChildren().clear();
+		int pointsAdded = 0;
+		int currentHealth = unit.healthProperty().get();
+		int maxHealth = unit.getMaxHealth();
+		System.out.printf("maxHealth = %d, currentHealth = %d%n", maxHealth, currentHealth);
+		while(pointsAdded < maxHealth) {
+			ImageWrap wrap;
+			if(pointsAdded < currentHealth)
+				wrap = new ImageWrap(healthPointInfo.getImage(), 0, 0);
+			else
+				wrap = new ImageWrap(missingHealthPointInfo.getImage(), 0, 0);
+			StackPane stack = new StackPane();
+			stack.prefWidthProperty().bind(stack.heightProperty());
+			stack.getChildren().add(wrap);
+			healthBar.getChildren().add(stack);
+			pointsAdded++;
+		}
 	}
 	
 	/**
@@ -129,6 +176,8 @@ public class UnitPane extends StackPane {
 		if(unit == null)
 			return null;
 		unitWrap.setImage(null);
+		healthBar.setVisible(false);
+		healthBar.getChildren().clear();
 		removeListeners();
 		paneMap.clear();
 		Unit unitTemp = unit;

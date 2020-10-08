@@ -8,6 +8,7 @@ import logic.TeamUnit;
 import logic.TileType;
 import logic.Unit;
 import utils.CollectionRef;
+import utils.IntRef;
 
 /**
  * Abstract base class that classes implementing {@link TeamUnit} may extend to make implementation easier.
@@ -27,30 +28,44 @@ public abstract class AbstractUnit implements Unit {
 	protected final EnumSet<TileType> traversableTileTypes;
 	
 	protected Board board;
+	protected int maxHealth;
+	protected IntRef health;
 	/** {@code -1} if not on a board. */
 	protected int row;
 	/** {@code -1} if not on a board. */
 	protected int col;
 	
-	protected AbstractUnit() {
-		this(null, -1, -1, new ArrayList<>());
+	/**
+	 * Constructs a new {@code AbstractUnit} with the given maximum health. The current health of the {@link Unit} will be set to
+	 * the maximum health. The constructed unit will not be associated with a {@link Board}, nor will it have any abilities.
+	 * @param maxHealth the maximum health of the {@code AbstractUnit}.
+	 */
+	protected AbstractUnit(int maxHealth) {
+		this(maxHealth, maxHealth);
 	}
-	protected AbstractUnit(List<Ability> abilities) {
-		this(null, -1, -1, abilities);
-	}
-	protected AbstractUnit(Board board, int row, int col) {
-		this(board, row, col, new ArrayList<>());
+	
+	/**
+	 * Constructs a new {@code AbstractUnit} with the given maximum health and current health.
+	 * The constructed unit will not be associated with a {@link Board}, nor will it have any abilities.
+	 * @param maxHealth the maximum health of the {@code AbstractUnit}.
+	 * @throws IllegalArgumentException if {@code currentHealth} is negative or greater than {@code maxHealth}.
+	 */
+	protected AbstractUnit(int maxHealth, int currentHealth) {
+		this(null, -1, -1, maxHealth, currentHealth, new ArrayList<>());
 	}
 	
 	/**
 	 * 
 	 * @param board the {@code Board} that this {@code Unit} is associated with, or {@code null} if this unit is not yet assoicated with one.
-	 * @param row
-	 * @param col
 	 * @param abilities the list of this {@code Unit}'s abilities. Must not be {@code null}.
+	 * @throws IllegalArgumentException if {@code currentHealth} is negative or greater than {@code maxHealth}.
 	 */
-	protected AbstractUnit(Board board, int row, int col, List<Ability> abilities) {
+	protected AbstractUnit(Board board, int row, int col, int maxHealth, int currentHealth, List<Ability> abilities) {
+		if(currentHealth < 0 || currentHealth > maxHealth)
+			throw new IllegalArgumentException("Current health value (" + currentHealth + ") is invalid for max health " + maxHealth);
 		this.abilities = new CollectionRef<>(Objects.requireNonNull(abilities));
+		this.maxHealth = maxHealth;
+		this.health = new IntRef(currentHealth);
 		this.board = board;
 		this.traversableTileTypes = EnumSet.noneOf(TileType.class);
 		this.row = row;
@@ -104,8 +119,15 @@ public abstract class AbstractUnit implements Unit {
 		return board;
 	}
 	
+	/**
+	 * {@inheritDoc}. If {@code board} is {@code null}, the row and column values of this {@code Unit} are set to {@code -1}.
+	 */
 	@Override
 	public void setBoard(Board board) {
+		if(board == null) {
+			row = -1;
+			col = -1;
+		}
 		this.board = board;
 	}
 	
@@ -134,4 +156,15 @@ public abstract class AbstractUnit implements Unit {
 	public void setCol(int col) {
 		this.col = col;
 	}
+	
+	@Override
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+	
+	@Override
+	public IntRef healthProperty() {
+		return health;
+	}
+	
 }

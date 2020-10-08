@@ -3,6 +3,7 @@ package logic;
 import java.util.Collection;
 
 import utils.CollectionRef;
+import utils.IntRef;
 
 /**
  * </p>A unit on a {@link Board}. This interface must not be implemented directly; rather, one of its subinterfaces {@link TeamUnit} or {@link EnemyUnit}
@@ -39,5 +40,15 @@ public interface Unit extends GameObject {
 	 * @throws IllegalArgumentException if this unit does not have the given ability.
 	 */
 	Collection<int[]> getLegalSpots(Ability ability);
+	
+	/**
+	 * Returns this {@code Unit}'s max health. The returned value will not be negative.
+	 */
+	int getMaxHealth();
+	
+	/**
+	 * Returns this {@code Unit}'s current health. The returned value will be between 0 and {@link #getMaxHealth()} (inclusive on both ends).
+	 */
+	IntRef healthProperty();
 	
 }
