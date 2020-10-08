@@ -3,6 +3,7 @@ package logic.abilities;
 import utils.IntRef;
 
 public class Projectile {
+	/*
 	private IntRef bd;
 	private Board 
 	
@@ -24,4 +25,5 @@ public class Projectile {
 		if()
 		return true;
 	}
+	*/
 }
