@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
-import logic.Ability;
 import logic.Board;
+import logic.BoardTile;
 import logic.EnemyUnit;
 import logic.GameObject;
 import logic.Move;
+import logic.TileType;
 import logic.Unit;
 import logic.actions.FireProjectile;
 import utils.IntRef;
@@ -38,60 +39,64 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 		int uRow = unit.getRow();
 		int uCol = unit.getCol();
 		ArrayList<int[]> arr = new ArrayList<int[]>();
+		BoardTile tile = b.getTileAt(uRow, uCol);
 		
-		boolean found1 = false;
-		for(int r = uRow; r < rows && !found1; r++)
+		if(tile.getType() != TileType.LIQUID)
 		{
-			if(	b.getTileAt(r, uCol).getUnit() instanceof EnemyUnit || 
-				b.getTileAt(r, uCol).hasObstacle())
-				
+			boolean found1 = false;
+			for(int r = uRow; r < rows && !found1; r++)
 			{
-				int[] tempArr = {r, uCol};
-				arr.add(tempArr);
-				found1 = true;
+				if(	b.getTileAt(r, uCol).getUnit() instanceof EnemyUnit || 
+						b.getTileAt(r, uCol).hasObstacle())
+				
+				{
+					int[] tempArr = {r, uCol};
+					arr.add(tempArr);
+					found1 = true;
+				}
+		
 			}
 		
-		}
-		
-		boolean found2 = false;
-		for(int r = uRow; r >= 0 && !found2; r--)
-		{
-			if(	b.getTileAt(r, uCol).getUnit() instanceof EnemyUnit || 
-				b.getTileAt(r, uCol).hasObstacle())
-				
+			boolean found2 = false;
+			for(int r = uRow; r >= 0 && !found2; r--)
 			{
-				int[] tempArr = {r, uCol};
-				arr.add(tempArr);
-				found2 = true;
+				if(	b.getTileAt(r, uCol).getUnit() instanceof EnemyUnit || 
+						b.getTileAt(r, uCol).hasObstacle())
+				
+				{
+					int[] tempArr = {r, uCol};
+					arr.add(tempArr);
+					found2 = true;
+				}
 			}
-		}
 		
-		boolean found3 = false;
-		for(int c = uCol; c < cols && !found3; c++)
-		{
-			if(	b.getTileAt(uRow, c).getUnit() instanceof EnemyUnit || 
+			boolean found3 = false;
+			for(int c = uCol; c < cols && !found3; c++)
+			{
+				if(	b.getTileAt(uRow, c).getUnit() instanceof EnemyUnit || 
 				b.getTileAt(uRow, c).hasObstacle())
 				
-			{
-				int[] tempArr = {uRow, c};
-				arr.add(tempArr);
-				found3 = true;
+				{
+					int[] tempArr = {uRow, c};
+					arr.add(tempArr);
+					found3 = true;
+				}
+		
 			}
 		
-		}
-		
-		boolean found4 = false;
-		for(int c = uCol; c >= 0 && !found4; c--)
-		{
-			if(	b.getTileAt(uRow, c).getUnit() instanceof EnemyUnit || 
+			boolean found4 = false;
+			for(int c = uCol; c >= 0 && !found4; c--)
+			{
+				if(	b.getTileAt(uRow, c).getUnit() instanceof EnemyUnit || 
 				b.getTileAt(uRow, c).hasObstacle())
 				
-			{
-				int[] tempArr = {uRow, c};
-				arr.add(tempArr);
-				found4 = true;
-			}
+				{
+					int[] tempArr = {uRow, c};
+					arr.add(tempArr);
+					found4 = true;
+				}
 		
+			}
 		}
 		
 		return arr;
