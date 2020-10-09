@@ -32,7 +32,14 @@ public class AbilityInfoPanel extends VBox {
 		this.unit = unitPane;
 	}
 	
+	/**
+	 * Updates this {@code AbilityInfoPanel}'s {@link AbilityPane} pointer to the given {@code AbilityPane}, and deselects
+	 * the currently selected {@code AbilityPane} if there is one. <b>Must ONLY be called from {@link AbilityPane#selectAction}.</b>
+	 * @param abilityPane
+	 */
 	public void setSelectedAbilityPane(AbilityPane abilityPane) {
+		if(selectedAbilityPane != null)
+			selectedAbilityPane.deselect();
 		selectedAbilityPane = abilityPane;
 	}
 	
@@ -44,8 +51,7 @@ public class AbilityInfoPanel extends VBox {
 	}
 	
 	/**
-	 * Clears the currently selected {@link AbilityPane}, meaning that calls to {@link #getSelectedAbilityPane()} will
-	 * return {@code null} until another {@code AbilityPane} is selected.
+	 * Sets this {@code AbilityInfoPanel}'s {@link AbilityPane} pointer to {@code null}. <b>Must ONLY be called from {@link AbilityPane#deselectAction}.</b>
 	 */
 	public AbilityPane clearSelectedAbilityPane() {
 		return selectedAbilityPane;
