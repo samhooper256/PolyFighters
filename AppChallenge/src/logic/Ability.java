@@ -38,7 +38,11 @@ public interface Ability {
 	
 	/**
 	 * Creates a {@link Move} that when executed (by invoking {@link Move#execute(Board)}) will use this {@code Ability} on the appropriate
-	 * {@link Board}. Behavior is undefined if the destination row and column do not indicate a legal move.
+	 * {@link Board}. The destination tile (that is, the tile the user selects in order to use this {@code Ability}) will be given by
+	 * the first two parameters. The {@link GameObject} parameter is the "target" of this {@code Ability} use. It must be a {@code GameObject}
+	 * on the destination tile. It may be {@code null} and can be ignored if this ability needs no target (such as a movement-based {@code Ability},
+	 * for example). Behavior of this method is undefined if the destination row and column do not indicate a legal move, the target is not on the
+	 * destination tile, or the target is {@code null} when it should not be.
 	 */
-	Move createMoveFor(int destRow, int destCol);
+	Move createMoveFor(int destRow, int destCol, GameObject target);
 }

@@ -6,17 +6,7 @@ package logic;
  * @author Sam Hooper
  *
  */
-public interface Obstacle extends GameObject {
-	
-	/**
-	 * Returns the maximum health of this {@code Obstacle}.
-	 */
-	int getMaxHealth();
-	
-	/**
-	 * Returns the current health of this {@code Obstacle}.
-	 */
-	int getHealth();
+public interface Obstacle extends HasHealth {
 	
 	ObstacleSize getSize();
 

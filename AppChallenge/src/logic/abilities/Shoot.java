@@ -2,11 +2,15 @@ package logic.abilities;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
+import logic.Ability;
 import logic.Board;
 import logic.EnemyUnit;
+import logic.GameObject;
 import logic.Move;
 import logic.Unit;
+import logic.actions.FireProjectile;
 import utils.IntRef;
 
 public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility{
@@ -93,9 +97,12 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 		return arr;
 	}
 
+	/**
+	 * Allows for all {@link GameObject}s to be targeted, even if they don't implement {@link HasHealth}. 
+	 */
 	@Override
-	public Move createMoveFor(int destRow, int destCol) 
-	{
-		return null;
+	public Move createMoveFor(int destRow, int destCol, GameObject target) {
+		Objects.requireNonNull(target);
+		return new Move(new FireProjectile(unit.getRow(), unit.getCol(), destRow, destCol, bulletDamage.get(), this, target));
 	}
 }			

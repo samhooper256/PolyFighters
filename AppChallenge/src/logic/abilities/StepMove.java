@@ -4,6 +4,7 @@ import java.util.*;
 
 import logic.Board;
 import logic.BoardTile;
+import logic.GameObject;
 import logic.Move;
 import logic.TileType;
 import logic.Unit;
@@ -112,10 +113,11 @@ public class StepMove extends AbstractAnyAbility implements MoveAbility {
 	}
 	
 	/**
-	 * Creates the {@link Move} object for the given destination tile even if it is illegal.
+	 * Creates the {@link Move} object for the given destination tile even if it is illegal. The {@link GameObject} parameter
+	 * is ignored.
 	 */
 	@Override
-	public Move createMoveFor(int destRow, int destCol) {
+	public Move createMoveFor(int destRow, int destCol, GameObject target) {
 		return new Move(new Relocate(unit.getRow(), unit.getCol(), destRow, destCol));
 	}
 }

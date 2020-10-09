@@ -2,7 +2,6 @@ package graphics;
 
 import javafx.scene.image.Image;
 import logic.Obstacle;
-import logic.ObstacleSize;
 import logic.TileType;
 
 /**

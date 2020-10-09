@@ -18,7 +18,7 @@ import utils.IntRef;
  * @author Sam Hooper
  *
  */
-public interface Unit extends GameObject {
+public interface Unit extends HasHealth {
 	
 	/**
 	 * @return an unmodifiable {@link Collection} containing this {@code Unit's} abilities.
@@ -40,15 +40,5 @@ public interface Unit extends GameObject {
 	 * @throws IllegalArgumentException if this unit does not have the given ability.
 	 */
 	Collection<int[]> getLegalSpots(Ability ability);
-	
-	/**
-	 * Returns this {@code Unit}'s max health. The returned value will not be negative.
-	 */
-	int getMaxHealth();
-	
-	/**
-	 * Returns this {@code Unit}'s current health. The returned value will be between 0 and {@link #getMaxHealth()} (inclusive on both ends).
-	 */
-	IntRef healthProperty();
 	
 }

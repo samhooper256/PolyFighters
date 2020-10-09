@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import logic.Ability;
 import logic.Action;
+import logic.Board;
 import logic.GameObject;
 
 /**
@@ -12,7 +13,7 @@ import logic.GameObject;
  * @author Sam Hooper
  *
  */
-public class FireProjectile {
+public class FireProjectile implements Action{
 	
 	private final int startRow, startCol, destRow, destCol, damage;
 	private final Ability ability;
@@ -64,6 +65,11 @@ public class FireProjectile {
 	
 	public GameObject getTarget() {
 		return target;
+	}
+
+	@Override
+	public void execute(Board board) {
+		
 	}
 	
 }

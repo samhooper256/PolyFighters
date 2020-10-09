@@ -3,6 +3,7 @@ package logic.obstacles;
 import logic.Board;
 import logic.Obstacle;
 import logic.ObstacleSize;
+import utils.IntRef;
 
 /**
  * Base class for {@link Obstacle}s. It is not abstract, so it may be used directly.
@@ -14,7 +15,8 @@ public class ObstacleBase implements Obstacle {
 	private final int maxHealth;
 	private final ObstacleSize size;
 	
-	private int health, row, col;
+	private IntRef health;
+	private int row, col;
 	private Board board;
 	
 	public ObstacleBase(ObstacleSize size, int maxHealth) {
@@ -35,7 +37,7 @@ public class ObstacleBase implements Obstacle {
 		this.col = col;
 		this.size = size;
 		this.maxHealth = maxHealth;
-		this.health = currentHealth;
+		this.health = new IntRef(currentHealth);
 	}
 
 	@Override
@@ -64,7 +66,7 @@ public class ObstacleBase implements Obstacle {
 	}
 
 	@Override
-	public int getHealth() {
+	public IntRef healthProperty() {
 		return health;
 	}
 

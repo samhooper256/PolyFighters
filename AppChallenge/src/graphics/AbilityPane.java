@@ -6,7 +6,6 @@ import java.util.function.Function;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import logic.Ability;
 import logic.abilities.Shoot;

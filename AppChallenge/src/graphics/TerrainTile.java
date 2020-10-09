@@ -3,7 +3,6 @@ package graphics;
 import java.util.Iterator;
 
 import fxutils.*;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -18,14 +17,14 @@ import logic.*;
  * @author Sam Hooper
  *
  */
-public class TerrainTile extends StackPane {
+public class TerrainTile extends StackPane implements AbilityUseCandidate {
 	
 	public static final Paint DEFAULT_HIGHLIGHT = Color.LAWNGREEN;
 	public static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {
 		TerrainTile source = (TerrainTile) mouseEvent.getSource();
 		if(source.isUseCandidate()) {
 			Level level = Level.current();
-			Move move = level.getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane().getAbility().createMoveFor(source.getRow(), source.getCol());
+			Move move = level.getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane().getAbility().createMoveFor(source.getRow(), source.getCol(), null);
 			level.getTerrainPane().getGrid().executeMove(move);
 		}
 		else {
@@ -99,10 +98,12 @@ public class TerrainTile extends StackPane {
 	 * If the given value if {@code true}, Makes this {@code TerrainTile} a use candidate. Otherwise,
 	 * makes this {@code TerrainTile} not a use candidate.
 	 */
+	@Override
 	public void setUseCandidate(boolean value) {
 		isUseCandidate = value;
 	}
 	
+	@Override
 	public boolean isUseCandidate() {
 		return isUseCandidate;
 	}

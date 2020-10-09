@@ -4,9 +4,7 @@ import java.io.InputStream;
 import java.util.Optional;
 
 import javafx.application.Application;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import logic.Board;
 import logic.ObstacleSize;
 import logic.obstacles.ObstacleBase;
 import logic.units.BasicEnemy;
