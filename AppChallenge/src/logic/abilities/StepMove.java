@@ -99,7 +99,7 @@ public class StepMove extends AbstractAnyAbility implements MoveAbility {
 				int boardRow = nr + unitRow - distance, boardCol = nc + unitCol - distance;
 				if(!board.inBounds(boardRow, boardCol) || beenInList[nr][nc]) continue;
 				BoardTile boardTile = board.getTileAt(boardRow, boardCol);
-				if(boardTile.hasObstacle())
+				if(boardTile.hasObstacle() || boardTile.hasUnit())
 					continue;
 				if(!canTraverse(boardTile.getType()))
 					continue;
