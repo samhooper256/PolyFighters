@@ -63,7 +63,7 @@ public class Main extends Application {
 		primaryStage.setScene(scene);
 		TerrainGrid grid = scene.getTerrainPane().getGridWrap().getGrid();
 		grid.addUnit(new BasicUnit(), 1, 1);
-		grid.addUnit(new BasicEnemy(), 6, 1);
+		grid.addUnit(new BasicEnemy(), 2, 1);
 		grid.addObstacleOrThrow(new ObstacleBase(ObstacleSize.SMALL, 3), 2, 2);
 		grid.addObstacleOrThrow(new ObstacleBase(ObstacleSize.LARGE, 3), 5, 5);
 		primaryStage.show();

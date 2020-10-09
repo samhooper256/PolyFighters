@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import logic.Board;
+import logic.EnemyUnit;
 import logic.Move;
 import logic.Unit;
 import utils.IntRef;
 
-public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility {
+public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility{
 	private IntRef bulletDamage;
 	
 	
@@ -23,14 +24,6 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 		return bulletDamage;
 	}
 	
-	public static void shoot() 
-	{
-		//for(int[] arr: unit.getLegals())
-		{
-			
-		}
-	}
-	
 
 	@Override
 	public Collection<int[]> getLegals() 
@@ -42,25 +35,67 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 		int uCol = unit.getCol();
 		ArrayList<int[]> arr = new ArrayList<int[]>();
 		
-		for(int c = 0; c < cols; c++)
+		boolean found1 = false;
+		for(int r = uRow; r < rows && !found1; r++)
 		{
-			int[] tempArr = new int[]{uRow, c};
-			arr.add(tempArr);
+			if(	b.getTileAt(r, uCol).getUnit() instanceof EnemyUnit || 
+				b.getTileAt(r, uCol).hasObstacle())
+				
+			{
+				int[] tempArr = {r, uCol};
+				arr.add(tempArr);
+				found1 = true;
+			}
+		
 		}
-	
-	
-		for(int r = 0; r < rows; r++)
+		
+		boolean found2 = false;
+		for(int r = uRow; r >= 0 && !found2; r--)
 		{
-			int[] tempArr = new int[]{r, uCol};
-			arr.add(tempArr);
+			if(	b.getTileAt(r, uCol).getUnit() instanceof EnemyUnit || 
+				b.getTileAt(r, uCol).hasObstacle())
+				
+			{
+				int[] tempArr = {r, uCol};
+				arr.add(tempArr);
+				found2 = true;
+			}
+		}
+		
+		boolean found3 = false;
+		for(int c = uCol; c < cols && !found3; c++)
+		{
+			if(	b.getTileAt(uRow, c).getUnit() instanceof EnemyUnit || 
+				b.getTileAt(uRow, c).hasObstacle())
+				
+			{
+				int[] tempArr = {uRow, c};
+				arr.add(tempArr);
+				found3 = true;
+			}
+		
+		}
+		
+		boolean found4 = false;
+		for(int c = uCol; c >= 0 && !found4; c--)
+		{
+			if(	b.getTileAt(uRow, c).getUnit() instanceof EnemyUnit || 
+				b.getTileAt(uRow, c).hasObstacle())
+				
+			{
+				int[] tempArr = {uRow, c};
+				arr.add(tempArr);
+				found4 = true;
+			}
+		
 		}
 		
 		return arr;
 	}
 
 	@Override
-	public Move createMoveFor(int destRow, int destCol) {
-		// TODO Auto-generated method stub
+	public Move createMoveFor(int destRow, int destCol) 
+	{
 		return null;
 	}
 }			
