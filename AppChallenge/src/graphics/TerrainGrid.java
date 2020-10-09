@@ -2,6 +2,7 @@ package graphics;
 
 import javafx.scene.layout.*;
 import logic.*;
+import logic.abilities.SingleProjectileAbility;
 import logic.actions.*;
 
 /**
@@ -92,6 +93,10 @@ public class TerrainGrid extends GridPane {
 		terrainTiles[row][col].addObstacleOrThrow(obstacle);
 	}
 	
+	public Theme getTheme() {
+		return theme;
+	}
+	
 	public void executeMove(final Move move) {
 		Level.current().getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane().deselect();
 		for(Action a : move.getActionsUnmodifiable()) {
@@ -105,13 +110,14 @@ public class TerrainGrid extends GridPane {
 				UnitPane destUnitPane = destTile.getUnitPane();
 				destUnitPane.setUnit(unit);
 			}
+			else if(a instanceof SingleProjectileAbility) {
+
+			}
 			else {
 				throw new UnsupportedOperationException("Unsupported action type: " + a.getClass());
 			}
 		}
 	}
 
-	public Theme getTheme() {
-		return theme;
-	}
+	
 }

@@ -12,15 +12,18 @@ import java.util.List;
  */
 public final class Move {
 	
+	private final Unit unit;
 	List<Action> actions;
 	
-	public Move(Action... actions) {
+	public Move(Unit unit, Action... actions) {
+		this.unit = unit;
 		this.actions = new ArrayList<>(actions.length);
 		for(int i = 0; i < actions.length; i++)
 			this.actions.add(actions[i]);
 	}
 	
-	public Move() {
+	public Move(Unit unit) {
+		this.unit = unit;
 		actions = new ArrayList<>();
 	}
 	
