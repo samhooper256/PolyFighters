@@ -1,6 +1,6 @@
 package graphics;
 
-import java.util.Iterator;
+import java.util.*;
 
 import fxutils.*;
 import javafx.event.EventHandler;
@@ -139,6 +139,15 @@ public class TerrainTile extends StackPane implements AbilityUseCandidate {
 	}
 	
 	/**
+	 * Sets every {@link Highlightable} on this {@link TerrainTile} to not be highlighted.
+	 */
+	public void clearGameObjectHighlights() {
+		for(Node node : getChildren())
+			if(node instanceof Highlightable)
+				((Highlightable) node).clearHighlight();
+	}
+	
+	/**
 	 * Returns {@code true} if there is at least one {@link Highlight} applied to this {@code TerrainTile}, {@code false} otherwise.
 	 */
 	public boolean isHighlighted() {
@@ -159,6 +168,21 @@ public class TerrainTile extends StackPane implements AbilityUseCandidate {
 	
 	public Theme getTheme() {
 		return getGrid().getTheme();
+	}
+	
+	public BoardTile getBackingBoardTile() {
+		return grid.getBackingBoardTile(row, col);
+	}
+	
+	public Collection<GameObjectRepresentation> getGameObjectRepresentations() {
+		if(unitPane.hasUnit()) {
+			if(obstaclePane.hasObstacle())
+				return Set.of(unitPane, obstaclePane);
+			return Set.of(unitPane);
+		}
+		if(obstaclePane.hasObstacle())
+			return Set.of(obstaclePane);
+		return Collections.emptySet();
 	}
 	
 }

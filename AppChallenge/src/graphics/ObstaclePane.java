@@ -1,5 +1,7 @@
 package graphics;
 
+import java.util.Objects;
+
 import fxutils.ImageWrap;
 import javafx.scene.layout.StackPane;
 import logic.Obstacle;
@@ -9,14 +11,17 @@ import logic.Obstacle;
  * @author Sam Hooper
  *
  */
-public class ObstaclePane extends StackPane {
+public class ObstaclePane extends StackPane implements GameObjectRepresentation {
 	
 	private final ImageWrap obstacleWrap;
 	
 	private Obstacle obstacle;
+	private boolean isUseCandidate, isHighlighted;
 	
 	public ObstaclePane(Obstacle obstacle, Theme theme) {
 		this.obstacle = obstacle;
+		this.isUseCandidate = false;
+		this.isHighlighted = false;
 		obstacleWrap = new ImageWrap(theme.imageFor(obstacle));
 		getChildren().add(obstacleWrap);
 	}
@@ -27,13 +32,60 @@ public class ObstaclePane extends StackPane {
 		getChildren().add(obstacleWrap);
 	}
 	
+	/**
+	 * The given {@link Obstacle} must not be {@code null}.
+	 */
 	public void setObstacle(Obstacle obstacle, Theme theme) {
+		Objects.requireNonNull(obstacle);
 		this.obstacle = obstacle;
 		obstacleWrap.setImage(theme.imageFor(obstacle));
 	}
 	
-	public Obstacle getObstacle() {
+	public void removeObstacle() {
+		this.obstacle = null;
+		obstacleWrap.setImage(null);
+	}
+	
+	@Override
+	public Obstacle getGameObject() {
 		return obstacle;
 	}
 	
+	public boolean hasObstacle() {
+		return obstacle != null;
+	}
+	
+	/**
+	 * Uses the {@link Level#current() current level}'s theme to highlight this {@link ObstaclePane}. 
+	 */
+	@Override
+	public void highlight() {
+		if(!isHighlighted()) {
+			this.setEffect(Level.current().getTheme().highlightEffect());
+			isHighlighted = true;
+		}
+	}
+	
+	@Override
+	public void clearHighlight() {
+		if(isHighlighted()) {
+			this.setEffect(null);
+			isHighlighted = false;
+		}
+	}
+
+	@Override
+	public boolean isHighlighted() {
+		return isHighlighted;
+	}
+
+	@Override
+	public void setUseCandidate(boolean value) {
+		isUseCandidate = value;
+	}
+
+	@Override
+	public boolean isUseCandidate() {
+		return isUseCandidate;
+	}
 }

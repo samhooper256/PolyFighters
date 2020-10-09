@@ -10,6 +10,7 @@ import javafx.scene.paint.Paint;
 import logic.Ability;
 import logic.abilities.Shoot;
 import logic.abilities.StepMove;
+import logic.abilities.TargetingAbility;
 /**
  * @author Sam Hooper
  *
@@ -108,8 +109,18 @@ public abstract class AbilityPane extends StackPane	{
 		legalsCache = ability.getLegals();
 		for(int[] legalSpot : legalsCache) {
 			final TerrainTile tile = grid.getTileAt(legalSpot[0], legalSpot[1]);
-			tile.highlightOrThrow(highlightColor());
-			tile.setUseCandidate(true);
+			if(ability instanceof TargetingAbility) {
+				for(GameObjectRepresentation rep : tile.getGameObjectRepresentations()) {
+					if(((TargetingAbility) ability).canTarget(rep.getGameObject())) {
+						rep.highlight();
+						rep.setUseCandidate(true);
+					}
+				}
+			}
+			else {
+				tile.highlightOrThrow(highlightColor());
+				tile.setUseCandidate(true);
+			}
 		}
 	}
 	
@@ -124,6 +135,7 @@ public abstract class AbilityPane extends StackPane	{
 		for(int[] legalSpot : legalsCache) {
 			final TerrainTile tile = grid.getTileAt(legalSpot[0], legalSpot[1]);
 			tile.clearAllHighlights();
+			tile.clearGameObjectHighlights();
 			tile.setUseCandidate(false);
 		}
 	}

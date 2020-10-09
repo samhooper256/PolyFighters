@@ -70,8 +70,12 @@ public class TerrainGrid extends GridPane {
 		}
 	}
 	
-	public Board getBoard() {
+	public Board getBackingBoard() {
 		return backingBoard;
+	}
+	
+	public BoardTile getBackingBoardTile(int row, int col) {
+		return backingBoard.getTileAt(row, col);
 	}
 	
 	public TerrainTile getTileAt(int row, int col) {

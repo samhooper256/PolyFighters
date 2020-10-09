@@ -1,6 +1,10 @@
 package graphics;
 
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.Effect;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import logic.Obstacle;
 import logic.TileType;
 
@@ -16,7 +20,7 @@ public enum Theme {
 		private final ImageInfo liquidTileInfo = new ImageInfo("Water.png");
 		private final ImageInfo smallObstacleInfo = new ImageInfo("small_obstacle.png");
 		private final ImageInfo largeObstacleInfo = new ImageInfo("large_obstacle.png");
-		
+		private final Effect highlightEffect = new InnerShadow(BlurType.GAUSSIAN, Color.LAWNGREEN, 8, .1, 0, 0);
 		@Override
 		public Image solidTileImage() {
 			return solidTileInfo.getImage();
@@ -38,6 +42,10 @@ public enum Theme {
 		public Image liquidTileImage() {
 			return liquidTileInfo.getImage();
 		}
+		@Override
+		public Effect highlightEffect() {
+			return highlightEffect;
+		}
 	};
 	
 	public Image imageForTileType(TileType type) {
@@ -54,4 +62,5 @@ public enum Theme {
 	 * The description that will be displayed in the {@link InfoPanel} when a tile is clicked on.
 	 */
 	public abstract String tileDescription();
+	public abstract Effect highlightEffect();
 }

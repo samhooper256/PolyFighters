@@ -5,9 +5,11 @@ import java.util.*;
 import fxutils.ImageWrap;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.effect.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import logic.Ability;
 import logic.Move;
 import logic.Unit;
@@ -19,7 +21,7 @@ import utils.SingleListener;
  * @author Sam Hooper
  *
  */
-public class UnitPane extends StackPane implements AbilityUseCandidate {
+public class UnitPane extends StackPane implements GameObjectRepresentation {
 	
 	private static final ImageInfo healthPointInfo = new ImageInfo("HealthPoint.png");
 	private static final ImageInfo missingHealthPointInfo = new ImageInfo("MissingHealthPoint.png");
@@ -39,7 +41,7 @@ public class UnitPane extends StackPane implements AbilityUseCandidate {
 	private static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {
 //		System.out.printf("Entered UnitPane clickHandler%n");
 		UnitPane pane = ((UnitWrap) mouseEvent.getSource()).getEnclosingInstance();
-		Unit unit = pane.getUnit();
+		Unit unit = pane.getGameObject();
 		if(pane.isUseCandidate()) {
 //			System.out.printf("\twas use candidate.%n");
 			Level level = Level.current();
@@ -98,11 +100,12 @@ public class UnitPane extends StackPane implements AbilityUseCandidate {
 	};
 	
 	private Unit unit;
-	private boolean isUseCandidate;
+	private boolean isUseCandidate, isHighlighted;
 	
 	/** Creates an empty {@code UnitPane} with no {@link Unit} on it. */
 	public UnitPane() {
-		super();
+		this.isUseCandidate = false;
+		this.isHighlighted = false;
 		isUseCandidate = false;
 		unitWrap = new UnitWrap();
 		unitWrap.setOnMouseClicked(clickHandler);
@@ -197,7 +200,12 @@ public class UnitPane extends StackPane implements AbilityUseCandidate {
 		return unitTemp;
 	}
 	
-	public Unit getUnit() {
+	public boolean hasUnit() {
+		return unit != null;
+	}
+	
+	@Override
+	public Unit getGameObject() {
 		return unit;
 	}
 
@@ -211,4 +219,27 @@ public class UnitPane extends StackPane implements AbilityUseCandidate {
 		return isUseCandidate;
 	}
 	
+	/**
+	 * Uses the {@link Level#current() current level}'s theme to highlight this {@link UnitPane}. 
+	 */
+	@Override
+	public void highlight() {
+		if(!isHighlighted()) {
+			this.setEffect(Level.current().getTheme().highlightEffect());
+			isHighlighted = true;
+		}
+	}
+	
+	@Override
+	public void clearHighlight() {
+		if(isHighlighted()) {
+			this.setEffect(null);
+			isHighlighted = false;
+		}
+	}
+
+	@Override
+	public boolean isHighlighted() {
+		return isHighlighted;
+	}
 }
