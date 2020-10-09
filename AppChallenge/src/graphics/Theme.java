@@ -10,24 +10,35 @@ import logic.ObstacleSize;
  */
 public enum Theme {
 	TEST_THEME {
-		ImageInfo tileInfo = new ImageInfo("desert.png");
-		ImageInfo smallObstacleInfo = new ImageInfo("small_obstacle.png");
+		private static final String TILE_DESCRIPTION = "A Desert Tile.";
+		
+		private final ImageInfo tileInfo = new ImageInfo("desert.png");
+		private final ImageInfo smallObstacleInfo = new ImageInfo("small_obstacle.png");
+		private final ImageInfo largeObstacleInfo = new ImageInfo("large_obstacle.png");
 		
 		@Override
-		Image tileImage() {
+		public Image tileImage() {
 			return tileInfo.getImage();
 		}
 		@Override
-		Image imageFor(Obstacle obstacle) {
-			ObstacleSize size = obstacle.getSize();
-			if(size == ObstacleSize.SMALL) {
-				return smallObstacleInfo.getImage();
-			}
-			throw new UnsupportedOperationException("Unsupported size: " + size);
+		public Image imageFor(Obstacle obstacle) {
+			return switch(obstacle.getSize()) {
+			case SMALL -> smallObstacleInfo.getImage();
+			case LARGE -> largeObstacleInfo.getImage();
+			default -> throw new UnsupportedOperationException("Unsupported size: " + obstacle.getSize());
+			};
+			
+		}
+		@Override
+		public String tileDescription() {
+			return TILE_DESCRIPTION;
 		}
 	};
 	
-	abstract Image tileImage();
-	abstract Image imageFor(Obstacle obstacle);
-	
+	public abstract Image tileImage();
+	public abstract Image imageFor(Obstacle obstacle);
+	/**
+	 * The description that will be displayed in the {@link InfoPanel} when a tile is clicked on.
+	 */
+	public abstract String tileDescription();
 }

@@ -104,7 +104,7 @@ public abstract class AbilityPane extends StackPane	{
 	 * immediately before this method is invoked and is set to {@code true} immediately after this method is invoked.
 	 */
 	public void selectAction() {
-		Level.current().getInfoPanel().getAbilityPanel().setSelectedAbilityPane(this);
+		Level.current().getInfoPanel().getAbilityInfoPanel().setSelectedAbilityPane(this);
 		TerrainGrid grid = Level.current().getTerrainPane().getGrid();
 		legalsCache = ability.getLegals();
 		for(int[] legalSpot : legalsCache) {
@@ -116,11 +116,11 @@ public abstract class AbilityPane extends StackPane	{
 	
 	/**
 	 * Invoked when the user deselects this {@code AbilityPane}. It should hide everything that was displayed by the previous
-	 * {@link #selectAction()} call. It must also call {@link AbilityPanel#clearSelectedAbilityPane()}. {@link #isSelected()} is
+	 * {@link #selectAction()} call. It must also call {@link AbilityInfoPanel#clearSelectedAbilityPane()}. {@link #isSelected()} is
 	 * {@code true} immediately before this method is invoked and is set to {@code false} immediately after this method is invoked.
 	 */
 	public void deselectAction() {
-		Level.current().getInfoPanel().getAbilityPanel().clearSelectedAbilityPane();
+		Level.current().getInfoPanel().getAbilityInfoPanel().clearSelectedAbilityPane();
 		TerrainGrid grid = Level.current().getTerrainPane().getGrid();
 		for(int[] legalSpot : legalsCache) {
 			final TerrainTile tile = grid.getTileAt(legalSpot[0], legalSpot[1]);

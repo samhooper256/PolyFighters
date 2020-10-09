@@ -6,6 +6,7 @@ import fxutils.*;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.*;
@@ -24,12 +25,15 @@ public class TerrainTile extends StackPane {
 		TerrainTile source = (TerrainTile) mouseEvent.getSource();
 		if(source.isUseCandidate()) {
 			Level level = Level.current();
-			Move move = level.getInfoPanel().getAbilityPanel().getSelectedAbilityPane().getAbility().createMoveFor(source.getRow(), source.getCol());
+			Move move = level.getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane().getAbility().createMoveFor(source.getRow(), source.getCol());
 			level.getTerrainPane().getGrid().executeMove(move);
 		}
 		else {
-			Level.current().getInfoPanel().clearContent();
-			//TODO - show tile info
+			InfoPanel infoPanel = Level.current().getInfoPanel();
+			infoPanel.clearContent();
+			TileInfoPanel tileInfoPanel = infoPanel.getTileInfoPanel();
+			tileInfoPanel.setContent(source.getTileInfo());
+			infoPanel.displayOnlyTileInfoPanel();
 		}
 		mouseEvent.consume(); //there's nothing below the tile, so we consume it here.
 	};
@@ -39,6 +43,7 @@ public class TerrainTile extends StackPane {
 	private final ObstaclePane obstaclePane;
 	private final int row, col;
 	private final TerrainGrid grid;
+	private TileInfo tileInfo;
 	
 	private int highlightCount;
 	private boolean isUseCandidate;
@@ -61,6 +66,17 @@ public class TerrainTile extends StackPane {
 		setOnMouseClicked(clickHandler);
 		obstaclePane = new ObstaclePane();
 		getChildren().addAll(tileWrap, obstaclePane, unitPane);
+	}
+	
+	public TileInfo getTileInfo() {
+		if(tileInfo == null) {
+			tileInfo = new TileInfo(this) {
+				{
+					getChildren().add(new Label(getTheme().tileDescription()));
+				}
+			};
+		}
+		return tileInfo;
 	}
 	
 	public int getRow() {

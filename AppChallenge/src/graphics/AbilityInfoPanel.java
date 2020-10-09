@@ -9,12 +9,12 @@ import logic.Unit;
  * @author Sam Hooper
  *
  */
-public class AbilityPanel extends VBox {
+public class AbilityInfoPanel extends VBox {
 	
 	private AbilityPane selectedAbilityPane;
 	private Unit unit;
 	
-	public AbilityPanel() {
+	public AbilityInfoPanel() {
 		super();
 		selectedAbilityPane = null;
 		unit = null;

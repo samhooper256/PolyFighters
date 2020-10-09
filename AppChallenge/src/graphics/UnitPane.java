@@ -39,7 +39,7 @@ public class UnitPane extends StackPane {
 		UnitPane pane = ((UnitWrap) mouseEvent.getSource()).getEnclosingInstance();
 		Unit unit = pane.getUnit();
 		InfoPanel infoPanel = Main.currentLevel().getInfoPanel();
-		AbilityPanel abilityPanel = infoPanel.getAbilityPanel();
+		AbilityInfoPanel abilityPanel = infoPanel.getAbilityInfoPanel();
 		if(abilityPanel.getUnit() != unit) {
 			infoPanel.clearContent();
 			for(Ability ability : unit.getAbilitiesUnmodifiable()) {
@@ -47,7 +47,7 @@ public class UnitPane extends StackPane {
 			}
 			abilityPanel.setUnit(unit);
 		}
-		infoPanel.displayAbilityPanel();
+		infoPanel.displayOnlyAbilityInfoPanel();
 		mouseEvent.consume();
 	};
 	
@@ -149,12 +149,10 @@ public class UnitPane extends StackPane {
 	}
 	
 	private void clearAndfillHealthBar() {
-		System.out.println("Entered clear and fill health");
 		healthBar.getChildren().clear();
 		int pointsAdded = 0;
 		int currentHealth = unit.healthProperty().get();
 		int maxHealth = unit.getMaxHealth();
-		System.out.printf("maxHealth = %d, currentHealth = %d%n", maxHealth, currentHealth);
 		while(pointsAdded < maxHealth) {
 			ImageWrap wrap;
 			if(pointsAdded < currentHealth)

@@ -88,7 +88,7 @@ public class TerrainGrid extends GridPane {
 	}
 	
 	public void executeMove(final Move move) {
-		Level.current().getInfoPanel().getAbilityPanel().getSelectedAbilityPane().deselect();
+		Level.current().getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane().deselect();
 		for(Action a : move.getActionsUnmodifiable()) {
 			if(a instanceof Relocate) {
 				Relocate r = (Relocate) a;

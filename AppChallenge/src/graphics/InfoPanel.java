@@ -11,16 +11,19 @@ import javafx.scene.layout.*;
  */
 public class InfoPanel extends StackPane {
 	private final VBox defaultContent;
-	private final AbilityPanel abilityPanel;
-	
-	private boolean abilityPanelShowing;
+	private final AbilityInfoPanel abilityInfoPanel;
+	private final TileInfoPanel tileInfoPanel;
+	private boolean abilityInfoPanelShowing;
+	private boolean tileInfoPanelShowing;
 	
 	public InfoPanel() {
 		super();
-		abilityPanelShowing = false;
+		abilityInfoPanelShowing = false;
+		tileInfoPanelShowing = false;
 		defaultContent = new VBox();
 		initDefaultContent();
-		abilityPanel = new AbilityPanel();
+		abilityInfoPanel = new AbilityInfoPanel();
+		tileInfoPanel = new TileInfoPanel();
 		getChildren().add(defaultContent);
 	}
 	
@@ -33,14 +36,47 @@ public class InfoPanel extends StackPane {
 	
 	/**Clears the content of this {@code InfoPanel}.*/
 	public void clearContent() {
-		if(abilityPanelShowing) {
-			abilityPanelShowing = false;
-			AbilityPane pane = abilityPanel.getSelectedAbilityPane();
+		takeDownAbilityInfoPanel();
+		takeDownTileInfoPanel();
+		getChildren().clear();
+	}
+
+	/**
+	 * Handles any necessary actions that need to be done before the {@link #tileInfoPanel} is removed from this {@code InfoPanel}'s
+	 * list of children.
+	 */
+	private void takeDownTileInfoPanel() {
+		if(tileInfoPanelShowing) {
+			tileInfoPanelShowing = false;
+		}
+	}
+
+	/**
+	 * Handles any necessary actions that need to be done before the {@link #abilityInfoPanel} is removed from this {@code InfoPanel}'s
+	 * list of children.
+	 */
+	private void takeDownAbilityInfoPanel() {
+		if(abilityInfoPanelShowing) {
+			abilityInfoPanelShowing = false;
+			AbilityPane pane = abilityInfoPanel.getSelectedAbilityPane();
 			if(pane != null) {
 				pane.deselect();
 			}
 		}
-		getChildren().clear();
+	}
+	
+	public void hideTileInfoPanel() {
+		if(tileInfoPanelShowing) {
+			takeDownTileInfoPanel();
+			getChildren().remove(tileInfoPanel);
+		}
+	}
+	
+	public void hideAbilityInfoPanel() {
+		if(abilityInfoPanelShowing) {
+			takeDownAbilityInfoPanel();
+			getChildren().remove(abilityInfoPanel);
+		}
 	}
 	
 	/**
@@ -52,25 +88,50 @@ public class InfoPanel extends StackPane {
 	}
 	
 	/**
-	 * Returns the {@link AbilityPanel} associated with this {@code InfoPanel}. The {@code AbilityPanel}
+	 * Returns the {@link AbilityInfoPanel} associated with this {@code InfoPanel}. The {@code AbilityInfoPanel}
 	 * may or may not be currently showing.
 	 */
-	public AbilityPanel getAbilityPanel() {
-		return abilityPanel;
+	public AbilityInfoPanel getAbilityInfoPanel() {
+		return abilityInfoPanel;
 	}
 	
 	/**
-	 * Adds the {@link AbilityPanel} associated with this {@code InfoPanel} to the top of its stack if it is not already on the stack.
+	 * Adds the {@link AbilityInfoPanel} associated with this {@code InfoPanel} to the top of its stack if it is not already on the stack.
 	 * Otherwise, does nothing.
 	 */
-	public void displayAbilityPanel() {
-		if(!abilityPanelShowing) {
-			getChildren().add(abilityPanel);
-			abilityPanelShowing = true;
+	public void displayOnlyAbilityInfoPanel() {
+		hideTileInfoPanel();
+		if(!abilityInfoPanelShowing) {
+			getChildren().add(abilityInfoPanel);
+			abilityInfoPanelShowing = true;
 		}
 	}
 	
-	public boolean isAbilityPanelShowing() {
-		return abilityPanelShowing;
+	public boolean isAbilityInfoPanelShowing() {
+		return abilityInfoPanelShowing;
+	}
+	
+	/**
+	 * Returns the {@link TileInfoPanel} associated with this {@code InfoPanel}. The {@code TileInfoPanel}
+	 * may or may not be currently showing.
+	 */
+	public TileInfoPanel getTileInfoPanel() {
+		return tileInfoPanel;
+	}
+	
+	/**
+	 * Adds the {@link AbilityInfoPanel} associated with this {@code InfoPanel} to the top of its stack if it is not already on the stack.
+	 * Otherwise, does nothing.
+	 */
+	public void displayOnlyTileInfoPanel() {
+		hideAbilityInfoPanel();
+		if(!tileInfoPanelShowing) {
+			getChildren().add(tileInfoPanel);
+			tileInfoPanelShowing = true;
+		}
+	}
+	
+	public boolean isTileInfoPanelShowing() {
+		return tileInfoPanelShowing;
 	}
 }
