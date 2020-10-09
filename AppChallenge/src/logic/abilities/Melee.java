@@ -58,6 +58,58 @@ public class Melee extends AbstractAnyAbility implements SingleProjectileAbility
 					arr.add(arrC3);
 				}
 			}
+			
+			if(uRow == 0)
+			{
+				for(int i = 0; i < 2; i++)
+				{
+					int[] arrC1 = new int[] {i, uCol - 1};
+					int[] arrC2 = new int[] {i, uCol};
+					int[] arrC3 = new int[] {i, uCol + 1};
+					arr.add(arrC1);
+					arr.add(arrC2);
+					arr.add(arrC3);
+				}
+			}
+			
+			if(uRow == rows)
+			{
+				for(int i = rows; i > rows - 2; i--)
+				{
+					int[] arrC1 = new int[] {i, uCol - 1};
+					int[] arrC2 = new int[] {i, uCol};
+					int[] arrC3 = new int[] {i, uCol + 1};
+					arr.add(arrC1);
+					arr.add(arrC2);
+					arr.add(arrC3);
+				}
+			}
+			
+			if(uCol == 0)
+			{
+				for(int i = 0; i < 2; i++)
+				{
+					int[] arrC1 = new int[] {uRow - 1, i};
+					int[] arrC2 = new int[] {uRow, i};
+					int[] arrC3 = new int[] {uRow + 1, i};
+					arr.add(arrC1);
+					arr.add(arrC2);
+					arr.add(arrC3);
+				}
+			}
+			
+			if(uCol == 0)
+			{
+				for(int i = 0; i < 2; i++)
+				{
+					int[] arrC1 = new int[] {uRow - 1, i};
+					int[] arrC2 = new int[] {uRow, i};
+					int[] arrC3 = new int[] {uRow + 1, i};
+					arr.add(arrC1);
+					arr.add(arrC2);
+					arr.add(arrC3);
+				}
+			}
 		}
 		
 		return arr;
