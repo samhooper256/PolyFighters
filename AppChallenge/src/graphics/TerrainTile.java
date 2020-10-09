@@ -49,17 +49,17 @@ public class TerrainTile extends StackPane {
 	private boolean isUseCandidate;
 	
 	public static TerrainTile forBoardTile(TerrainGrid grid, BoardTile boardTile) {
-		return new TerrainTile(grid, boardTile.getRow(), boardTile.getCol()); //TODO - make this actually reflect the given boardTile.
+		return new TerrainTile(grid, boardTile);
 	}
 	
-	private TerrainTile(TerrainGrid grid, int row, int col) {
+	private TerrainTile(TerrainGrid grid, BoardTile boardTile) {
 		super();
 		this.grid = grid;
-		this.row = row;
-		this.col = col;
+		this.row = boardTile.getRow();
+		this.col = boardTile.getCol();
 		highlightCount = 0;
 		isUseCandidate = false;
-		tileWrap = new ImageWrap(grid.getTheme().tileImage());
+		tileWrap = new ImageWrap(grid.getTheme().imageForTileType(boardTile.getType()));
 		setBorder(Borders.of(Color.PURPLE));
 		setMinSize(0, 0);
 		unitPane = new UnitPane();

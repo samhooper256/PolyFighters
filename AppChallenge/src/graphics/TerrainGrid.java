@@ -26,7 +26,8 @@ public class TerrainGrid extends GridPane {
 		this.theme = theme;
 		this.rows = rows;
 		this.cols = cols;
-		backingBoard = new Board(rows, cols);
+//		backingBoard = new Board(rows, cols);
+		backingBoard = new BoardGenerator().build();
 		terrainTiles = new TerrainTile[rows][cols];
 		initConstraints();
 		initTiles();
