@@ -109,7 +109,7 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 	@Override
 	public Move createMoveFor(int destRow, int destCol, GameObject target) {
 		Objects.requireNonNull(target);
-		return new Move(unit, new FireProjectile(unit.getRow(), unit.getCol(), destRow, destCol, bulletDamage.get(), this, target));
+		return new Move(this, new FireProjectile(unit.getRow(), unit.getCol(), destRow, destCol, bulletDamage.get(), target));
 	}
 
 	@Override

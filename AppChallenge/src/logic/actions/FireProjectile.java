@@ -16,7 +16,6 @@ import logic.GameObject;
 public class FireProjectile implements Action{
 	
 	private final int startRow, startCol, destRow, destCol, damage;
-	private final Ability ability;
 	private final GameObject target;
 	
 
@@ -26,7 +25,7 @@ public class FireProjectile implements Action{
 	 * @throws NullPointerException if the target is {@code null}.
 	 * @throws IllegalArgumentException if the damage is negative.
 	 */
-	public FireProjectile(int startRow, int startCol, int destRow, int destCol, int damage, Ability ability, GameObject target) {
+	public FireProjectile(int startRow, int startCol, int destRow, int destCol, int damage, GameObject target) {
 		Objects.requireNonNull(target);
 		if(damage < 0)
 			throw new IllegalArgumentException("given damage (" + damage + ") must not be negative");
@@ -35,7 +34,6 @@ public class FireProjectile implements Action{
 		this.destRow = destRow;
 		this.destCol = destCol;
 		this.damage = damage;
-		this.ability = ability;
 		this.target = target;
 	}
 
@@ -57,10 +55,6 @@ public class FireProjectile implements Action{
 
 	public int getDamage() {
 		return damage;
-	}
-	
-	public Ability getAbility() {
-		return ability;
 	}
 	
 	public GameObject getTarget() {

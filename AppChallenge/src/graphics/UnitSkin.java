@@ -21,6 +21,10 @@ public enum UnitSkin {
 				return basicBullet.getImage();
 			throw new UnsupportedOperationException(clazz + " is not a recognized Ability of the UnitSkin: " + this);
 		}
+		@Override
+		public double[] projectileSizeFor(Class<? extends SingleProjectileAbility> clazz) {
+			return new double[] {0.1, 0.1};
+		}
 	};
 	private static final ImageInfo basicBullet = new ImageInfo("BasicBullet.png");
 	private static final Map<Class<? extends Unit>, UnitSkin> map;
@@ -61,5 +65,29 @@ public enum UnitSkin {
 	
 	public Image projectileImageFor(Class<? extends SingleProjectileAbility> clazz) {
 		throw new UnsupportedOperationException(clazz + " is not a recognized Ability of the UnitSkin: " + this);
+	}
+	
+	/**
+	 * The given {@link SingleProjectileAbility} must not be {@code null}.
+	 */
+	public Image projectileImageFor(SingleProjectileAbility ability) {
+		Objects.requireNonNull(ability);
+		return projectileImageFor(ability.getClass());
+	}
+	
+	/**
+	 * Returns a length-2 {@code double} array containing the percentage of a {@link TerrainTile} the projectile should take up.
+	 * The returned values are the width percent and the height percent, in that order.
+	 */
+	public double[] projectileSizeFor(Class<? extends SingleProjectileAbility> clazz) {
+		throw new UnsupportedOperationException(clazz + " is not a recognized Ability of the UnitSkin: " + this);
+	}
+	
+	/**
+	 * The given {@link SingleProjectileAbility} must not be {@code null}.
+	 */
+	public double[] projectileSizeFor(SingleProjectileAbility ability) {
+		Objects.requireNonNull(ability);
+		return projectileSizeFor(ability.getClass());
 	}
 }

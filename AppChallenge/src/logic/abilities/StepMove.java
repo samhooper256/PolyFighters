@@ -118,6 +118,6 @@ public class StepMove extends AbstractAnyAbility implements MoveAbility {
 	 */
 	@Override
 	public Move createMoveFor(int destRow, int destCol, GameObject target) {
-		return new Move(unit, new Relocate(unit.getRow(), unit.getCol(), destRow, destCol));
+		return new Move(this, new Relocate(unit.getRow(), unit.getCol(), destRow, destCol));
 	}
 }

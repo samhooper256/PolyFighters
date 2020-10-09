@@ -1,5 +1,7 @@
 package graphics;
 
+import fxutils.ImageWrap;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import logic.*;
 import logic.abilities.SingleProjectileAbility;
@@ -99,7 +101,10 @@ public class TerrainGrid extends GridPane {
 	
 	public void executeMove(final Move move) {
 		Level.current().getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane().deselect();
-		final Unit actingUnit = move.getUnit();
+		final Ability actingAbility = move.getAbility();
+		final Unit actingUnit = actingAbility.getUnit();
+		final UnitPane actingUnitPane = getTileAt(actingUnit.getRow(), actingUnit.getCol()).getUnitPane();
+		final UnitSkin actingSkin = UnitSkin.forUnitOrDefault(actingUnit);
 		for(Action a : move.getActionsUnmodifiable()) {
 			if(a instanceof Relocate) {
 				Relocate r = (Relocate) a;
@@ -111,8 +116,19 @@ public class TerrainGrid extends GridPane {
 				UnitPane destUnitPane = destTile.getUnitPane();
 				destUnitPane.setUnit(unit);
 			}
-			else if(a instanceof SingleProjectileAbility) {
-
+			else if(a instanceof FireProjectile) {
+				if(actingAbility instanceof SingleProjectileAbility) {
+					SingleProjectileAbility spa = (SingleProjectileAbility) a;
+					Image image = actingSkin.projectileImageFor(spa);
+					ImageWrap wrap = new ImageWrap(image);
+					Pane pane = new Pane(wrap);
+					pane.setLayoutX(actingUnitPane.getLayoutX());
+					pane.setLayoutY(actingUnitPane.getLayoutY());
+					getChildren().add(pane);
+				}
+				else {
+					throw new UnsupportedOperationException("Unsupported ability type for a FireProjectile action: " + actingAbility.getClass());
+				}
 			}
 			else {
 				throw new UnsupportedOperationException("Unsupported action type: " + a.getClass());

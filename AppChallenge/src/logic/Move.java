@@ -12,18 +12,18 @@ import java.util.List;
  */
 public final class Move {
 	
-	private final Unit unit;
+	private final Ability ability;
 	List<Action> actions;
 	
-	public Move(Unit unit, Action... actions) {
-		this.unit = unit;
+	public Move(Ability unit, Action... actions) {
+		this.ability = unit;
 		this.actions = new ArrayList<>(actions.length);
 		for(int i = 0; i < actions.length; i++)
 			this.actions.add(actions[i]);
 	}
 	
-	public Move(Unit unit) {
-		this.unit = unit;
+	public Move(Ability unit) {
+		this.ability = unit;
 		actions = new ArrayList<>();
 	}
 	
@@ -55,7 +55,7 @@ public final class Move {
 			a.execute(board);
 	}
 	
-	public Unit getUnit() {
-		return unit;
+	public Ability getAbility() {
+		return ability;
 	}
 }
