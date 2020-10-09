@@ -54,4 +54,8 @@ public final class Move {
 		for(Action a : actions)
 			a.execute(board);
 	}
+	
+	public Unit getUnit() {
+		return unit;
+	}
 }
