@@ -3,8 +3,13 @@ package graphics;
 import java.util.Objects;
 
 import fxutils.ImageWrap;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import logic.Ability;
+import logic.Move;
 import logic.Obstacle;
+import logic.Unit;
 
 /**
  * A {@link StackPane} for displaying an {@link Obstacle}.
@@ -13,8 +18,19 @@ import logic.Obstacle;
  */
 public class ObstaclePane extends StackPane implements GameObjectRepresentation {
 	
+	private static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {
+		ObstaclePane pane = (ObstaclePane) mouseEvent.getSource();
+		System.out.printf("Entered ObstaclePane clickHandler%n");
+		Obstacle obstacle = pane.getGameObject();
+		if(pane.isUseCandidate()) {
+			Level level = Level.current();
+			Move move = level.getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane()
+					.getAbility().createMoveFor(obstacle.getRow(), obstacle.getCol(), obstacle);
+			level.getTerrainPane().getGrid().executeMove(move);
+		}
+		mouseEvent.consume();
+	};
 	private final ImageWrap obstacleWrap;
-	
 	private Obstacle obstacle;
 	private boolean isUseCandidate, isHighlighted;
 	
@@ -22,6 +38,7 @@ public class ObstaclePane extends StackPane implements GameObjectRepresentation 
 		this.obstacle = obstacle;
 		this.isUseCandidate = false;
 		this.isHighlighted = false;
+		this.setOnMouseClicked(clickHandler);
 		obstacleWrap = new ImageWrap(theme.imageFor(obstacle));
 		getChildren().add(obstacleWrap);
 	}

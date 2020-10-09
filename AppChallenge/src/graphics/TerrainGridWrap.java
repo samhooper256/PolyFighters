@@ -24,6 +24,10 @@ public class TerrainGridWrap extends StackPane {
 		return grid;
 	}
 	
+	public Pane getRegion() {
+		return region;
+	}
+	
 	public Theme getTheme() {
 		return grid.getTheme();
 	}

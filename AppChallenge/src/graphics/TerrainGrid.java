@@ -1,8 +1,11 @@
 package graphics;
 
 import fxutils.ImageWrap;
+import javafx.animation.*;
+import javafx.beans.binding.DoubleBinding;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.util.Duration;
 import logic.*;
 import logic.abilities.SingleProjectileAbility;
 import logic.actions.*;
@@ -87,6 +90,10 @@ public class TerrainGrid extends GridPane {
 		return terrainTiles[row][col];
 	}
 	
+	public boolean isInBounds(int row, int col) {
+		return row >= 0 && row < rows && col >= 0 && col < cols;
+	}
+	
 	public void addUnit(Unit unit, int row, int col) {
 		backingBoard.addUnit(unit, row, col);
 		terrainTiles[row][col].getUnitPane().setUnit(unit);
@@ -103,9 +110,13 @@ public class TerrainGrid extends GridPane {
 	
 	public void executeMove(final Move move) {
 		Level.current().getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane().deselect();
+		final Pane region = wrap.getRegion();
 		final Ability actingAbility = move.getAbility();
 		final Unit actingUnit = actingAbility.getUnit();
+		final TerrainTile actingStartTile = getTileAt(actingUnit.getRow(), actingUnit.getCol());
 		final UnitPane actingUnitPane = getTileAt(actingUnit.getRow(), actingUnit.getCol()).getUnitPane();
+		final int actingRow = actingUnit.getRow();
+		final int actingCol = actingUnit.getCol();
 		final UnitSkin actingSkin = UnitSkin.forUnitOrDefault(actingUnit);
 		for(Action a : move.getActionsUnmodifiable()) {
 			if(a instanceof Relocate) {
@@ -119,17 +130,43 @@ public class TerrainGrid extends GridPane {
 				destUnitPane.setUnit(unit);
 			}
 			else if(a instanceof FireProjectile) {
+				FireProjectile fp = (FireProjectile) a;
 				if(actingAbility instanceof SingleProjectileAbility) {
 					System.out.println("Entered the goof zone");
 					SingleProjectileAbility spa = (SingleProjectileAbility) actingAbility;
+					final TerrainTile destTile = getTileAt(fp.getDestRow(), fp.getDestCol());
 					Image image = actingSkin.projectileImageFor(spa);
-					ImageWrap wrap = new ImageWrap(image);
-					Pane pane = new Pane(wrap);
-					pane.setLayoutX(actingUnitPane.getLayoutX() + 100);
-					pane.setLayoutY(actingUnitPane.getLayoutY());
-					wrap.setLayoutX(0);
-					wrap.setLayoutY(0);
-					getChildren().add(pane);
+					ImageWrap wrap = new ImageWrap(image, 0, 0);
+					double[] imgSize = actingSkin.projectileSizeFor(spa);
+					StackPane pane = new StackPane(wrap);
+					final DoubleBinding widthBinding = actingStartTile.widthProperty().multiply(imgSize[0]);
+					final DoubleBinding heightBinding = actingStartTile.heightProperty().multiply(imgSize[1]);
+					final DoubleBinding startX = actingStartTile.layoutXProperty().add(actingStartTile.widthProperty().divide(2)).subtract(widthBinding.divide(2));
+					final DoubleBinding startY = actingStartTile.layoutYProperty().add(actingStartTile.heightProperty().divide(2)).subtract(heightBinding.divide(2));
+					final DoubleBinding destX = destTile.layoutXProperty().add(destTile.widthProperty().divide(2)).subtract(widthBinding.divide(2));
+					final DoubleBinding destY = destTile.layoutYProperty().add(destTile.heightProperty().divide(2)).subtract(heightBinding.divide(2));
+					pane.setLayoutX(startX.get());
+					pane.setLayoutY(startY.get());
+					pane.prefWidthProperty().bind(widthBinding);
+					pane.prefHeightProperty().bind(heightBinding);
+					region.getChildren().add(pane);
+					double tileDistance = Math.sqrt(Math.pow(destTile.getRow() - actingRow, 2) + Math.pow(destTile.getCol() - actingCol, 2));
+					final Transition transition = new Transition() {
+						{
+							setCycleDuration(Duration.millis(tileDistance * 100));
+						}
+						@Override
+						protected void interpolate(double frac) {
+							double x = startX.get() + (destX.get() - startX.get()) * frac;
+							double y = startY.get() + (destY.get() - startY.get()) * frac;
+							pane.relocate(x, y);
+						}
+					};
+					transition.setOnFinished(actionEvent -> {
+						region.getChildren().remove(pane);
+					});
+					transition.setInterpolator(Interpolator.LINEAR);
+					transition.play();
 				}
 				else {
 					throw new UnsupportedOperationException("Unsupported ability type for a FireProjectile action: " + actingAbility.getClass());
