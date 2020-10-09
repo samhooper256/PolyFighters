@@ -1,5 +1,6 @@
 package graphics;
 
+import javafx.scene.Node;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
@@ -9,7 +10,7 @@ import javafx.scene.shape.Rectangle;
  * A {@link Rectangle} that can be overlayed on another {@link Region} to serve as a "highlight" of that {@code Region}. The
  * {@link #widthProperty()} and {@link #heightProperty()} of the {@code Highlight} are bound to the corresponding properties
  * of the {@code Region} provided for the constructors. The {@code Highlight} does not keep a reference to the {@code Region} it
- * is displayed over.
+ * is displayed over. All {@code Highlight}s are {@link Node#setMouseTransparent(boolean) mouse transparent}.
  * 
  * @author Sam Hooper
  *
@@ -27,5 +28,6 @@ public class Highlight extends Rectangle {
 		setOpacity(opacity);
 		this.widthProperty().bind(region.widthProperty());
 		this.heightProperty().bind(region.heightProperty());
+		this.setMouseTransparent(true);
 	}
 }

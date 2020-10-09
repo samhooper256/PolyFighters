@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import logic.Ability;
+import logic.Move;
 import logic.Unit;
 import logic.units.*;
 import utils.IntChangeListener;
@@ -18,7 +19,7 @@ import utils.SingleListener;
  * @author Sam Hooper
  *
  */
-public class UnitPane extends StackPane {
+public class UnitPane extends StackPane implements AbilityUseCandidate {
 	
 	private static final ImageInfo healthPointInfo = new ImageInfo("HealthPoint.png");
 	private static final ImageInfo missingHealthPointInfo = new ImageInfo("MissingHealthPoint.png");
@@ -36,18 +37,29 @@ public class UnitPane extends StackPane {
 	}
 	
 	private static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {
+//		System.out.printf("Entered UnitPane clickHandler%n");
 		UnitPane pane = ((UnitWrap) mouseEvent.getSource()).getEnclosingInstance();
 		Unit unit = pane.getUnit();
-		InfoPanel infoPanel = Main.currentLevel().getInfoPanel();
-		AbilityInfoPanel abilityPanel = infoPanel.getAbilityInfoPanel();
-		if(abilityPanel.getUnit() != unit) {
-			infoPanel.clearContent();
-			for(Ability ability : unit.getAbilitiesUnmodifiable()) {
-				abilityPanel.addPane(pane.abilityPaneFor(ability));
-			}
-			abilityPanel.setUnit(unit);
+		if(pane.isUseCandidate()) {
+//			System.out.printf("\twas use candidate.%n");
+			Level level = Level.current();
+			Move move = level.getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane()
+					.getAbility().createMoveFor(unit.getRow(), unit.getCol(), unit);
+			level.getTerrainPane().getGrid().executeMove(move);
 		}
-		infoPanel.displayOnlyAbilityInfoPanel();
+		else {
+//			System.out.printf("\twas not use candidate.%n");
+			InfoPanel infoPanel = Main.currentLevel().getInfoPanel();
+			AbilityInfoPanel abilityPanel = infoPanel.getAbilityInfoPanel();
+			if(abilityPanel.getUnit() != unit) {
+				infoPanel.clearContent();
+				for(Ability ability : unit.getAbilitiesUnmodifiable()) {
+					abilityPanel.addPane(pane.abilityPaneFor(ability));
+				}
+				abilityPanel.setUnit(unit);
+			}
+			infoPanel.displayOnlyAbilityInfoPanel();
+		}
 		mouseEvent.consume();
 	};
 	
@@ -86,10 +98,12 @@ public class UnitPane extends StackPane {
 	};
 	
 	private Unit unit;
+	private boolean isUseCandidate;
 	
 	/** Creates an empty {@code UnitPane} with no {@link Unit} on it. */
 	public UnitPane() {
 		super();
+		isUseCandidate = false;
 		unitWrap = new UnitWrap();
 		unitWrap.setOnMouseClicked(clickHandler);
 		healthBarPane = new BorderPane();
@@ -185,6 +199,16 @@ public class UnitPane extends StackPane {
 	
 	public Unit getUnit() {
 		return unit;
+	}
+
+	@Override
+	public void setUseCandidate(boolean value) {
+		isUseCandidate = value;
+	}
+
+	@Override
+	public boolean isUseCandidate() {
+		return isUseCandidate;
 	}
 	
 }
