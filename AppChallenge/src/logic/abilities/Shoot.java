@@ -9,6 +9,7 @@ import logic.BoardTile;
 import logic.EnemyUnit;
 import logic.GameObject;
 import logic.Move;
+import logic.Obstacle;
 import logic.TileType;
 import logic.Unit;
 import logic.actions.FireProjectile;
@@ -109,5 +110,10 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 	public Move createMoveFor(int destRow, int destCol, GameObject target) {
 		Objects.requireNonNull(target);
 		return new Move(new FireProjectile(unit.getRow(), unit.getCol(), destRow, destCol, bulletDamage.get(), this, target));
+	}
+
+	@Override
+	public boolean canTarget(GameObject object) {
+		return object instanceof Unit || object instanceof Obstacle;
 	}
 }			
