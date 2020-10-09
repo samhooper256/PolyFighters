@@ -17,18 +17,20 @@ public class TerrainGrid extends GridPane {
 	private final Board backingBoard;
 	private final TerrainTile[][] terrainTiles;
 	private final Theme theme;
+	private final TerrainGridWrap wrap;
 	
 	/** Creates a new {@code TerrainGrid} with {@code size} rows and {@code size} columns. */
-	public TerrainGrid(Theme theme, int size) {
-		this(theme, size, size);
+	public TerrainGrid(Theme theme, TerrainGridWrap wrap, int size) {
+		this(theme, wrap, size, size);
 	}
 	
 	/** Creates a new {@code TerrainGrid} with the given amount of rows and columns */
-	public TerrainGrid(Theme theme, int rows, int cols) {
+	public TerrainGrid(Theme theme, TerrainGridWrap wrap, int rows, int cols) {
 		super();
 		this.theme = theme;
 		this.rows = rows;
 		this.cols = cols;
+		this.wrap = wrap;
 //		backingBoard = new Board(rows, cols);
 		backingBoard = new BoardGenerator().build();
 		terrainTiles = new TerrainTile[rows][cols];
@@ -118,12 +120,15 @@ public class TerrainGrid extends GridPane {
 			}
 			else if(a instanceof FireProjectile) {
 				if(actingAbility instanceof SingleProjectileAbility) {
-					SingleProjectileAbility spa = (SingleProjectileAbility) a;
+					System.out.println("Entered the goof zone");
+					SingleProjectileAbility spa = (SingleProjectileAbility) actingAbility;
 					Image image = actingSkin.projectileImageFor(spa);
 					ImageWrap wrap = new ImageWrap(image);
 					Pane pane = new Pane(wrap);
-					pane.setLayoutX(actingUnitPane.getLayoutX());
+					pane.setLayoutX(actingUnitPane.getLayoutX() + 100);
 					pane.setLayoutY(actingUnitPane.getLayoutY());
+					wrap.setLayoutX(0);
+					wrap.setLayoutY(0);
 					getChildren().add(pane);
 				}
 				else {
