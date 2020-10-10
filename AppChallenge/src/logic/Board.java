@@ -145,4 +145,19 @@ public class Board {
 		}
 		return false;
 	}
+	
+	/**
+	 * Removes the given {@link GameObject} on the given tile from this {@link Board}. Throws an {@link IllegalArgumentException}
+	 * if it is not present. Throws {@link NullPointerException} if the object is {@code null}. This method updates the row, column, and board
+	 * values of the {@code GameObject}. The row and column values are set to {@code -1}.
+	 * @throws NullPointerException if the given {@link GameObject} is {@code null}.
+	 * @throws IllegalArgumentException if the given {@link GameObject} is not present on this {@link Board} at the given tile.
+	 */
+	public void removeGameObject(GameObject object, int row, int col) {
+		Objects.requireNonNull(object);
+		tiles[row][col].removeObjectOrThrow(object);
+		object.setBoard(null);
+		object.setRow(-1);
+		object.setCol(-1);
+	}
 }

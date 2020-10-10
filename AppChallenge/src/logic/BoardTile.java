@@ -52,20 +52,22 @@ public class BoardTile {
 	}
 	
 	/** Removes the given {@link GameObject} from this tile, if it is present. Returns {@code true}
-	 * if the object was present and has been removed, and {@code false} if it was not present.
+	 * if the object was present and has been removed, and {@code false} if it was not present. <b>This method
+	 * DOES NOT adjust the row and column values of the {@code Unit} removed, nor does it update that {@code Unit}'s  associated {@link Board}.</b>
 	 * @throws IllegalArgumentException if the given {@code GameObject} is not on this {@code BoardTile}.
-	 * @param object
 	 */
 	public boolean removeObjectIfPresent(GameObject object) {
 		return objects.remove(object);
 	}
 	
-	/** Removes the given {@link GameObject} from this tile.
+	/** Removes the given {@link GameObject} from this tile. <b>This method DOES NOT adjust the row and column
+	 * values of the {@code Unit} removed, nor does it update that {@code Unit}'s  associated {@link Board}.</b>
+	 * Note that this method throws {@link IllegalArgumentException} if the given {@code GameObject} is {@code null}.
 	 * @throws IllegalArgumentException if the given {@code GameObject} is not on this {@code BoardTile}.
 	 */
-	public void removeObject(GameObject object) {
+	public void removeObjectOrThrow(GameObject object) {
 		if(!objects.remove(object))
-			throw new IllegalArgumentException("The object " + object + " was not on the tile.");
+			throw new IllegalArgumentException("The object \"" + object + "\" was not on the tile.");
 	}
 	
 	/** Returns the {@link Unit} on the tile, or {@code null} if there is no {@code Unit} on this tile.
@@ -101,7 +103,7 @@ public class BoardTile {
 	}
 	/**
 	 * Adds the given {@link Unit} to the top of this {@code BoardTile}. <b>This method DOES NOT adjust the row and column
-	 * values of the {@code Unit} removed, nor does it update that {@code Unit}'s  associated {@link Board}.</b>
+	 * values of the {@code Unit} added, nor does it update that {@code Unit}'s  associated {@link Board}.</b>
 	 * @throws IllegalStateException if there is already a {@code Unit} on this {@code BoardTile}.
 	 */
 	public void addUnitOrThrow(Unit unit) {
@@ -112,7 +114,7 @@ public class BoardTile {
 	
 	/**
 	 * Adds the given {@link Obstacle} to the top of this {@code BoardTile}. <b>This method DOES NOT adjust the row, column, or board
-	 * pointers of the {@code Obstacle} removed.</b>
+	 * pointers of the {@code Obstacle} added.</b>
 	 * @throws IllegalStateException if there is already an {@code Obstacle} on this {@code BoardTile}.
 	 */
 	public void addObstacleOrThrow(Obstacle obstacle) {

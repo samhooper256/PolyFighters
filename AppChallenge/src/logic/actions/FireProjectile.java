@@ -69,7 +69,7 @@ public class FireProjectile implements Action{
 			hh.healthProperty().set(Math.max(0, hh.healthProperty().get() - damage));
 			if(hh.healthProperty().get() == 0) {
 				hh.aliveProperty().set(false);
-				target.setBoard(null);
+				target.getBoard().removeGameObject(target, target.getRow(), target.getCol());
 			}
 		}
 	}
