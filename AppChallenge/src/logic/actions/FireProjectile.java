@@ -10,7 +10,8 @@ import logic.HasHealth;
 
 /**
  * An {@link Action} that represents a {@link Unit} firing a projectile from one that does a non-negative amount of damage to another {@link GameObject}.
- * The {@code GameObject} receiving the damage must be specified when an object of this class is created. This class is immutable.
+ * The {@code GameObject} receiving the damage must be specified when an object of this class is created. This class is immutable. If the {@code GameObject}
+ * does not implement {@link HasHealth}, {@link #execute(Board) executing} this {@code Action} has no effect.
  * @author Sam Hooper
  *
  */
@@ -18,7 +19,6 @@ public class FireProjectile implements Action{
 	
 	private final int startRow, startCol, destRow, destCol, damage;
 	private final GameObject target;
-	
 
 	/**
 	 * The target {@link GameObject} must not be {@code null}. The damage must be non-negative.
@@ -68,8 +68,8 @@ public class FireProjectile implements Action{
 			HasHealth hh = (HasHealth) target;
 			hh.healthProperty().set(Math.max(0, hh.healthProperty().get() - damage));
 			if(hh.healthProperty().get() == 0) {
-				hh.aliveProperty().set(false);
 				target.getBoard().removeGameObject(target, target.getRow(), target.getCol());
+				hh.aliveProperty().set(false);
 			}
 		}
 	}

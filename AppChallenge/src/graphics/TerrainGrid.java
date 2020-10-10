@@ -225,17 +225,18 @@ public class TerrainGrid extends GridPane {
 							catch (InterruptedException e) {}
 						}
 					}
-//					System.out.println("ESCAPED!");
 				}
 				else {
 					throw new UnsupportedOperationException("Unsupported ability type for a FireProjectile action: " + actingAbility.getClass());
 				}
 			}
+			else if(a instanceof ChangeHealth) {
+				Main.blockUntilFinished(() -> a.execute(backingBoard)); //needs to be on FX thread since this will trigger listeners, which modify the HealthBar display.
+			}
 			else {
 				throw new UnsupportedOperationException("Unsupported action type: " + a.getClass());
 			}
 		}
-//		System.out.printf("(exit) executeMoveInternal(%s)%n", move);
 	}
 
 	
