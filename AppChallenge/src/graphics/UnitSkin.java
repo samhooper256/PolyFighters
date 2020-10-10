@@ -25,6 +25,18 @@ public enum UnitSkin {
 		public double[] projectileSizeFor(Class<? extends SingleProjectileAbility> clazz) {
 			return new double[] {0.1, 0.1};
 		}
+	},
+	GOOB(Goob.class) {
+		@Override
+		public Image projectileImageFor(Class<? extends SingleProjectileAbility> clazz) {
+			if(clazz == Shoot.class)
+				return basicBullet.getImage();
+			throw new UnsupportedOperationException(clazz + " is not a recognized Ability of the UnitSkin: " + this);
+		}
+		@Override
+		public double[] projectileSizeFor(Class<? extends SingleProjectileAbility> clazz) {
+			return new double[] {0.1, 0.1};
+		}
 	};
 	private static final ImageInfo basicBullet = new ImageInfo("BasicBullet.png");
 	private static final Map<Class<? extends Unit>, UnitSkin> map;

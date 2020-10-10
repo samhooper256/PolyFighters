@@ -29,7 +29,7 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 	static {
 		infoMap = new HashMap<>();
 		infoMap.put(BasicUnit.class, new ImageInfo("BasicUnit.png"));
-		infoMap.put(BasicEnemy.class, new ImageInfo("BasicEnemy.png"));
+		infoMap.put(Goob.class, new ImageInfo("Goob.png"));
 	}
 	
 	private static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {

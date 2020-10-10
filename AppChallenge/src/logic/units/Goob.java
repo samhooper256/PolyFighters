@@ -1,11 +1,15 @@
 package logic.units;
 
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.List;
 
 import logic.Ability;
 import logic.Board;
 import logic.EnemyUnit;
 import logic.TileType;
+import logic.abilities.Shoot;
+import logic.abilities.StepMove;
 import utils.BooleanRef;
 import utils.CollectionRef;
 import utils.IntRef;
@@ -14,78 +18,33 @@ import utils.IntRef;
  * @author Sam Hooper
  *
  */
-public class Goob implements EnemyUnit {
-
-	@Override
-	public CollectionRef<Ability> abilityCollectionRef() {
-		// TODO Auto-generated method stub
-		return null;
+public class Goob extends AbstractEnemyUnit {
+	
+	public static final String NAME = "Goob";
+	
+	private static final int DEFAULT_MAX_HEALTH = 2;
+	private static final int DEFAULT_MOVE_DISTANCE = 3;
+	private static final int DEFAULT_SHOOT_DAMAGE = 1;
+	private static final EnumSet<TileType> DEFAULT_TRAVERSABLE_TILETYPES = EnumSet.of(TileType.SOLID, TileType.LIQUID);
+	
+	private final StepMove stepMoveAbility;
+	private final Shoot shootAbility;
+	
+	public Goob() {
+		super(DEFAULT_MAX_HEALTH);
+		this.traversableTileTypes.addAll(DEFAULT_TRAVERSABLE_TILETYPES);
+		this.stepMoveAbility = new StepMove(this, DEFAULT_MOVE_DISTANCE);
+		this.shootAbility = new Shoot(this, DEFAULT_SHOOT_DAMAGE);
+		this.abilities.addAll(stepMoveAbility, shootAbility);
 	}
-
-	@Override
-	public boolean canTraverse(TileType type) {
-		// TODO Auto-generated method stub
-		return false;
+	
+	public StepMove getStepMoveAbility() {
+		return stepMoveAbility;
 	}
-
-	@Override
-	public Collection<int[]> getLegalSpots(Ability ability) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IntRef maxHealthProperty() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IntRef healthProperty() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public BooleanRef aliveProperty() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Board getBoard() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setBoard(Board board) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getRow() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getCol() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setRow(int row) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setCol(int col) {
-		// TODO Auto-generated method stub
-		
+	
+	public Shoot getShootAbility() {
+		return shootAbility;
 	}
 	
 }
+

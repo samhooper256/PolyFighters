@@ -17,6 +17,18 @@ import logic.units.AbstractUnit;
  *
  */
 public interface TeamUnit extends Unit {
+	
+	/**
+	 * @return the name of this {@code Unit}, as it would be displayed to the user.
+	 */
 	String getName();
 	
+	/**
+	 * Returns a {@link Collection} of (row, col) ordered pairs. Each ordered
+	 * pair is a destination tile where this unit could legally use the given ability.
+	 * @param ability
+	 * @return
+	 * @throws IllegalArgumentException if this unit does not have the given ability.
+	 */
+	Collection<int[]> getLegalSpots(Ability ability);
 }

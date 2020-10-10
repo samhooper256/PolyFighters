@@ -79,13 +79,6 @@ public abstract class AbstractUnit implements Unit {
 		return traversableTileTypes.contains(type);
 	}
 	
-	@Override
-	public Collection<int[]> getLegalSpots(Ability ability) {
-		if(!abilities.contains(ability))
-			throw new IllegalArgumentException("This unit does not have the given ability");
-		return ability.getLegals();
-	}
-	
 	/**
 	 * If this {@code Unit} does not have the indicated {@link Ability}, adds that {@code Ability} to this {@code Unit}'s
 	 * set of {@code Abilities} and returns {@code true}. Otherwise, returns {@code false}.

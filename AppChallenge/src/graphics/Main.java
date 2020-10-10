@@ -8,7 +8,6 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 import logic.ObstacleSize;
 import logic.obstacles.ObstacleBase;
-import logic.units.BasicEnemy;
 import logic.units.BasicUnit;
 
 /**
