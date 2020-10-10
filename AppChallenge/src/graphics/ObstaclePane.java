@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import fxutils.ImageWrap;
 import javafx.event.EventHandler;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
@@ -28,12 +29,15 @@ public class ObstaclePane extends StackPane implements GameObjectRepresentation 
 			Move move = level.getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane()
 					.getAbility().createMoveFor(obstacle.getRow(), obstacle.getCol(), obstacle);
 			level.getTerrainPane().getGrid().executeMove(move);
-			mouseEvent.consume();
 		}
 		else {
-			System.out.printf("Display obstaclepane info... beep boop...%n");
-			mouseEvent.consume();
+			InfoPanel infoPanel = Level.current().getInfoPanel();
+			infoPanel.clearContent();
+			ObstacleInfoPanel obstacleInfoPanel = infoPanel.getObstacleInfoPanel();
+			obstacleInfoPanel.setContent(pane.getObstacleInfo());
+			infoPanel.displayOnlyObstacleInfoPanel();
 		}
+		mouseEvent.consume();
 		
 	};
 	private final ObstacleWrap obstacleWrap;
@@ -47,6 +51,7 @@ public class ObstaclePane extends StackPane implements GameObjectRepresentation 
 	
 	private Obstacle obstacle;
 	private boolean isUseCandidate, isHighlighted;
+	private ObstacleInfo obstacleInfo;
 	
 	private class ObstacleWrap extends ImageWrap {
 		ObstaclePane getEnclosingInstance() {
@@ -67,6 +72,22 @@ public class ObstaclePane extends StackPane implements GameObjectRepresentation 
 		healthBarPane.setBottom(healthBar);
 		healthBarPane.setMouseTransparent(true);
 		getChildren().addAll(obstacleWrap, healthBarPane);
+	}
+	
+	public ObstacleInfo getObstacleInfo() {
+		if(obstacleInfo == null) {
+			obstacleInfo = new ObstacleInfo(this) {
+				{
+					String descriptor = switch(obstacle.getSize()) {
+					case SMALL -> "small";
+					case LARGE -> "large";
+					default -> "extremely strange";
+					};
+					getChildren().add(new Label(String.format("A %s obstacle.", descriptor)));
+				}
+			};
+		}
+		return obstacleInfo;
 	}
 	
 	/**

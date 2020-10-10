@@ -13,20 +13,27 @@ public class InfoPanel extends StackPane {
 	private final VBox defaultContent;
 	private final AbilityInfoPanel abilityInfoPanel;
 	private final TileInfoPanel tileInfoPanel;
+	private final ObstacleInfoPanel obstacleInfoPanel;
 	private boolean abilityInfoPanelShowing;
 	private boolean tileInfoPanelShowing;
+	private boolean obstacleInfoPanelShowing;
 	
 	public InfoPanel() {
 		super();
 		abilityInfoPanelShowing = false;
 		tileInfoPanelShowing = false;
+		obstacleInfoPanelShowing = false;
 		defaultContent = new VBox();
 		initDefaultContent();
 		abilityInfoPanel = new AbilityInfoPanel();
 		tileInfoPanel = new TileInfoPanel();
+		obstacleInfoPanel = new ObstacleInfoPanel();
 		getChildren().add(defaultContent);
 	}
 	
+	/**
+	 * Must only be called from constructor.
+	 */
 	private void initDefaultContent() {
 		defaultContent.setAlignment(Pos.CENTER);
 		final Label label = new Label("Nothing selected.");
@@ -38,6 +45,7 @@ public class InfoPanel extends StackPane {
 	public void clearContent() {
 		takeDownAbilityInfoPanel();
 		takeDownTileInfoPanel();
+		takeDownObstacleInfoPanel();
 		getChildren().clear();
 	}
 
@@ -65,6 +73,16 @@ public class InfoPanel extends StackPane {
 		}
 	}
 	
+	/**
+	 * Handles any necessary actions that need to be done before the {@link #obstacleInfoPanel} is removed from this {@code InfoPanel}'s
+	 * list of children.
+	 */
+	private void takeDownObstacleInfoPanel() {
+		if(obstacleInfoPanelShowing) {
+			obstacleInfoPanelShowing = false;
+		}
+	}
+	
 	public void hideTileInfoPanel() {
 		if(tileInfoPanelShowing) {
 			takeDownTileInfoPanel();
@@ -76,6 +94,13 @@ public class InfoPanel extends StackPane {
 		if(abilityInfoPanelShowing) {
 			takeDownAbilityInfoPanel();
 			getChildren().remove(abilityInfoPanel);
+		}
+	}
+	
+	public void hideObstacleInfoPanel() {
+		if(obstacleInfoPanelShowing) {
+			takeDownObstacleInfoPanel();
+			getChildren().remove(obstacleInfoPanel);
 		}
 	}
 	
@@ -96,42 +121,69 @@ public class InfoPanel extends StackPane {
 	}
 	
 	/**
-	 * Adds the {@link AbilityInfoPanel} associated with this {@code InfoPanel} to the top of its stack if it is not already on the stack.
-	 * Otherwise, does nothing.
-	 */
-	public void displayOnlyAbilityInfoPanel() {
-		hideTileInfoPanel();
-		if(!abilityInfoPanelShowing) {
-			getChildren().add(abilityInfoPanel);
-			abilityInfoPanelShowing = true;
-		}
-	}
-	
-	public boolean isAbilityInfoPanelShowing() {
-		return abilityInfoPanelShowing;
-	}
-	
-	/**
 	 * Returns the {@link TileInfoPanel} associated with this {@code InfoPanel}. The {@code TileInfoPanel}
 	 * may or may not be currently showing.
 	 */
 	public TileInfoPanel getTileInfoPanel() {
 		return tileInfoPanel;
 	}
+
+	/**
+	 * Returns the {@link ObstacleInfoPanel} associated with this {@code InfoPanel}. The {@code ObstacleInfoPanel}
+	 * may or may not be currently showing.
+	 */
+	public ObstacleInfoPanel getObstacleInfoPanel() {
+		return obstacleInfoPanel;
+	}
 	
 	/**
-	 * Adds the {@link AbilityInfoPanel} associated with this {@code InfoPanel} to the top of its stack if it is not already on the stack.
-	 * Otherwise, does nothing.
+	 * Removes all other panels from this {@link InfoPanel} and displays only the {@link AbilityInfoPanel}. If the {@code AbilityInfoPanel} is already
+	 * showing, does nothing.
+	 */
+	public void displayOnlyAbilityInfoPanel() {
+		hideTileInfoPanel();
+		hideObstacleInfoPanel();
+		if(!abilityInfoPanelShowing) {
+			getChildren().add(abilityInfoPanel);
+			abilityInfoPanelShowing = true;
+		}
+	}
+	
+	/**
+	 * Removes all other panels from this {@link InfoPanel} and displays only the {@link TileInfoPanel}. If the {@code TileInfoPanel} is already
+	 * showing, does nothing.
 	 */
 	public void displayOnlyTileInfoPanel() {
 		hideAbilityInfoPanel();
+		hideObstacleInfoPanel();
 		if(!tileInfoPanelShowing) {
 			getChildren().add(tileInfoPanel);
 			tileInfoPanelShowing = true;
 		}
 	}
 	
+	/**
+	 * Removes all other panels from this {@link InfoPanel} and displays only the {@link ObstacleInfoPanel}. If the {@code ObstacleInfoPanel} is already
+	 * showing, does nothing.
+	 */
+	public void displayOnlyObstacleInfoPanel() {
+		hideAbilityInfoPanel();
+		hideTileInfoPanel();
+		if(!obstacleInfoPanelShowing) {
+			getChildren().add(obstacleInfoPanel);
+			obstacleInfoPanelShowing = true;
+		}
+	}
+
+	public boolean isAbilityInfoPanelShowing() {
+		return abilityInfoPanelShowing;
+	}
+	
 	public boolean isTileInfoPanelShowing() {
 		return tileInfoPanelShowing;
+	}
+	
+	public boolean isObstacleInfoPanelShowing() {
+		return obstacleInfoPanelShowing;
 	}
 }
