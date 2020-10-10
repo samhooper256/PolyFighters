@@ -15,7 +15,8 @@ public class BoardGenerator {
 	public static final int DEFAULT_COL_COUNT = 8;
 	public static final double DEFAULT_LIQUID_PERCENT = 0.2;
 	public static final double DEFAULT_POOL_STRENGTH = 0.4;
-	
+	public static final double DEFAULT_TURN_DIFFICULTY = 0;
+	private static final int DIFFICULTY_MULTIPLY_THRESHOLD = 2; //the sum of the difficulties of the EnemyUnits added must be no more than turnDifficulty * DIFFICULTY_MULTIPLY_THRESHOLD
 	private static final int[][] ADJACENTS = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
 	private int rowCount, colCount;
 	private double liquidPercent;
@@ -168,22 +169,41 @@ public class BoardGenerator {
 	
 	private void placeEnemyUnits(final Board board) {
 		EnemyFactory[] factories = EnemyGenerator.factories().toArray(EnemyFactory[]::new);
-		int[] indices = IntStream.range(0, factories.length).toArray();
-		int maxIndex = factories.length - 1;
+		int[] factoryIndices = IntStream.range(0, factories.length).toArray();
+		int factoryMaxIndex = factories.length - 1;
+		int[] boardIndices = IntStream.range(0, rowCount * colCount).toArray();
+		int boardMaxIndex = boardIndices.length - 1;
 		double currentDifficulty = 0.0;
 		outer:
 		while(currentDifficulty < turnDifficulty) {
-			maxIndex = factories.length - 1;
-			int index;
+			if(boardMaxIndex < 0)
+				break;
+			factoryMaxIndex = factories.length - 1;
+			int factoryIndex;
 			do {
-				if(maxIndex < 0)
+				if(factoryMaxIndex < 0)
 					break outer;
-				index = (int) (Math.random() * (maxIndex + 1));
-				int temp = indices[index];
-				indices[index] = indices[maxIndex];
-				indices[maxIndex] = temp;
-				maxIndex--;
-			} while(currentDifficulty + factories[index].getDifficulty() < turnDifficulty);
+				factoryIndex = (int) (Math.random() * (factoryMaxIndex + 1));
+				int temp = factoryIndices[factoryIndex];
+				factoryIndices[factoryIndex] = factoryIndices[factoryMaxIndex];
+				factoryIndices[factoryMaxIndex] = temp;
+				factoryMaxIndex--;
+			} while(currentDifficulty + factories[factoryIndex].getDifficulty() > turnDifficulty * DIFFICULTY_MULTIPLY_THRESHOLD);
+			EnemyFactory factory = factories[factoryIndex];
+			int row, col;
+			do {
+				if(boardMaxIndex < 0)
+					break outer;
+				int boardIndex = (int) (Math.random() * (boardMaxIndex + 1));
+				row = boardIndices[boardIndex] / colCount;
+				col = boardIndices[boardIndex] % colCount;
+				int temp = boardIndices[boardIndex];
+				boardIndices[boardIndex] = boardIndices[boardMaxIndex];
+				boardIndices[boardMaxIndex] = temp;
+				boardMaxIndex--;
+			} while(board.getTileAt(row, col).getType() == TileType.LIQUID || board.getTileAt(row, col).hasUnit());
+			board.addUnitOrThrow(factory.make(), row, col);
+			currentDifficulty += factories[factoryIndex].getDifficulty();
 		}
 		//TODO Finish up this methodical
 	}

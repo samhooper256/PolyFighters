@@ -38,6 +38,8 @@ public class TerrainGrid extends GridPane {
 		this.wrap = wrap;
 //		backingBoard = new Board(rows, cols);
 		backingBoard = new BoardGenerator()
+				.setRowCount(rows)
+				.setColumnCount(cols)
 				.setTeamUnits(Main.getPlayer().getUnitsUnmodifiable())
 				.setTurnDifficulty(level.getTurnDifficulty())
 				.build();
