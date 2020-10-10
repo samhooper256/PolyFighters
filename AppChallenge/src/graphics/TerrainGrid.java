@@ -3,6 +3,8 @@ package graphics;
 import fxutils.ImageWrap;
 import javafx.animation.*;
 import javafx.beans.binding.DoubleBinding;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
@@ -108,8 +110,43 @@ public class TerrainGrid extends GridPane {
 		return theme;
 	}
 	
-	public void executeMove(final Move move) {
-		Level.current().getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane().deselect();
+	private volatile boolean moveNotify;
+	
+	private final MoveService MOVE_SERVICE = new MoveService();
+			
+	class MoveService extends Service<Void> {
+		private volatile Move move;
+		@Override
+		protected Task<Void> createTask() {
+			return new Task<>() {
+				@Override
+				protected Void call() throws Exception {
+					try {
+						TerrainGrid.this.executeMoveInternal(move);
+						return null;
+					}
+					catch(Exception e) { 
+						e.printStackTrace();
+					}
+					return null;
+				}
+				
+			};
+		}
+		
+		public void executeMove(Move move) {
+			this.move = move;
+			this.restart();
+		}
+	};
+	
+	public void executeMove(Move move) {
+		MOVE_SERVICE.executeMove(move);
+	}
+	
+	private void executeMoveInternal(final Move move) {
+//		System.out.printf("(enter) executeMoveInternal(%s), thread = %s%n", move, Thread.currentThread().getName());
+		Main.blockUntilFinished(() -> Level.current().getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane().deselect());
 		final Pane region = wrap.getRegion();
 		final Ability actingAbility = move.getAbility();
 		final Unit actingUnit = actingAbility.getUnit();
@@ -119,20 +156,23 @@ public class TerrainGrid extends GridPane {
 		final int actingCol = actingUnit.getCol();
 		final UnitSkin actingSkin = UnitSkin.forUnitOrDefault(actingUnit);
 		for(Action a : move.getActionsUnmodifiable()) {
+//			System.out.printf("\tentered loop, a=%s%n", a);
 			if(a instanceof Relocate) {
-				Relocate r = (Relocate) a;
-				r.execute(backingBoard);
-				TerrainTile startTile = terrainTiles[r.getStartRow()][r.getStartCol()];
-				UnitPane startUnitPane = startTile.getUnitPane();
-				Unit unit = startUnitPane.removeUnit();
-				TerrainTile destTile = terrainTiles[r.getDestRow()][r.getDestCol()];
-				UnitPane destUnitPane = destTile.getUnitPane();
-				destUnitPane.setUnit(unit);
+				Main.blockUntilFinished(() -> {
+					Relocate r = (Relocate) a;
+					r.execute(backingBoard);
+					TerrainTile startTile = terrainTiles[r.getStartRow()][r.getStartCol()];
+					UnitPane startUnitPane = startTile.getUnitPane();
+					Unit unit = startUnitPane.removeUnit();
+					TerrainTile destTile = terrainTiles[r.getDestRow()][r.getDestCol()];
+					UnitPane destUnitPane = destTile.getUnitPane();
+					destUnitPane.setUnit(unit);
+				});
 			}
 			else if(a instanceof FireProjectile) {
 				FireProjectile fp = (FireProjectile) a;
 				if(actingAbility instanceof SingleProjectileAbility) {
-					System.out.println("Entered the goof zone");
+//					System.out.println("Entered the goof zone");
 					SingleProjectileAbility spa = (SingleProjectileAbility) actingAbility;
 					final TerrainTile destTile = getTileAt(fp.getDestRow(), fp.getDestCol());
 					Image image = actingSkin.projectileImageFor(spa);
@@ -149,8 +189,10 @@ public class TerrainGrid extends GridPane {
 					pane.setLayoutY(startY.get());
 					pane.prefWidthProperty().bind(widthBinding);
 					pane.prefHeightProperty().bind(heightBinding);
-					region.getChildren().add(pane);
+					Main.blockUntilFinished(() -> region.getChildren().add(pane));
 					double tileDistance = Math.sqrt(Math.pow(destTile.getRow() - actingRow, 2) + Math.pow(destTile.getCol() - actingCol, 2));
+					Object lock = new Object();
+					moveNotify = false;
 					final Transition transition = new Transition() {
 						{
 							setCycleDuration(Duration.millis(tileDistance * 100));
@@ -164,9 +206,22 @@ public class TerrainGrid extends GridPane {
 					};
 					transition.setOnFinished(actionEvent -> {
 						region.getChildren().remove(pane);
+						synchronized(lock) {
+							lock.notify();
+						}
+						moveNotify = true;
 					});
 					transition.setInterpolator(Interpolator.LINEAR);
 					transition.play();
+					synchronized(lock) {
+						while(!moveNotify) {
+							try {
+								lock.wait();
+							}
+							catch (InterruptedException e) {}
+						}
+					}
+//					System.out.println("ESCAPED!");
 				}
 				else {
 					throw new UnsupportedOperationException("Unsupported ability type for a FireProjectile action: " + actingAbility.getClass());
@@ -176,6 +231,7 @@ public class TerrainGrid extends GridPane {
 				throw new UnsupportedOperationException("Unsupported action type: " + a.getClass());
 			}
 		}
+//		System.out.printf("(exit) executeMoveInternal(%s)%n", move);
 	}
 
 	

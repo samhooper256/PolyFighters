@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Optional;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import logic.ObstacleSize;
 import logic.obstacles.ObstacleBase;
@@ -79,5 +80,38 @@ public class Main extends Application {
 		if(primaryStage.getScene() instanceof Level)
 			return (Level) primaryStage.getScene();
 		return null;
+	}
+	
+	/**
+	 * Must NOT be called on FX Thread.
+	 * @param runnable
+	 */
+	public static void blockUntilFinished(Runnable runnable) {
+		class Blocker {
+			Object lock;
+			volatile boolean notified;
+			Blocker(Runnable r) {
+				lock = new Object();
+				notified = false;
+				Platform.runLater(() -> {
+					r.run();
+					synchronized(lock) {
+						lock.notify();
+					}
+					notified = true;
+				});
+				while(!notified) {
+					try {
+						synchronized(lock) {
+							lock.wait();
+						}
+					}
+					catch (InterruptedException e) {}
+				}
+				
+			}
+		}
+		
+		new Blocker(runnable);
 	}
 }

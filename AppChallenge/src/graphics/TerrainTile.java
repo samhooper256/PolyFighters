@@ -22,7 +22,6 @@ public class TerrainTile extends StackPane implements AbilityUseCandidate {
 	public static final Paint DEFAULT_HIGHLIGHT = Color.LAWNGREEN;
 	public static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {
 		TerrainTile source = (TerrainTile) mouseEvent.getSource();
-		System.out.printf("Entered TerrainTile clickHandler, hasObstacle? = %s%n", source.getObstaclePane().hasObstacle());
 		if(source.isUseCandidate()) {
 			Level level = Level.current();
 			Move move = level.getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane().getAbility().createMoveFor(source.getRow(), source.getCol(), null);
