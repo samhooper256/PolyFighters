@@ -67,7 +67,7 @@ public class FireProjectile implements Action{
 		if(target instanceof HasHealth) {
 			HasHealth hh = (HasHealth) target;
 			hh.healthProperty().set(Math.max(0, hh.healthProperty().get() - damage));
-			if(hh.healthProperty().get() < 0) {
+			if(hh.healthProperty().get() == 0) {
 				hh.aliveProperty().set(false);
 				target.setBoard(null);
 			}

@@ -14,6 +14,7 @@ import logic.Ability;
 import logic.Move;
 import logic.Unit;
 import logic.units.*;
+import utils.BooleanChangeListener;
 import utils.IntChangeListener;
 import utils.SingleListener;
 
@@ -79,6 +80,7 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 		}
 	}
 	
+	private Unit unit; //defined above the change listeners so that they can refer to it.
 	private final HashMap<Ability, AbilityPane> paneMap = new HashMap<>();
 	private final UnitWrap unitWrap;
 	private final BorderPane healthBarPane;
@@ -95,8 +97,12 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 	private final IntChangeListener healthListener = (oldValue, newValue) -> {
 		clearAndfillHealthBar();
 	};
+	private final BooleanChangeListener aliveListener = (oldValue, newValue) -> {
+		if(newValue == true)
+			throw new UnsupportedOperationException("Revivial is not supported");
+		removeUnit(); //this is safe because a BooleanChangeListener is allowed to be removed from its BooleanRef during its action.
+	};
 	
-	private Unit unit;
 	private boolean isUseCandidate, isHighlighted;
 	
 	/** Creates an empty {@code UnitPane} with no {@link Unit} on it. */
@@ -132,34 +138,36 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 	}
 	
 	/**
-	 * {@code unit} must not be {@code null}. Note that {@link #removeUnit()} can be used to remove the unit from this pane.
-	 * @param unit
+	 * {@code unitArg} must not be {@code null}. Note that {@link #removeUnit()} can be used to remove the unit from this pane.
+	 * @param unitArg
 	 * @throws NullPointerException if the given {@link Unit} is {@code null}.
 	 */
-	public void setUnit(Unit unit) {
-		Objects.requireNonNull(unit);
+	public void setUnit(Unit unitArg) {
+		Objects.requireNonNull(unitArg);
 		if(this.unit != null)
-			removeListeners();
-		this.unit = unit;
-		addListeners();
+			removeListenersFrom(this.unit);
+		this.unit = unitArg;
+		addListenersTo(this.unit);
 		clearAndFillPaneMap();
 		clearAndfillHealthBar();
-		unitWrap.setImage(imageFor(unit));
+		unitWrap.setImage(imageFor(this.unit));
 		healthBar.setVisible(true);
 	}
 
-	/** Removes the listeners from {@code this.unit} */
-	private void removeListeners() {
-		this.unit.abilityCollectionRef().removeAddListener(addListener);
-		this.unit.abilityCollectionRef().removeRemoveListener(removeListener);
-		this.unit.healthProperty().removeChangeListener(healthListener);
+	/** Removes this {@link UnitPane}'s listeners from the given {@link Unit}. Should only be called when the given {@code Unit} has the listeners. */
+	private void removeListenersFrom(Unit unitArg) {
+		unitArg.abilityCollectionRef().removeAddListener(addListener);
+		unitArg.abilityCollectionRef().removeRemoveListener(removeListener);
+		unitArg.healthProperty().removeChangeListener(healthListener);
+		unitArg.aliveProperty().removeChangeListener(aliveListener);
 	}
 
 	/** Adds the listeners from {@code this.unit} */
-	private void addListeners() {
-		this.unit.abilityCollectionRef().addAddListener(addListener);
-		this.unit.abilityCollectionRef().addRemoveListener(removeListener);
-		this.unit.healthProperty().addChangeListener(healthListener);
+	private void addListenersTo(Unit unitArg) {
+		unitArg.abilityCollectionRef().addAddListener(addListener);
+		unitArg.abilityCollectionRef().addRemoveListener(removeListener);
+		unitArg.healthProperty().addChangeListener(healthListener);
+		unitArg.aliveProperty().addChangeListener(aliveListener);
 	}
 	
 	private void clearAndfillHealthBar() {
@@ -187,10 +195,10 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 	public Unit removeUnit() {
 		if(unit == null)
 			return null;
+		removeListenersFrom(unit);
 		unitWrap.setImage(null);
 		healthBar.setVisible(false);
 		healthBar.getChildren().clear();
-		removeListeners();
 		paneMap.clear();
 		Unit unitTemp = unit;
 		unit = null;

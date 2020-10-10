@@ -1,8 +1,16 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
+ * <p>A reference to a {@code boolean}.</p>
+ * 
+ * <p>A {@link BooleanChangeListener} listening to this {@code BooleanRef} is permitted to {@link #removeChangeListener(BooleanChangeListener) remove} 
+ * itself <b>and <i>only</i> itself</b> from this {@code BooleanRef}'s list
+ * of {@code BooleanChangeListener}s during its action. If it removes any other {@code BooleanChangeListener}, all future behavior of this object is undefined.</p>
  * @author Sam Hooper
  *
  */
@@ -34,9 +42,20 @@ public class BooleanRef {
 		if(value == newValue) return;
 		boolean oldValue = this.value;
 		this.value = newValue;
-		if(changeListeners != null)
-			for(BooleanChangeListener listener : changeListeners)
-				listener.changed(oldValue, newValue);
+		runChangeListeners(oldValue, newValue);
+	}
+
+	private void runChangeListeners(boolean oldValue, boolean newValue) {
+		if(changeListeners != null) {
+			int size = changeListeners.size();
+			for(int i = 0; i < size; i++) {
+				changeListeners.get(i).changed(oldValue, newValue);
+				if(size == changeListeners.size() + 1) {
+					i--;
+					size = changeListeners.size();
+				}
+			}
+		}
 	}
 	
 	/**
@@ -57,5 +76,11 @@ public class BooleanRef {
 	 */
 	public boolean removeChangeListener(BooleanChangeListener listener) {
 		return changeListeners != null && changeListeners.remove(listener);
+	}
+	
+	public List<BooleanChangeListener> getChangeListenersUnmodifiable() {
+		if(changeListeners == null)
+			return Collections.emptyList();
+		return Collections.unmodifiableList(changeListeners);
 	}
 }
