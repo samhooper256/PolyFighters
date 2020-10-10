@@ -33,6 +33,8 @@ public class Level extends Scene {
 	private final Pane left;
 	private final TerrainPane terrainPane;
 	private final Theme theme;
+	//the sum of the difficulties of the EnemyUnits added on each turn must be no more than twice turnDifficulty.
+	private final double turnDifficulty;
 	/**The Property that {@link #stackRoot}'s widthProperty will be bound to. */
 	private final DoublePropertyBase stackRootWidth = new DoublePropertyBase() {
 		@Override
@@ -64,10 +66,11 @@ public class Level extends Scene {
 		super(makeRoot(), width, height);
 		
 		this.theme = theme;
+		this.turnDifficulty = 2; //must be set before terrainPane construction.
 		
 		left = new VBox(new Button("Button 1"));
 		
-		terrainPane = new TerrainPane(theme);
+		terrainPane = new TerrainPane(this, theme);
 		terrainPane.setBorder(Borders.of(Color.BLACK));
 		borderPane = new BorderPane();
 		
@@ -106,5 +109,9 @@ public class Level extends Scene {
 	
 	public Theme getTheme() {
 		return theme;
+	}
+	
+	public double getTurnDifficulty() {
+		return turnDifficulty;
 	}
 }

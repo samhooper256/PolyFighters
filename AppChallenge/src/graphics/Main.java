@@ -24,6 +24,12 @@ public class Main extends Application {
 	
 	private static final String RESOURCES_PREFIX = "/resources/";
 	
+	private static final Player player = new Player();
+	
+	static {
+		player.addUnits(new BasicUnit(), new BasicUnit(), new BasicUnit());
+	}
+	
 	private static Stage primaryStage;
 	
 	/**
@@ -60,11 +66,11 @@ public class Main extends Application {
 		primaryStage.setTitle(TITLE);
 		Level scene = new Level();
 		primaryStage.setScene(scene);
-		TerrainGrid grid = scene.getTerrainPane().getGridWrap().getGrid();
-		grid.addUnit(new BasicUnit(), 1, 1);
-		grid.addUnit(new BasicEnemy(), 2, 1);
-		grid.addObstacleOrThrow(new ObstacleBase(ObstacleSize.SMALL, 3), 2, 2);
-		grid.addObstacleOrThrow(new ObstacleBase(ObstacleSize.LARGE, 3), 5, 5);
+//		TerrainGrid grid = scene.getTerrainPane().getGridWrap().getGrid();
+//		grid.addUnit(new BasicUnit(), 1, 1);
+//		grid.addUnit(new BasicEnemy(), 2, 1);
+//		grid.addObstacleOrThrow(new ObstacleBase(ObstacleSize.SMALL, 3), 2, 2);
+//		grid.addObstacleOrThrow(new ObstacleBase(ObstacleSize.LARGE, 3), 5, 5);
 		primaryStage.show();
 	}
 	
@@ -113,5 +119,9 @@ public class Main extends Application {
 		}
 		
 		new Blocker(runnable);
+	}
+	
+	public static Player getPlayer() {
+		return player;
 	}
 }

@@ -18,12 +18,16 @@ public class BoardGenerator {
 	private int rowCount, colCount;
 	private double liquidPercent;
 	private double poolStrength;
+	private List<TeamUnit> teamUnits;
+	private double turnDifficulty;
 	
 	public BoardGenerator() {
 		this.rowCount = DEFAULT_ROW_COUNT;
 		this.colCount = DEFAULT_COL_COUNT;
 		this.liquidPercent = DEFAULT_LIQUID_PERCENT;
 		this.poolStrength = DEFAULT_POOL_STRENGTH;
+		this.teamUnits = Collections.emptyList();
+		this.turnDifficulty = 0;
 	}
 	
 	/**
@@ -58,25 +62,44 @@ public class BoardGenerator {
 		return this;
 	}
 	
-	private int liquidRemainng;
+	/**
+	 * Returns {@code this}.
+	 */
+	public BoardGenerator setTeamUnits(List<TeamUnit> teamUnits) {
+		this.teamUnits = teamUnits;
+		return this;
+	}
+	
+	/**
+	 * Returns {@code this}.
+	 */
+	public BoardGenerator setTurnDifficulty(double turnDifficulty) {
+		this.turnDifficulty = turnDifficulty;
+		return this;
+	}
+	
+	private int liquidRemaining;
 	
 	public Board build() {
 		final Board board = new Board(rowCount, colCount);
-		liquidRemainng = (int) Math.round(rowCount * colCount * liquidPercent);
+		placeLiquid(board);
+		placeTeamUnits(board);
+		return board;
+	}
+
+	private void placeLiquid(final Board board) {
+		liquidRemaining = (int) Math.round(rowCount * colCount * liquidPercent);
+		liquidRemaining = Math.min(liquidRemaining, rowCount * colCount - teamUnits.size() - (int) turnDifficulty); //don't have so many liquid tiles that we can't place the units.
 		int[] liquifiedSpots = IntStream.range(0, rowCount * colCount).toArray();
 		int liquifiedSpotsMaxUsableIndex = liquifiedSpots.length - 1;
 		liquid_gen:
-		while(liquidRemainng > 0) {
+		while(liquidRemaining > 0) {
 			int startRow, startCol;
 			do {
 				if(liquifiedSpotsMaxUsableIndex < 0)
 					break liquid_gen;
-				int liquifiedIndex;
-				int liquifiedValue;
-				{
-					liquifiedIndex = (int) (Math.random() * (liquifiedSpotsMaxUsableIndex + 1));
-					liquifiedValue = liquifiedSpots[liquifiedIndex];
-				}
+				int liquifiedIndex = (int) (Math.random() * (liquifiedSpotsMaxUsableIndex + 1));
+				int liquifiedValue = liquifiedSpots[liquifiedIndex];
 				startRow = liquifiedValue / colCount;
 				startCol = liquifiedValue % colCount;
 				liquifiedSpots[liquifiedIndex] = liquifiedSpots[liquifiedSpotsMaxUsableIndex];
@@ -84,8 +107,8 @@ public class BoardGenerator {
 				liquifiedSpotsMaxUsableIndex--;
 			} while(board.getTileAt(startRow, startCol).getType() == TileType.LIQUID);
 			board.getTileAt(startRow, startCol).setType(TileType.LIQUID);
-			liquidRemainng--;
-			if(liquidRemainng <= 0)
+			liquidRemaining--;
+			if(liquidRemaining <= 0)
 				break liquid_gen;
 			Queue<int[]> toVisit = new LinkedList<>();
 			for(int[] adj : ADJACENTS) {
@@ -98,8 +121,8 @@ public class BoardGenerator {
 				BoardTile tile = board.getTileAt(spot[0], spot[1]);
 				if(Math.random() < poolStrength) {
 					tile.setType(TileType.LIQUID);
-					liquidRemainng--;
-					if(liquidRemainng <= 0)
+					liquidRemaining--;
+					if(liquidRemaining <= 0)
 						break liquid_gen;
 				}
 				else {
@@ -117,6 +140,26 @@ public class BoardGenerator {
 				}
 			}
 		}
-		return board;
+	}
+
+	private void placeTeamUnits(final Board board) {
+		int[] placeSpots = IntStream.range(0, rowCount * colCount).toArray();
+		int placeSpotsMaxIndex = placeSpots.length - 1;
+		for(final TeamUnit teamUnit : teamUnits) {
+			int row, col;
+			do {
+				if(placeSpotsMaxIndex < 0)
+					throw new IllegalStateException("Not enough space to place the team units");
+				int placeIndex = (int) (Math.random() * (placeSpotsMaxIndex + 1));
+				int placeValue = placeSpots[placeIndex];
+				row = placeValue / colCount;
+				col = placeValue % colCount;
+				placeSpots[placeIndex] = placeSpots[placeSpotsMaxIndex];
+				placeSpots[placeSpotsMaxIndex] = placeValue;
+				placeSpotsMaxIndex--;
+				
+			} while(board.getTileAt(row, col).getType() == TileType.LIQUID);
+			board.addUnitOrThrow(teamUnit, row, col);
+		}
 	}
 }

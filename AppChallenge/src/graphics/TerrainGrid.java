@@ -25,19 +25,22 @@ public class TerrainGrid extends GridPane {
 	private final TerrainGridWrap wrap;
 	
 	/** Creates a new {@code TerrainGrid} with {@code size} rows and {@code size} columns. */
-	public TerrainGrid(Theme theme, TerrainGridWrap wrap, int size) {
-		this(theme, wrap, size, size);
+	public TerrainGrid(Level level, TerrainGridWrap wrap, int size) {
+		this(level, wrap, size, size);
 	}
 	
 	/** Creates a new {@code TerrainGrid} with the given amount of rows and columns */
-	public TerrainGrid(Theme theme, TerrainGridWrap wrap, int rows, int cols) {
+	public TerrainGrid(final Level level, TerrainGridWrap wrap, int rows, int cols) {
 		super();
-		this.theme = theme;
+		this.theme = level.getTheme();
 		this.rows = rows;
 		this.cols = cols;
 		this.wrap = wrap;
 //		backingBoard = new Board(rows, cols);
-		backingBoard = new BoardGenerator().build();
+		backingBoard = new BoardGenerator()
+				.setTeamUnits(Main.getPlayer().getUnitsUnmodifiable())
+				.setTurnDifficulty(level.getTurnDifficulty())
+				.build();
 		terrainTiles = new TerrainTile[rows][cols];
 		initConstraints();
 		initTiles();
@@ -97,7 +100,7 @@ public class TerrainGrid extends GridPane {
 	}
 	
 	public void addUnit(Unit unit, int row, int col) {
-		backingBoard.addUnit(unit, row, col);
+		backingBoard.addUnitOrThrow(unit, row, col);
 		terrainTiles[row][col].getUnitPane().setUnit(unit);
 	}
 	

@@ -63,6 +63,9 @@ public class TerrainTile extends StackPane implements AbilityUseCandidate {
 		setBorder(Borders.of(Color.PURPLE));
 		setMinSize(0, 0);
 		unitPane = new UnitPane();
+		Unit unit = boardTile.getUnit();
+		if(unit != null)
+			unitPane.setUnit(unit);
 		setOnMouseClicked(clickHandler);
 		obstaclePane = new ObstaclePane();
 		getChildren().addAll(tileWrap, obstaclePane, unitPane);

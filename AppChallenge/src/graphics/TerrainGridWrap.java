@@ -10,9 +10,9 @@ public class TerrainGridWrap extends StackPane {
 	private final TerrainGrid grid;
 	private final Pane region;
 //	final ImageWrap testWrap = new ImageWrap("BasicUnit.png"); //TODO remove/change
-	public TerrainGridWrap(Theme theme, int size) {
+	public TerrainGridWrap(Level level, Theme theme, int size) {
 		super();
-		grid = new TerrainGrid(theme, this, size);
+		grid = new TerrainGrid(level, this, size);
 		this.getChildren().add(grid);
 		region = new Pane();
 //		region.getChildren().add(testWrap); //TODO remove/change

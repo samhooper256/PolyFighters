@@ -100,7 +100,7 @@ public class Board {
 	 * row and column values as necessary.
 	 * @throws IllegalStateException if there is already a {@code Unit} on the indicated tile.
 	 */
-	public void addUnit(Unit unit, int row, int col) {
+	public void addUnitOrThrow(Unit unit, int row, int col) {
 		if(hasUnit(row, col))
 			throw new IllegalStateException(String.format("There is already a unit on the tile at (%d, %d)", row, col));
 		setUnit(unit, row, col);

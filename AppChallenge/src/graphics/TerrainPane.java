@@ -12,9 +12,9 @@ import javafx.scene.layout.*;
 public class TerrainPane extends StackPane {
 	private final TerrainGridWrap gridWrap;
 	
-	public TerrainPane(Theme theme) {
+	public TerrainPane(Level level, Theme theme) {
 		super();
-		gridWrap = new TerrainGridWrap(theme, 8);
+		gridWrap = new TerrainGridWrap(level, theme, 8);
 		getChildren().add(gridWrap);
 		bindGridWrap();
 		
