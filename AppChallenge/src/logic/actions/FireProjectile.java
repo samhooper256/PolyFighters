@@ -6,6 +6,7 @@ import logic.Ability;
 import logic.Action;
 import logic.Board;
 import logic.GameObject;
+import logic.HasHealth;
 
 /**
  * An {@link Action} that represents a {@link Unit} firing a projectile from one that does a non-negative amount of damage to another {@link GameObject}.
@@ -63,7 +64,14 @@ public class FireProjectile implements Action{
 
 	@Override
 	public void execute(Board board) {
-		
+		if(target instanceof HasHealth) {
+			HasHealth hh = (HasHealth) target;
+			hh.healthProperty().set(Math.max(0, hh.healthProperty().get() - damage));
+			if(hh.healthProperty().get() < 0) {
+				hh.aliveProperty().set(false);
+				target.setBoard(null);
+			}
+		}
 	}
 	
 }

@@ -7,6 +7,7 @@ import logic.Board;
 import logic.TeamUnit;
 import logic.TileType;
 import logic.Unit;
+import utils.BooleanRef;
 import utils.CollectionRef;
 import utils.IntRef;
 
@@ -34,6 +35,7 @@ public abstract class AbstractUnit implements Unit {
 	protected int row;
 	/** {@code -1} if not on a board. */
 	protected int col;
+	protected BooleanRef aliveProperty;
 	
 	/**
 	 * Constructs a new {@code AbstractUnit} with the given maximum health. The current health of the {@link Unit} will be set to
@@ -70,6 +72,7 @@ public abstract class AbstractUnit implements Unit {
 		this.traversableTileTypes = EnumSet.noneOf(TileType.class);
 		this.row = row;
 		this.col = col;
+		this.aliveProperty = new BooleanRef(currentHealth == 0 ? false : true);
 	}
 	
 	@Override
@@ -167,4 +170,8 @@ public abstract class AbstractUnit implements Unit {
 		return health;
 	}
 	
+	@Override
+	public BooleanRef aliveProperty() {
+		return aliveProperty;
+	}
 }

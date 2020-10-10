@@ -1,5 +1,6 @@
 package logic;
 
+import utils.BooleanRef;
 import utils.IntRef;
 
 /**
@@ -21,7 +22,13 @@ public interface HasHealth extends GameObject {
 	/**
 	 * Returns {@code true} if this {@link GameObject} is dead, {@code false} otherwise.
 	 */
-	default boolean isDead() {
-		return healthProperty().get() <= 0;
+	default boolean isAlive() {
+		return aliveProperty().get();
 	}
+	
+	/**
+	 * The {@link BooleanRef} stores {@code true} if this {@link GameObject} is alive, {@code false} otherwise.
+	 * @return
+	 */
+	BooleanRef aliveProperty();
 }

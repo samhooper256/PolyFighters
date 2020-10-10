@@ -3,6 +3,7 @@ package logic.obstacles;
 import logic.Board;
 import logic.Obstacle;
 import logic.ObstacleSize;
+import utils.BooleanRef;
 import utils.IntRef;
 
 /**
@@ -16,6 +17,7 @@ public class ObstacleBase implements Obstacle {
 	private final ObstacleSize size;
 	
 	private IntRef health;
+	private BooleanRef aliveProperty;
 	private int row, col;
 	private Board board;
 	
@@ -32,12 +34,15 @@ public class ObstacleBase implements Obstacle {
 	}
 	
 	public ObstacleBase(Board board, int row, int col, ObstacleSize size, int maxHealth, int currentHealth) {
+		if(currentHealth < 0 || currentHealth > maxHealth)
+			throw new IllegalArgumentException("current health of " + currentHealth + " is out of bounds for maxHealth: " + maxHealth);
 		this.board = board;
 		this.row = row;
 		this.col = col;
 		this.size = size;
 		this.maxHealth = maxHealth;
 		this.health = new IntRef(currentHealth);
+		this.aliveProperty = new BooleanRef(currentHealth == 0 ? false : true);
 	}
 
 	@Override
@@ -85,5 +90,8 @@ public class ObstacleBase implements Obstacle {
 		this.col = col;
 	}
 	
-	
+	@Override
+	public BooleanRef aliveProperty() {
+		return aliveProperty;
+	}
 }

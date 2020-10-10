@@ -210,6 +210,7 @@ public class TerrainGrid extends GridPane {
 							lock.notify();
 						}
 						moveNotify = true;
+						a.execute(backingBoard);
 					});
 					transition.setInterpolator(Interpolator.LINEAR);
 					transition.play();

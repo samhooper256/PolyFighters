@@ -3,7 +3,6 @@ package logic;
 import java.util.Collection;
 
 import utils.CollectionRef;
-import utils.IntRef;
 
 /**
  * </p>A unit on a {@link Board}. This interface must not be implemented directly; rather, one of its subinterfaces {@link TeamUnit} or {@link EnemyUnit}
