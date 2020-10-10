@@ -95,6 +95,20 @@ public class Board {
 		return tiles[row][col].hasUnit();
 	}
 	
+	
+	/**
+	 * Adds the given {@link GameObject} to the indicated {@link TerrainTile}, throwing an {@link IllegalStateException} if there is already a {@code GameObject}
+	 * of that type on the {@code TerrainTile}. The given {@code GameObject} must be a {@link Unit} or a {@link Obstacle}.
+	 */
+	public void addOrThrow(GameObject object, int row, int col) {
+		if(object instanceof Unit)
+			addUnitOrThrow((Unit) object, row, col);
+		else if(object instanceof Obstacle)
+			addObstacleOrThrow((Obstacle) object, row, col);
+		else
+			throw new IllegalArgumentException("Must be Unit or Obstacle");
+	}
+	
 	/**
 	 * Adds the given {@link Unit} to this {@code Board} at the given location, updating the {@code Unit}'s associated {@code Board} and
 	 * row and column values as necessary.
@@ -106,6 +120,18 @@ public class Board {
 		setUnit(unit, row, col);
 	}
 	
+	/**
+	 * Adds the given {@link Obstacle} to this {@code Board}. Updates the row, col, and board
+	 * pointers of the {@code Obstacle} as necessary.
+	 * @throws IllegalStateException if there is already an {@link Obstacle} on the given {@link BoardTile}.
+	 */
+	public void addObstacleOrThrow(Obstacle obstacle, int row, int col) {
+		obstacle.setBoard(this);
+		obstacle.setRow(row);
+		obstacle.setCol(col);
+		tiles[row][col].addObstacleOrThrow(obstacle);
+	}
+
 	/**
 	 * Sets the {@link BoardTile} at the indicated location to have the given {@link Unit}, updating the {@code Unit}'s associated {@code Board} and
 	 * row and column values as necessary. Replaces any existing unit on the given tile.
@@ -119,17 +145,6 @@ public class Board {
 		unit.setCol(col);
 		tiles[row][col].removeUnitIfPresent();
 		tiles[row][col].addUnitOrThrow(unit);
-	}
-	
-	/**
-	 * Adds the given {@link Obstacle} to this {@code Board}. Updates the row, col, and board
-	 * pointers of the {@code Obstacle} as necessary.
-	 */
-	public void addObstacle(Obstacle obstacle, int row, int col) {
-		obstacle.setBoard(this);
-		obstacle.setRow(row);
-		obstacle.setCol(col);
-		tiles[row][col].addObstacleOrThrow(obstacle);
 	}
 	
 	/**

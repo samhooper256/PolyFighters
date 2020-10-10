@@ -98,7 +98,11 @@ public class TerrainTile extends StackPane implements AbilityUseCandidate {
 		return obstaclePane;
 	}
 	
-	public void addObstacleOrThrow(Obstacle obstacle) {
+	/**
+	 * Sets the {@link Obstacle} displayed on this {@link TerrainTile}. Does not update the backing board. Does not throw
+	 * an exception if an {@link Obstacle} is already present.
+	 */
+	public void setObstacle(Obstacle obstacle) {
 		obstaclePane.setObstacle(obstacle, getTheme());
 	}
 	

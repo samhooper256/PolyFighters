@@ -99,14 +99,32 @@ public class TerrainGrid extends GridPane {
 		return row >= 0 && row < rows && col >= 0 && col < cols;
 	}
 	
-	public void addUnit(Unit unit, int row, int col) {
+	/**
+	 * Adds the given {@link GameObject} to this {@link TerrainGrid} at the given tile, and updates the backing board. The
+	 * given {@code GameObject} must be a {@link Unit} or an {@link Obstacle}.
+	 */
+	public void addOrThrow(GameObject object, int row, int col) {
+		if(object instanceof Unit) {
+			addUnitOrThrow((Unit) object, row, col);
+		}
+		else if(object instanceof Obstacle) {
+			addObstacleOrThrow((Obstacle) object, row, col);
+		}
+		else {
+			throw new IllegalArgumentException("Must be Unit or Obstacle");
+		}
+	}
+	public void addUnitOrThrow(Unit unit, int row, int col) {
 		backingBoard.addUnitOrThrow(unit, row, col);
 		terrainTiles[row][col].getUnitPane().setUnit(unit);
 	}
 	
+	/**
+	 * @throws IllegalStateException
+	 */
 	public void addObstacleOrThrow(Obstacle obstacle, int row, int col) {
-		backingBoard.addObstacle(obstacle, row, col);
-		terrainTiles[row][col].addObstacleOrThrow(obstacle);
+		backingBoard.addObstacleOrThrow(obstacle, row, col); //will throw if an obstacle is already present
+		terrainTiles[row][col].setObstacle(obstacle);
 	}
 	
 	public Theme getTheme() {
@@ -232,6 +250,12 @@ public class TerrainGrid extends GridPane {
 			}
 			else if(a instanceof ChangeHealth) {
 				Main.blockUntilFinished(() -> a.execute(backingBoard)); //needs to be on FX thread since this will trigger listeners, which modify the HealthBar display.
+			}
+			else if(a instanceof PlaceObject) {
+				PlaceObject po = (PlaceObject) a;
+				final GameObject obj = po.getObject();
+				final int row = po.getRow(), col = po.getCol();
+				Main.blockUntilFinished(() -> addOrThrow(obj, row, col)); //don't even need to execute the action, this updates the backing board.
 			}
 			else {
 				throw new UnsupportedOperationException("Unsupported action type: " + a.getClass());
