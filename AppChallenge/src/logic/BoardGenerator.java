@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import logic.EnemyGenerator.EnemyFactory;
+
 /**
  * @author Sam Hooper
  *
@@ -84,6 +86,7 @@ public class BoardGenerator {
 		final Board board = new Board(rowCount, colCount);
 		placeLiquid(board);
 		placeTeamUnits(board);
+		placeEnemyUnits(board);
 		return board;
 	}
 
@@ -161,5 +164,27 @@ public class BoardGenerator {
 			} while(board.getTileAt(row, col).getType() == TileType.LIQUID);
 			board.addUnitOrThrow(teamUnit, row, col);
 		}
+	}
+	
+	private void placeEnemyUnits(final Board board) {
+		EnemyFactory[] factories = EnemyGenerator.factories().toArray(EnemyFactory[]::new);
+		int[] indices = IntStream.range(0, factories.length).toArray();
+		int maxIndex = factories.length - 1;
+		double currentDifficulty = 0.0;
+		outer:
+		while(currentDifficulty < turnDifficulty) {
+			maxIndex = factories.length - 1;
+			int index;
+			do {
+				if(maxIndex < 0)
+					break outer;
+				index = (int) (Math.random() * (maxIndex + 1));
+				int temp = indices[index];
+				indices[index] = indices[maxIndex];
+				indices[maxIndex] = temp;
+				maxIndex--;
+			} while(currentDifficulty + factories[index].getDifficulty() < turnDifficulty);
+		}
+		//TODO Finish up this methodical
 	}
 }
