@@ -29,8 +29,7 @@ public abstract class AbstractUnit implements Unit {
 	protected final EnumSet<TileType> traversableTileTypes;
 	
 	protected Board board;
-	protected int maxHealth;
-	protected IntRef health;
+	protected IntRef maxHealth, health;
 	/** {@code -1} if not on a board. */
 	protected int row;
 	/** {@code -1} if not on a board. */
@@ -66,7 +65,7 @@ public abstract class AbstractUnit implements Unit {
 		if(currentHealth < 0 || currentHealth > maxHealth)
 			throw new IllegalArgumentException("Current health value (" + currentHealth + ") is invalid for max health " + maxHealth);
 		this.abilities = new CollectionRef<>(Objects.requireNonNull(abilities));
-		this.maxHealth = maxHealth;
+		this.maxHealth = new IntRef(maxHealth);
 		this.health = new IntRef(currentHealth);
 		this.board = board;
 		this.traversableTileTypes = EnumSet.noneOf(TileType.class);
@@ -161,7 +160,7 @@ public abstract class AbstractUnit implements Unit {
 	}
 	
 	@Override
-	public int getMaxHealth() {
+	public IntRef maxHealthProperty() {
 		return maxHealth;
 	}
 	

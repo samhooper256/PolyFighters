@@ -12,11 +12,9 @@ import utils.IntRef;
  *
  */
 public class ObstacleBase implements Obstacle {
-	
-	private final int maxHealth;
 	private final ObstacleSize size;
 	
-	private IntRef health;
+	private IntRef maxHealth, health;
 	private BooleanRef aliveProperty;
 	private int row, col;
 	private Board board;
@@ -40,7 +38,7 @@ public class ObstacleBase implements Obstacle {
 		this.row = row;
 		this.col = col;
 		this.size = size;
-		this.maxHealth = maxHealth;
+		this.maxHealth = new IntRef(maxHealth);
 		this.health = new IntRef(currentHealth);
 		this.aliveProperty = new BooleanRef(currentHealth == 0 ? false : true);
 	}
@@ -66,7 +64,7 @@ public class ObstacleBase implements Obstacle {
 	}
 
 	@Override
-	public int getMaxHealth() {
+	public IntRef maxHealthProperty() {
 		return maxHealth;
 	}
 

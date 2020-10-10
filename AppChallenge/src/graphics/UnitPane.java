@@ -100,7 +100,7 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 	private final BooleanChangeListener aliveListener = (oldValue, newValue) -> {
 		if(newValue == true)
 			throw new UnsupportedOperationException("Revivial is not supported");
-		removeUnit(); //this is safe because a BooleanChangeListener is allowed to be removed from its BooleanRef during its action.
+		removeUnit(); //this is safe because a BooleanChangeListener is allowed to remove itself from its BooleanRef during its action.
 	};
 	
 	private boolean isUseCandidate, isHighlighted;
