@@ -24,13 +24,6 @@ import utils.SingleListener;
  */
 public class UnitPane extends StackPane implements GameObjectRepresentation {
 	
-	private static final ImageInfo healthPointInfo = new ImageInfo("HealthPoint.png");
-	private static final ImageInfo missingHealthPointInfo = new ImageInfo("MissingHealthPoint.png");
-	
-	private static final double HEALTH_BAR_PERCENT = .1;
-	private static final double HEALTH_BAR_SPACING = 2;
-	
-	
 	private static final Map<Class<? extends Unit>, ImageInfo> infoMap;
 	
 	static {
@@ -40,6 +33,7 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 	}
 	
 	private static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {
+		System.out.printf("Entered UnitPane click handler%n");
 		UnitPane pane = ((UnitWrap) mouseEvent.getSource()).getEnclosingInstance();
 		Unit unit = pane.getGameObject();
 		if(pane.isUseCandidate()) {
@@ -84,7 +78,7 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 	private final HashMap<Ability, AbilityPane> paneMap = new HashMap<>();
 	private final UnitWrap unitWrap;
 	private final BorderPane healthBarPane;
-	private final HBox healthBar;
+	private final HealthBar healthBar;
 	private final SingleListener<Ability> addListener = ability -> {
 		if(paneMap.containsKey(ability))
 			throw new IllegalStateException("Duplicate Abilities detected");
@@ -93,9 +87,6 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 	private final SingleListener<Ability> removeListener = ability -> {
 		if(paneMap.remove(ability) == null)
 			throw new IllegalStateException("Could not remove ability that does not exist");
-	};
-	private final IntChangeListener healthListener = (oldValue, newValue) -> {
-		clearAndfillHealthBar();
 	};
 	private final BooleanChangeListener aliveListener = (oldValue, newValue) -> {
 		if(newValue == true)
@@ -109,16 +100,16 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 	public UnitPane() {
 		this.isUseCandidate = false;
 		this.isHighlighted = false;
-		isUseCandidate = false;
 		unitWrap = new UnitWrap();
 		unitWrap.setOnMouseClicked(clickHandler);
+		unitWrap.setPickOnBounds(false);
 		healthBarPane = new BorderPane();
-		healthBar = new HBox(HEALTH_BAR_SPACING);
-		healthBar.setVisible(false);
-		healthBar.setAlignment(Pos.CENTER);
-		healthBar.prefHeightProperty().bind(healthBarPane.heightProperty().multiply(HEALTH_BAR_PERCENT));
+		healthBar = new HealthBar(true);
+		healthBar.setVisible(true);
+		healthBar.prefHeightProperty().bind(healthBarPane.heightProperty().multiply(HealthBar.HEALTH_BAR_PERCENT));
 		healthBarPane.setBottom(healthBar);
-		healthBarPane.setPickOnBounds(false);
+		healthBarPane.setMouseTransparent(true);
+		this.setPickOnBounds(false);
 		getChildren().addAll(unitWrap, healthBarPane);
 	}
 	
@@ -142,23 +133,22 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 	 * @param unitArg
 	 * @throws NullPointerException if the given {@link Unit} is {@code null}.
 	 */
-	public void setUnit(Unit unitArg) {
+	public void setUnit(final Unit unitArg) {
 		Objects.requireNonNull(unitArg);
 		if(this.unit != null)
 			removeListenersFrom(this.unit);
 		this.unit = unitArg;
+		healthBar.setGameObject(this.unit); //adds the healthlistener in HealthBar
+		healthBar.setVisible(true);
 		addListenersTo(this.unit);
 		clearAndFillPaneMap();
-		clearAndfillHealthBar();
 		unitWrap.setImage(imageFor(this.unit));
-		healthBar.setVisible(true);
 	}
 
 	/** Removes this {@link UnitPane}'s listeners from the given {@link Unit}. Should only be called when the given {@code Unit} has the listeners. */
 	private void removeListenersFrom(Unit unitArg) {
 		unitArg.abilityCollectionRef().removeAddListener(addListener);
 		unitArg.abilityCollectionRef().removeRemoveListener(removeListener);
-		unitArg.healthProperty().removeChangeListener(healthListener);
 		unitArg.aliveProperty().removeChangeListener(aliveListener);
 	}
 
@@ -166,28 +156,10 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 	private void addListenersTo(Unit unitArg) {
 		unitArg.abilityCollectionRef().addAddListener(addListener);
 		unitArg.abilityCollectionRef().addRemoveListener(removeListener);
-		unitArg.healthProperty().addChangeListener(healthListener);
 		unitArg.aliveProperty().addChangeListener(aliveListener);
 	}
 	
-	private void clearAndfillHealthBar() {
-		healthBar.getChildren().clear();
-		int pointsAdded = 0;
-		int currentHealth = unit.healthProperty().get();
-		int maxHealth = unit.getMaxHealth();
-		while(pointsAdded < maxHealth) {
-			ImageWrap wrap;
-			if(pointsAdded < currentHealth)
-				wrap = new ImageWrap(healthPointInfo.getImage(), 0, 0);
-			else
-				wrap = new ImageWrap(missingHealthPointInfo.getImage(), 0, 0);
-			StackPane stack = new StackPane();
-			stack.prefWidthProperty().bind(stack.heightProperty());
-			stack.getChildren().add(wrap);
-			healthBar.getChildren().add(stack);
-			pointsAdded++;
-		}
-	}
+	
 	
 	/**
 	 * Removes and returns the {@link Unit} on this {@code UnitPane}, or returns {@code null} if there was no {@code Unit} on this {@code UnitPane}.
@@ -195,10 +167,9 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 	public Unit removeUnit() {
 		if(unit == null)
 			return null;
-		removeListenersFrom(unit);
+		removeListenersFrom(this.unit);
 		unitWrap.setImage(null);
-		healthBar.setVisible(false);
-		healthBar.getChildren().clear();
+		healthBar.clearAndHide();
 		paneMap.clear();
 		Unit unitTemp = unit;
 		unit = null;

@@ -5,11 +5,11 @@ import java.util.Objects;
 import fxutils.ImageWrap;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
-import logic.Ability;
 import logic.Move;
 import logic.Obstacle;
-import logic.Unit;
+import utils.BooleanChangeListener;
 
 /**
  * A {@link StackPane} for displaying an {@link Obstacle}.
@@ -19,34 +19,54 @@ import logic.Unit;
 public class ObstaclePane extends StackPane implements GameObjectRepresentation {
 	
 	private static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {
-		ObstaclePane pane = (ObstaclePane) mouseEvent.getSource();
 		System.out.printf("Entered ObstaclePane clickHandler%n");
+		ObstacleWrap wrap = (ObstacleWrap) mouseEvent.getSource();
+		ObstaclePane pane = wrap.getEnclosingInstance();
 		Obstacle obstacle = pane.getGameObject();
 		if(pane.isUseCandidate()) {
 			Level level = Level.current();
 			Move move = level.getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane()
 					.getAbility().createMoveFor(obstacle.getRow(), obstacle.getCol(), obstacle);
 			level.getTerrainPane().getGrid().executeMove(move);
+			mouseEvent.consume();
 		}
-		mouseEvent.consume();
+		else {
+			System.out.printf("Display obstaclepane info... beep boop...%n");
+			mouseEvent.consume();
+		}
+		
 	};
-	private final ImageWrap obstacleWrap;
+	private final ObstacleWrap obstacleWrap;
+	private final BorderPane healthBarPane;
+	private final HealthBar healthBar;
+	private final BooleanChangeListener aliveListener = (oldValue, newValue) -> {
+		if(newValue == true)
+			throw new UnsupportedOperationException("Revivial is not supported");
+		removeObstacle(); //this is safe because a BooleanChangeListener is allowed to remove itself from its BooleanRef during its action.
+	};
+	
 	private Obstacle obstacle;
 	private boolean isUseCandidate, isHighlighted;
 	
-	public ObstaclePane(Obstacle obstacle, Theme theme) {
-		this.obstacle = obstacle;
-		this.isUseCandidate = false;
-		this.isHighlighted = false;
-		this.setOnMouseClicked(clickHandler);
-		obstacleWrap = new ImageWrap(theme.imageFor(obstacle));
-		getChildren().add(obstacleWrap);
+	private class ObstacleWrap extends ImageWrap {
+		ObstaclePane getEnclosingInstance() {
+			return ObstaclePane.this;
+		}
 	}
-	
 	public ObstaclePane() {
 		this.obstacle = null;
-		obstacleWrap = new ImageWrap();
-		getChildren().add(obstacleWrap);
+		this.isUseCandidate = false;
+		this.isHighlighted = false;
+		obstacleWrap = new ObstacleWrap();
+		obstacleWrap.setOnMouseClicked(clickHandler);
+		obstacleWrap.setPickOnBounds(false);
+		healthBarPane = new BorderPane();
+		healthBar = new HealthBar(false);
+		healthBar.setVisible(false);
+		healthBar.prefHeightProperty().bind(healthBarPane.heightProperty().multiply(HealthBar.HEALTH_BAR_PERCENT));
+		healthBarPane.setBottom(healthBar);
+		healthBarPane.setMouseTransparent(true);
+		getChildren().addAll(obstacleWrap, healthBarPane);
 	}
 	
 	/**
@@ -55,12 +75,29 @@ public class ObstaclePane extends StackPane implements GameObjectRepresentation 
 	public void setObstacle(Obstacle obstacle, Theme theme) {
 		Objects.requireNonNull(obstacle);
 		this.obstacle = obstacle;
+		healthBar.setGameObject(obstacle);
+		healthBar.setVisible(true);
+		addListeners();
 		obstacleWrap.setImage(theme.imageFor(obstacle));
 	}
 	
-	public void removeObstacle() {
-		this.obstacle = null;
+	public Obstacle removeObstacle() {
+		if(obstacle == null)
+			return null;
+		removeListeners();
 		obstacleWrap.setImage(null);
+		healthBar.clearAndHide();
+		Obstacle obstacleTemp = this.obstacle;
+		this.obstacle = null;
+		return obstacleTemp;
+	}
+	
+	private void addListeners() {
+		this.obstacle.aliveProperty().addChangeListener(aliveListener);
+	}
+	
+	private void removeListeners() {
+		this.obstacle.aliveProperty().removeChangeListener(aliveListener);
 	}
 	
 	@Override

@@ -21,6 +21,7 @@ public class TerrainTile extends StackPane implements AbilityUseCandidate {
 	
 	public static final Paint DEFAULT_HIGHLIGHT = Color.LAWNGREEN;
 	public static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {
+		System.out.printf("Entered TerrainTile clickHandler%n");
 		TerrainTile source = (TerrainTile) mouseEvent.getSource();
 		if(source.isUseCandidate()) {
 			Level level = Level.current();
