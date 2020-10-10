@@ -28,8 +28,11 @@ public class AbilityInfoPanel extends VBox {
 		return unit;
 	}
 	
-	public void setUnit(Unit unitPane) {
-		this.unit = unitPane;
+	/**
+	 * Sets this {@link AbilityInfoPanel}'s {@link Unit} pointer to the given {@code unit}.
+	 */
+	public void setUnit(Unit unit) {
+		this.unit = unit;
 	}
 	
 	/**
@@ -53,8 +56,8 @@ public class AbilityInfoPanel extends VBox {
 	/**
 	 * Sets this {@code AbilityInfoPanel}'s {@link AbilityPane} pointer to {@code null}. <b>Must ONLY be called from {@link AbilityPane#deselectAction}.</b>
 	 */
-	public AbilityPane clearSelectedAbilityPane() {
-		return selectedAbilityPane;
+	public void clearSelectedAbilityPane() {
+		selectedAbilityPane = null;
 	}
 	
 	/**
@@ -66,6 +69,14 @@ public class AbilityInfoPanel extends VBox {
 		if(selectedAbilityPane == null)
 			throw new IllegalArgumentException("No AbilityPane is currently selected.");
 		return selectedAbilityPane;
+	}
+	
+	public void deselectAndClearContent() {
+		if(selectedAbilityPane != null) {
+			selectedAbilityPane.deselect();
+			selectedAbilityPane = null;
+		}
+		getChildren().clear();
 	}
 	
 	public void addPane(AbilityPane pane) {

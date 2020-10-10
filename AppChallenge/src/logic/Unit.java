@@ -31,4 +31,17 @@ public interface Unit extends HasHealth {
 	/** Returns {@code true} if this {@code Unit} can traverse {@link BoardTile}s of the given {@link TileType}. */
 	boolean canTraverse(TileType type);
 	
+	/**
+	 * Returns a {@link Collection} of (row, col) ordered pairs. Each ordered
+	 * pair is a destination tile where this unit could legally use the given ability.
+	 * @param ability
+	 * @return
+	 * @throws IllegalArgumentException if this unit does not have the given ability.
+	 */
+	Collection<int[]> getLegalSpots(Ability ability);
+	
+	/**
+	 * The {@link Turn} this {@link Unit} plays on.
+	 */
+	Turn playingTurn();
 }

@@ -71,9 +71,8 @@ public class BoardTile {
 	}
 	
 	/** Returns the {@link Unit} on the tile, or {@code null} if there is no {@code Unit} on this tile.
-	 * @return
 	 */
-	public Unit getUnit() {
+	public Unit getUnitOrNull() {
 		for(int i = objects.size() - 1; i >= 0; i--) {
 			GameObject obj = objects.get(i);
 			if(obj instanceof Unit) {
@@ -84,7 +83,7 @@ public class BoardTile {
 	}
 	
 	public boolean hasUnit() {
-		return getUnit() != null;
+		return getUnitOrNull() != null;
 	}
 	
 	/** If there is a {@link Unit} on this {@code BoardTile}, removes that {@code Unit} and returns it.

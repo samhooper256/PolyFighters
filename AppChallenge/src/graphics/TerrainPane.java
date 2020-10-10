@@ -3,6 +3,7 @@ package graphics;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.scene.layout.*;
+import logic.Turn;
 
 /**
  * The {@link StackPane} that will contain the {@link TerrainGrid} for a {@link Level}.
@@ -43,5 +44,17 @@ public class TerrainPane extends StackPane {
 	
 	public Theme getTheme() {
 		return gridWrap.getTheme();
+	}
+	
+	public Turn getTurn() {
+		return getGrid().getTurn();
+	}
+	
+	/**
+	 * Assumes that the current {@link #getTurn() turn} is {@link Turn#PLAYER the player's}. Sets the turn to {@link Turn#ENEMY the enemy's}.
+	 * And plays out the enemy's turn.
+	 */
+	void playEnemyTurn() {
+		getGrid().playEnemyTurn();
 	}
 }

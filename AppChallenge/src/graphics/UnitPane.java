@@ -36,6 +36,12 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 		System.out.printf("Entered UnitPane click handler%n");
 		UnitPane pane = ((UnitWrap) mouseEvent.getSource()).getEnclosingInstance();
 		Unit unit = pane.getGameObject();
+		System.out.printf("\tplayingTurn = %s, currentTurn = %s%n", unit.playingTurn(), Level.current().getTurn());
+		if(unit.playingTurn() != Level.current().getTurn()) {
+			Level.current().getInfoPanel().clearContent(); //TODO maybe it should display enemy's info before it clears and consumes?
+			mouseEvent.consume();
+			return;
+		}
 		if(pane.isUseCandidate()) {
 			Level level = Level.current();
 			Move move = level.getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane()
@@ -47,6 +53,7 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 			AbilityInfoPanel abilityPanel = infoPanel.getAbilityInfoPanel();
 			if(abilityPanel.getUnit() != unit) {
 				infoPanel.clearContent();
+				abilityPanel.deselectAndClearContent();
 				for(Ability ability : unit.getAbilitiesUnmodifiable()) {
 					abilityPanel.addPane(pane.abilityPaneFor(ability));
 				}

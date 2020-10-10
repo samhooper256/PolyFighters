@@ -10,10 +10,25 @@ import java.util.List;
  * @author Sam Hooper
  *
  */
-public final class Move {
+public class Move {
+	public static final Move EMPTY_MOVE = new Move() {
+		@Override
+		public void addAction(Action action) {
+			throw new UnsupportedOperationException("Cannot modify the empty move.");
+		}
+		@Override
+		public boolean isEmpty() {
+			return true;
+		}
+	};
 	
 	private final Ability ability;
 	List<Action> actions;
+	
+	private Move() {
+		actions = null;
+		ability = null;
+	}
 	
 	public Move(Ability unit, Action... actions) {
 		this.ability = unit;
@@ -57,5 +72,14 @@ public final class Move {
 	
 	public Ability getAbility() {
 		return ability;
+	}
+	
+	public boolean isEmpty() {
+		return actions.size() == 0;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("Move[actions=%s]", actions);
 	}
 }

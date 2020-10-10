@@ -1,13 +1,9 @@
 package logic.units;
 
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import logic.Ability;
-import logic.Board;
-import logic.EnemyUnit;
-import logic.TileType;
+import logic.*;
 import logic.abilities.Shoot;
 import logic.abilities.StepMove;
 import utils.BooleanRef;
@@ -44,6 +40,36 @@ public class Goob extends AbstractEnemyUnit {
 	
 	public Shoot getShootAbility() {
 		return shootAbility;
+	}
+
+	/**
+	 * If this {@link Goob} can shoot a {@link TeamUnit} from its current position, it does so. Otherwise, if it has more than one move
+	 * remaining, it tries to get into a position where it could shoot a player's unit. Otherwise, if there's only one move remaining, it
+	 * tries to get into a position where it is not on the same row or column as any of the player's units.
+	 */
+	@Override
+	public Move chooseMove(final Board board, final int movesRemaining) {
+		final Collection<int[]> stepMoveLegals = stepMoveAbility.getLegals();
+		final Collection<int[]> shootLegals = shootAbility.getLegals();
+		System.out.printf("\tentered Goob::chooseMove for Goob@(%d,%d), shootLegals=%s%n", row, col, 
+				shootLegals.stream().map(Arrays::toString).collect(Collectors.joining(", ","[","]")
+				));
+		if(shootLegals.size() > 0) {
+			int[] min = null;
+			Unit minUnit = null;
+			for(int[] legal : shootLegals) {
+				Unit unit = board.getUnitAtOrNull(legal[0], legal[1]);
+				if(unit == null)
+					continue;
+				if(minUnit == null || unit.getHealth() > minUnit.getHealth()) {
+					minUnit = unit;
+					min = legal;
+				}
+			}
+			if(minUnit != null)
+				return shootAbility.createMoveFor(min, minUnit);
+		}
+		return Move.EMPTY_MOVE; //TODO finish AI
 	}
 	
 }

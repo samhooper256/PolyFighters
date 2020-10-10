@@ -74,4 +74,8 @@ public class FireProjectile implements Action{
 		}
 	}
 	
+	@Override
+	public String toString() {
+		return String.format("FireProjectile[start=(%d,%d), dest=(%d,%d), damage=%d, target=%s]", startRow, startCol, destRow, destCol, damage, target);
+	}
 }

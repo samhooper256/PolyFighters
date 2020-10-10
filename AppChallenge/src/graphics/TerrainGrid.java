@@ -169,7 +169,11 @@ public class TerrainGrid extends GridPane {
 	
 	private void executeMoveInternal(final Move move) {
 //		System.out.printf("(enter) executeMoveInternal(%s), thread = %s%n", move, Thread.currentThread().getName());
-		Main.blockUntilFinished(() -> Level.current().getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane().deselect());
+		final AbilityPane selectedAbilityPane = Level.current().getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane();
+		if(selectedAbilityPane != null)
+			Main.blockUntilFinished(() -> selectedAbilityPane.deselect());
+		if(move.isEmpty())
+			 return;
 		final Pane region = wrap.getRegion();
 		final Ability actingAbility = move.getAbility();
 		final Unit actingUnit = actingAbility.getUnit();
@@ -228,12 +232,14 @@ public class TerrainGrid extends GridPane {
 						}
 					};
 					transition.setOnFinished(actionEvent -> {
-						region.getChildren().remove(pane);
-						synchronized(lock) {
-							lock.notify();
-						}
-						moveNotify = true;
-						a.execute(backingBoard);
+						Main.blockUntilFinished(() -> {
+							region.getChildren().remove(pane);
+							synchronized(lock) {
+								lock.notify();
+							}
+							moveNotify = true;
+							a.execute(backingBoard);
+						});
 					});
 					transition.setInterpolator(Interpolator.LINEAR);
 					transition.play();
@@ -265,5 +271,20 @@ public class TerrainGrid extends GridPane {
 		}
 	}
 
+	public Turn getTurn() {
+		return backingBoard.getTurn();
+	}
+	
+	/**
+	 * Assumes that the current {@link #getTurn() turn} is {@link Turn#PLAYER the player's}. Sets the turn to {@link Turn#ENEMY the enemy's}
+	 * and plays out the enemy's turn.
+	 */
+	void playEnemyTurn() {
+		backingBoard.setToEnemyTurn();
+		while(backingBoard.hasNextEnemyMove()) {
+			Move nextMove = backingBoard.nextEnemyMove();
+			executeMove(nextMove);
+		}
+	}
 	
 }

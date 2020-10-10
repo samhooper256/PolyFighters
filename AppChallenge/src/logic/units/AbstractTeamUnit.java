@@ -13,12 +13,6 @@ import logic.TeamUnit;
  *
  */
 public abstract class AbstractTeamUnit extends AbstractUnit implements TeamUnit {
-	@Override
-	public Collection<int[]> getLegalSpots(Ability ability) {
-		if(!abilities.contains(ability))
-			throw new IllegalArgumentException("This unit does not have the given ability");
-		return ability.getLegals();
-	}
 	
 	protected AbstractTeamUnit(int maxHealth) {
 		this(maxHealth, maxHealth);

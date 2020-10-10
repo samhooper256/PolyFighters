@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import logic.Turn;
 
 /**
  * @author Sam Hooper
@@ -28,10 +29,13 @@ public class Level extends Scene {
 	private final Pane root;
 	private final StackPane stackRoot;
 	private final BorderPane borderPane;
+	/** The right component of {@link #borderPane} */
 	private final InfoPanel infoPanel;
 	/** The left component of {@link #borderPane} */
-	private final Pane left;
+	private final Pane buttonPane;
+	/** The center component of {@link #borderPane} */
 	private final TerrainPane terrainPane;
+	private final Button endTurnButton;
 	private final Theme theme;
 	//the sum of the difficulties of the EnemyUnits added on each turn must be no more than twice turnDifficulty.
 	private final double turnDifficulty;
@@ -54,10 +58,6 @@ public class Level extends Scene {
 		@Override public String getName() { return "stackRootHeight"; }
 	};
 	
-	
-	
-	
-	
 	public Level() {
 		this(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_THEME);
 	}
@@ -68,7 +68,12 @@ public class Level extends Scene {
 		this.theme = theme;
 		this.turnDifficulty = 2; //must be set before terrainPane construction.
 		
-		left = new VBox(new Button("Button 1"));
+		endTurnButton = new Button("End Turn");
+		buttonPane = new VBox(endTurnButton);
+		endTurnButton.setOnAction(actionEvent -> {
+			endTurnButton.setDisable(true);
+			playEnemyTurn();
+		});
 		
 		terrainPane = new TerrainPane(this, theme);
 		terrainPane.setBorder(Borders.of(Color.BLACK));
@@ -77,7 +82,7 @@ public class Level extends Scene {
 		infoPanel = new InfoPanel();
 		infoPanel.prefWidthProperty().bind(borderPane.widthProperty().multiply(INFO_SCREEN_PERCENT));
 		
-		borderPane.setLeft(left);
+		borderPane.setLeft(buttonPane);
 		borderPane.setRight(infoPanel);
 		borderPane.setCenter(terrainPane);
 		
@@ -92,6 +97,15 @@ public class Level extends Scene {
 		stackRoot.getChildren().add(0, borderPane);
 		
 		root.getChildren().add(stackRoot);
+	}
+	/**
+	 * Assumes that the current {@link #getTurn() turn} is {@link Turn#PLAYER the player's}. Sets the turn to {@link Turn#ENEMY the enemy's}.
+	 * And plays out the enemy's turn.
+	 */
+	private void playEnemyTurn() {
+		if(getTurn() == Turn.ENEMY)
+			throw new IllegalStateException("Cannot play enemy turn because it is already the enemy's turn");
+		terrainPane.playEnemyTurn();
 	}
 	
 	/* It is static so that we can call it inside the "super" call in the constructor. */
@@ -113,5 +127,9 @@ public class Level extends Scene {
 	
 	public double getTurnDifficulty() {
 		return turnDifficulty;
+	}
+	
+	public Turn getTurn() {
+		return terrainPane.getTurn();
 	}
 }

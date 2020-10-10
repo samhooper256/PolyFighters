@@ -1,8 +1,6 @@
 package logic;
 
-import java.util.Collection;
-import java.util.Objects;
-
+import java.util.*;
 /**
  * @author Sam Hooper
  *
@@ -13,10 +11,20 @@ public class Board {
 	public static final int MAX_COLS = 20;
 	public static final int MIN_ROWS = 3;
 	public static final int MIN_COLS = 3;
+	public static final int MOVES_PER_ENEMY = 2;
 	
 	private final BoardTile[][] tiles;
 	private final int rows, cols;
-	
+	/**
+	 * The amount of enemy {@link Move}s that have yet to be played on the Enemy's turn. This value is not used during the Player's turn.
+	 */
+	private int enemyMovesRemaining;
+	/**
+	 * The enemies on this {@link Board}. <b>Must ONLY be used during the Enemy's turn and cannot be shared with the outside world.</b>
+	 * Should be random access for efficiency.
+	 */
+	private List<EnemyUnit> enemies;
+	private Turn turn;
 	/** Creates a new {@code Board} with {@code size} rows and {@code size} columns. All of the tiles on the board will be empty, solid tiles
 	 * by default.*/
 	public Board(int size) {
@@ -30,6 +38,7 @@ public class Board {
 		this.rows = rows;
 		this.cols = cols;
 		tiles = new BoardTile[rows][cols];
+		turn = Turn.PLAYER;
 		initBoardTiles();
 	}
 	
@@ -56,14 +65,11 @@ public class Board {
 	}
 	
 	/**
-	 * Returns the legal spots that the given {@link TeamUnit} currently has for the given {@link Ability} as a {@link Collection}
+	 * Returns the legal spots that the given {@link Unit} currently has for the given {@link Ability} as a {@link Collection}
 	 * (row, col) ordered pairs.
-	 * @param unit
-	 * @param ability
-	 * @return
-	 * @throws IllegalArgumentException if the given {@code TeamUnit} is not on this board.
+	 * @throws IllegalArgumentException if the given {@link Unit} is not on this board.
 	 */
-	public Collection<int[]> getLegalSpotsFor(TeamUnit unit, Ability ability) {
+	public Collection<int[]> getLegalSpotsFor(Unit unit, Ability ability) {
 		if(unit.getBoard() != this)
 			throw new IllegalArgumentException("The unit " + unit + " is not on this board.");
 		return unit.getLegalSpots(ability);
@@ -84,8 +90,8 @@ public class Board {
 	/**
 	 * Returns the {@link Unit} at the indicated tile, or {@code null} if no {@code Unit} is on that tile.
 	 */
-	public Unit getUnitAt(int row, int col) {
-		return tiles[row][col].getUnit();
+	public Unit getUnitAtOrNull(int row, int col) {
+		return tiles[row][col].getUnitOrNull();
 	}
 	
 	/**
@@ -107,6 +113,27 @@ public class Board {
 			addObstacleOrThrow((Obstacle) object, row, col);
 		else
 			throw new IllegalArgumentException("Must be Unit or Obstacle");
+	}
+	
+	/**
+	 * @throws IllegalStateException if it is the {@link Turn#PLAYER player's turn}.
+	 */
+	public boolean hasNextEnemyMove() {
+		if(turn != Turn.ENEMY)
+			throw new IllegalStateException("Must be the enemy's turn");
+		return enemyMovesRemaining > 0;
+	}
+	
+	public Move nextEnemyMove() {
+		System.out.printf("entered nextEnemyMove, enemies = %s%n", enemies);
+		EnemyUnit actingEnemy = enemies.get((enemies.size() * MOVES_PER_ENEMY - enemyMovesRemaining) / MOVES_PER_ENEMY);
+		int enemyMoves = enemyMovesRemaining % MOVES_PER_ENEMY;
+		if(enemyMoves == 0)
+			enemyMoves = MOVES_PER_ENEMY;
+		enemyMovesRemaining--;
+		Move chosenMove = actingEnemy.chooseMove(this, enemyMoves);
+		System.out.printf("nextEnemyMove chose: %s%n", chosenMove);
+		return chosenMove;
 	}
 	
 	/**
@@ -154,7 +181,7 @@ public class Board {
 		Objects.requireNonNull(unit);
 		for(int i = 0; i < tiles.length; i++) {
 			for(int j = 0; j < tiles[i].length; j++) {
-				if(unit.equals(tiles[i][j].getUnit()))
+				if(unit.equals(tiles[i][j].getUnitOrNull()))
 					return true;
 			}
 		}
@@ -174,5 +201,45 @@ public class Board {
 		object.setBoard(null);
 		object.setRow(-1);
 		object.setCol(-1);
+	}
+	
+	public Turn getTurn() {
+		return turn;
+	}
+	
+	/**
+	 * Sets the {@link #getTurn() turn} of this {@link Board} to the {@link Turn#ENEMY enemy's} and prepares to play the turn. </b>Does not play the turn.</b>
+	 */
+	public void setToEnemyTurn() {
+		this.turn = Turn.ENEMY;
+		this.enemies = findEnemies();
+		this.enemyMovesRemaining = this.enemies.size() * MOVES_PER_ENEMY;
+	}
+	
+	/**
+	 * Does an O(rows*cols) search to find all the enemies on this board. Returns an {@link ArrayList} of all the {@link EnemyUnit EnemyUnits}.
+	 */
+	private ArrayList<EnemyUnit> findEnemies() {
+		ArrayList<EnemyUnit> list = new ArrayList<>();
+		for(int i = 0; i < rows; i++) {
+			for(int j = 0; j < cols; j++) {
+				Unit unit = tiles[i][j].getUnitOrNull();
+				if(unit instanceof EnemyUnit)
+					list.add((EnemyUnit) unit);
+			}
+		}
+		return list;
+	}
+	
+	public Collection<TeamUnit> getCurrentTeamUnits() {
+		ArrayList<TeamUnit> list = new ArrayList<>();
+		for(int i = 0; i < rows; i++) {
+			for(int j = 0; j < cols; j++) {
+				Unit unit = tiles[i][j].getUnitOrNull();
+				if(unit instanceof TeamUnit)
+					list.add((TeamUnit) unit);
+			}
+		}
+		return list;
 	}
 }

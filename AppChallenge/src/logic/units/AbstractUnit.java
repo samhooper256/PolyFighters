@@ -114,6 +114,13 @@ public abstract class AbstractUnit implements Unit {
 		return board;
 	}
 	
+	@Override
+	public Collection<int[]> getLegalSpots(Ability ability) {
+		if(!abilities.contains(ability))
+			throw new IllegalArgumentException("This unit does not have the given ability");
+		return ability.getLegals();
+	}
+	
 	/**
 	 * {@inheritDoc}. If {@code board} is {@code null}, the row and column values of this {@code Unit} are set to {@code -1}.
 	 */

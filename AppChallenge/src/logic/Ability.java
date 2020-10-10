@@ -45,4 +45,8 @@ public interface Ability {
 	 * destination tile, or the target is {@code null} when it should not be.
 	 */
 	Move createMoveFor(int destRow, int destCol, GameObject target);
+	
+	default Move createMoveFor(int[] spot, GameObject target) {
+		return createMoveFor(spot[0], spot[1], target);
+	}
 }
