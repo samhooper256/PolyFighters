@@ -16,10 +16,6 @@ import logic.Unit;
  */
 public abstract class AbstractEnemyUnit extends AbstractUnit implements EnemyUnit {
 	
-	/**
-	 * <b>CONTENTS MUST NOT BE MODIFIED.</b>
-	 */
-	protected static final int[][] ADJACENT_8 = {{-1,-1}, {-1,0}, {-1,1}, {0,-1}, {0,1}, {1,-1}, {1,0}, {1,1}};
 	protected AbstractEnemyUnit(int maxHealth, int currentHealth) {
 		super(maxHealth, currentHealth);
 	}
@@ -84,7 +80,7 @@ public abstract class AbstractEnemyUnit extends AbstractUnit implements EnemyUni
 	 */
 	protected Collection<TeamUnit> teamUnits8Adjacent(Board board, int row, int col) {
 		List<TeamUnit> list = new ArrayList<>(8);
-		for(int[] adj : ADJACENT_8) {
+		for(int[] adj : Board.ADJACENT_8) {
 			int nr = row + adj[0], nc = col + adj[1];
 			Unit unit;
 			if(board.inBounds(nr, nc) && (unit = board.getUnitAtOrNull(nr, nc)) instanceof TeamUnit)

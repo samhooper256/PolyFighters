@@ -7,6 +7,11 @@ import java.util.*;
  */
 public class Board {
 	
+	/**
+	 * <b>CONTENTS MUST NOT BE MODIFIED.</b>
+	 */
+	public static final int[][] ADJACENT_8 = {{-1,-1}, {-1,0}, {-1,1}, {0,-1}, {0,1}, {1,-1}, {1,0}, {1,1}};
+	
 	public static final int MAX_ROWS = 20;
 	public static final int MAX_COLS = 20;
 	public static final int MIN_ROWS = 3;
@@ -99,6 +104,13 @@ public class Board {
 	}
 	
 	/**
+	 * Returns the {@link Unit} at the indicated tile, or {@code null} if no {@code Unit} is on that tile.
+	 */
+	public Obstacle getObstacleAtOrNull(int row, int col) {
+		return tiles[row][col].getObstacleOrNull();
+	}
+	
+	/**
 	 * Returns {@code true} if there is a {@link Unit} on the indicated tile, {@code false} otherwise.
 	 */
 	public boolean hasUnit(int row, int col) {
@@ -186,20 +198,6 @@ public class Board {
 	}
 	
 	/**
-	 * <p>Returns {@code true} if {@code unit} is on this {@code Board}, {@code false} otherwise. {@code unit} must not be {@code null}.</p>
-	 */
-	public boolean isOnBoard(Unit unit) {
-		Objects.requireNonNull(unit);
-		for(int i = 0; i < tiles.length; i++) {
-			for(int j = 0; j < tiles[i].length; j++) {
-				if(unit.equals(tiles[i][j].getUnitOrNull()))
-					return true;
-			}
-		}
-		return false;
-	}
-	
-	/**
 	 * Removes the given {@link GameObject} on the given tile from this {@link Board}. Throws an {@link IllegalArgumentException}
 	 * if it is not present. Throws {@link NullPointerException} if the object is {@code null}. This method updates the row, column, and board
 	 * values of the {@code GameObject}. The row and column values are set to {@code -1}.
@@ -255,6 +253,30 @@ public class Board {
 		return list;
 	}
 	
+	/**
+	 * <p>Returns {@code true} if {@code unit} is on this {@code Board}, {@code false} otherwise. {@code unit} must not be {@code null}.</p>
+	 */
+	public boolean isOnBoard(Unit unit) {
+		Objects.requireNonNull(unit);
+		for(int i = 0; i < tiles.length; i++) {
+			for(int j = 0; j < tiles[i].length; j++) {
+				if(unit.equals(tiles[i][j].getUnitOrNull()))
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	public Collection<GameObject> get8AdjacentGameObject(final int row, final int col) {
+		Collection<GameObject> list = new ArrayList<>();
+		for(int[] adj : ADJACENT_8) {
+			int nr = row + adj[0], nc = col + adj[1];
+			if(inBounds(nr, nc))
+				list.addAll(tiles[nr][nc].getObjectsUnmodifiable());
+		}
+		return list;
+	}
+
 	@Override
 	public String toString() {
 		StringJoiner j = new StringJoiner("\n", "\n", "\n");

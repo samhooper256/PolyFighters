@@ -9,6 +9,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import logic.Ability;
 import logic.abilities.*;
+import utils.IntChangeListener;
 /**
  * @author Sam Hooper
  *
@@ -65,6 +66,22 @@ public abstract class AbilityPane extends StackPane	{
 				vBox.getChildren().add(label);
 				melee.damageProperty().addChangeListener((oldValue, newValue) -> {
 					label.setText("Melee: " + newValue);
+				});
+			}
+		});
+		paneFactories.put(Smash.class, a -> new AbilityPane(a) {
+			{
+				Smash smash = (Smash) a;
+				VBox vBox = new VBox();
+				getChildren().add(vBox);
+				Label label = new Label("Smash: " + smash.damageProperty().get() + " damage, " + smash.radiusProperty().get() + " radius");
+				label.setWrapText(true);
+				vBox.getChildren().add(label);
+				smash.damageProperty().addChangeListener((oldValue, newValue) -> {
+					label.setText("Smash: " + newValue + " damage, " + smash.radiusProperty().get() + " radius");
+				});
+				smash.radiusProperty().addChangeListener((oldValue, newValue) -> {
+					label.setText("Smash: " + smash.damageProperty().get() + " damage, " + newValue + " radius");
 				});
 			}
 		});

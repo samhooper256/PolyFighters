@@ -148,6 +148,17 @@ public class BoardTile {
 		return false;
 	}
 	
+	public Obstacle getObstacleOrNull() {
+		for(GameObject obj : objects)
+			if(obj instanceof Obstacle)
+				return (Obstacle) obj;
+		return null;
+	}
+	
+	public List<GameObject> getObjectsUnmodifiable() {
+		return Collections.unmodifiableList(objects);
+	}
+	
 	@Override
 	public String toString() {
 		return String.format("BoardTile[type=%s, objects=%s]", type, objects);

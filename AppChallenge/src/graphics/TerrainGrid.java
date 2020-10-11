@@ -291,7 +291,7 @@ public class TerrainGrid extends GridPane {
 			}
 		}
 		System.out.printf("ESCAPED%n");
-		System.out.println("BACKING " + backingBoard);
+//		System.out.println("BACKING " + backingBoard);
 	}
 
 	public Turn getTurn() {
