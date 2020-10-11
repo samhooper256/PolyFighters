@@ -30,15 +30,15 @@ public class Move {
 		ability = null;
 	}
 	
-	public Move(Ability unit, Action... actions) {
-		this.ability = unit;
+	public Move(Ability ability, Action... actions) {
+		this.ability = ability;
 		this.actions = new ArrayList<>(actions.length);
 		for(int i = 0; i < actions.length; i++)
 			this.actions.add(actions[i]);
 	}
 	
-	public Move(Ability unit) {
-		this.ability = unit;
+	public Move(Ability ability) {
+		this.ability = ability;
 		actions = new ArrayList<>();
 	}
 	

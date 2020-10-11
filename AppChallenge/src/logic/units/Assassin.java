@@ -35,6 +35,6 @@ public class Assassin extends AbstractEnemyUnit {
 	@Override
 	public Move chooseMove(Board board, int movesRemaining) {
 		// TODO Auto-generated method stub
-		return null;
+		return Move.EMPTY_MOVE;
 	}
 }

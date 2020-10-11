@@ -7,10 +7,12 @@ import java.util.Objects;
 import logic.Board;
 import logic.BoardTile;
 import logic.GameObject;
+import logic.HasHealth;
 import logic.Move;
 import logic.Obstacle;
 import logic.TileType;
 import logic.Unit;
+import logic.actions.ChangeHealth;
 import logic.actions.FireProjectile;
 import utils.IntRef;
 
@@ -90,7 +92,8 @@ public class Melee extends AbstractAnyAbility implements SingleProjectileAbility
 
 	@Override
 	public Move createMoveFor(int destRow, int destCol, GameObject target) {
-		// TODO Auto-generated method stub
-		return null;
+		if(target instanceof HasHealth)
+			return new Move(this, new ChangeHealth((HasHealth) target, -meleeDamage.get()));
+		throw new UnsupportedOperationException("Cannot change the health of: " + target);
 	}
 }

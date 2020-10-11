@@ -37,7 +37,8 @@ public enum UnitSkin {
 		public double[] projectileSizeFor(Class<? extends SingleProjectileAbility> clazz) {
 			return new double[] {0.1, 0.1};
 		}
-	};
+	},
+	ASSASSIN(Assassin.class);
 	private static final ImageInfo basicBullet = new ImageInfo("BasicBullet.png");
 	private static final Map<Class<? extends Unit>, UnitSkin> map;
 	static {
