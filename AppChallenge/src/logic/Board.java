@@ -220,10 +220,18 @@ public class Board {
 	 * Sets the {@link #getTurn() turn} of this {@link Board} to the {@link Turn#ENEMY enemy's} and prepares to play the turn. </b>Does not play the turn.</b>
 	 */
 	public void setToEnemyTurn() {
-		System.out.printf("Entered set to enemy Turn%n");
 		this.turn = Turn.ENEMY;
 		this.enemies = findEnemies();
 		this.enemyMovesRemaining = this.enemies.size() * MOVES_PER_ENEMY;
+	}
+	
+	/**
+	 * Sets the {@link #getTurn() turn} of this {@link Board} to the {@link Turn#ENEMY player's} and prepares for the turn to be played.
+	 * */
+	public void setToPlayerTurn() {
+		this.turn = Turn.PLAYER;
+		this.enemies = null;
+		this.enemyMovesRemaining = -1;
 	}
 	
 	/**

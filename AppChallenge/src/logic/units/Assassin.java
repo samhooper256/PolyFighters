@@ -4,6 +4,7 @@ import java.util.*;
 
 import logic.*;
 import logic.abilities.*;
+import utils.Coll;
 
 /**
  * @author Sam Hooper
@@ -72,9 +73,9 @@ public class Assassin extends AbstractEnemyUnit {
 			}
 		}
 		if(pref == null) {
-			if(movesRemaining > 2 && teleportLegals.size() > 0)
-				return teleportAbility.createMoveFor(teleportLegals.iterator().next(), null); //make random move, it might take us closer and we can attack on a future turn
-			return Move.EMPTY_MOVE; //no change of attakcing anything. We'll move to a better spot next move.
+			if(teleportLegals.size() > 0)
+				return teleportAbility.createMoveFor(Coll.getRandom(teleportLegals), null); //make random move, it might take us closer and we can attack on a future turn
+			return Move.EMPTY_MOVE;
 		}
 		return teleportAbility.createMoveFor(pref, null);
 	}

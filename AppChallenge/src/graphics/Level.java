@@ -132,4 +132,11 @@ public class Level extends Scene {
 	public Turn getTurn() {
 		return terrainPane.getTurn();
 	}
+
+	/**
+	 * Called to notify when the enemy turn finishes.
+	 */
+	public void enemyTurnFinished() {
+		endTurnButton.setDisable(false);
+	}
 }

@@ -93,17 +93,17 @@ public class Main extends Application {
 	 */
 	public static void blockUntilFinished(Runnable runnable) {
 		class Blocker {
-			Object lock;
+			volatile Object lock;
 			volatile boolean notified;
 			Blocker(Runnable r) {
 				lock = new Object();
 				notified = false;
 				Platform.runLater(() -> {
 					r.run();
+					notified = true;
 					synchronized(lock) {
 						lock.notify();
 					}
-					notified = true;
 				});
 				while(!notified) {
 					try {

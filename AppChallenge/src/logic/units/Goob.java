@@ -7,6 +7,7 @@ import logic.*;
 import logic.abilities.Shoot;
 import logic.abilities.StepMove;
 import utils.BooleanRef;
+import utils.Coll;
 import utils.CollectionRef;
 import utils.IntRef;
 
@@ -93,9 +94,9 @@ public class Goob extends AbstractEnemyUnit {
 		}
 //		System.out.printf("\t\tpref=%s, fewestOptions=%s%n", Arrays.toString(pref), fewestOptions);
 		if(pref == null) {
-			if(movesRemaining > 2 && stepMoveLegals.size() > 0)
-				return stepMoveAbility.createMoveFor(stepMoveLegals.iterator().next(), null); //make a random move, we have enough moves left that we might be able to shoot on the next one.
-			return Move.EMPTY_MOVE; //not possible to make an attack during this turn. Do nothing. We'll move to a better spot on out next move.
+			if(stepMoveLegals.size() > 0)
+				return stepMoveAbility.createMoveFor(Coll.getRandom(stepMoveLegals), null); //make a random move
+			return Move.EMPTY_MOVE;
 		}
 		return stepMoveAbility.createMoveFor(pref, null);
 	}

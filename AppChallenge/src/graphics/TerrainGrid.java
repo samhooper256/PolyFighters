@@ -170,7 +170,7 @@ public class TerrainGrid extends GridPane {
 				@Override
 				protected Void call() throws Exception {
 					try {
-						playEnemyTurnInternal();
+						playEnemyTurnInternalAndStackTurnBackToPlayer();
 					}
 					catch(Exception e) { 
 						e.printStackTrace();
@@ -315,6 +315,12 @@ public class TerrainGrid extends GridPane {
 			Move nextMove = backingBoard.nextEnemyMove();
 			executeMoveInternal(nextMove);
 		}
+	}
+
+	private void playEnemyTurnInternalAndStackTurnBackToPlayer() {
+		playEnemyTurnInternal();
+		TerrainGrid.this.backingBoard.setToPlayerTurn();
+		Level.current().enemyTurnFinished();
 	}
 	
 }
