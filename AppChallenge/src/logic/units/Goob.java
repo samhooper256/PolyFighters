@@ -80,8 +80,6 @@ public class Goob extends AbstractEnemyUnit {
 				}
 			}
 		}
-		rowUnitCounts[myRow]--;
-		colUnitCounts[myCol]--;
 		if(movesRemaining == 1) {
 			int[] pref = null;
 			int bestScore = Integer.MAX_VALUE;
@@ -96,19 +94,62 @@ public class Goob extends AbstractEnemyUnit {
 				return Move.EMPTY_MOVE;
 			return stepMoveAbility.createMoveFor(pref, null);
 		}
+		System.out.printf("\t\tcase 3: nothing to shoot rn, but more than one move:%n");
 		// more than one move remaining, but there's nothing we can shoot immediately:
 		int[] pref = null;
 		int fewestOptions = Integer.MAX_VALUE; //search for the spot with the fewest (non-zero) number of units attackable, and attack there. That way we're not in the crossfire of several units.
 		for(int[] legal : stepMoveLegals) {
-			int options = rowUnitCounts[legal[0]] + colUnitCounts[legal[1]];
+			int options = teamUnitsVisibleFrom(board, legal[0], legal[1]).size();
 			if(options > 0 && options < fewestOptions) {
 				pref = legal;
 				fewestOptions = options;
 			}
 		}
+		System.out.printf("\t\tpref=%s, fewestOptions=%s%n", Arrays.toString(pref), fewestOptions);
 		if(pref == null)
 			return Move.EMPTY_MOVE;
 		return stepMoveAbility.createMoveFor(pref, null);
+	}
+	
+	private Collection<TeamUnit> teamUnitsVisibleFrom(Board board, final int startRow, final int startCol) {
+		final int[][] deltas = {{0, -1}, {0, 1}, {1, 0}, {-1, 0}};
+		ArrayList<TeamUnit> unitsList = new ArrayList<>(4);
+		outer:
+		for(int[] delta : deltas) {
+			int dr = delta[0], dc = delta[1];
+			int r = startRow + dr, c = startCol + dc;
+			while(board.inBounds(r, c)) {
+				if(board.hasObstacle(r, c))
+					continue outer;
+				Unit unit = board.getUnitAtOrNull(r, c);
+				if(unit instanceof TeamUnit) {
+					unitsList.add((TeamUnit) unit);
+					continue outer;
+				}
+				else if(unit != null) {
+					continue outer;
+				}
+				r += dr;
+				c += dc;
+			}
+		}
+		return unitsList;
+	}
+	
+	private boolean isClearPath(final Board board, int myRow, int myCol, int destRow, int destCol) {
+		int dr = myCol == destCol ? 0 : (myRow < destRow ? 1 : -1);
+		int dc = myRow == destRow ? 0 : (myCol < destCol ? 1 : -1);
+		int r = myCol + dr, c = myCol + dc;
+		while(r != destRow || c != destCol) {
+			if(board.hasUnit(r, c) || board.hasObstacle(r, c))
+				return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("Goob@%h", this);
 	}
 	
 }

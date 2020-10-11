@@ -49,5 +49,9 @@ public class Relocate implements Action {
 		unit.setRow(destRow);
 		unit.setCol(destCol);
 	}
-
+	
+	@Override
+	public String toString() {
+		return String.format("Relocate[from=(%d,%d), to=(%d,%d)]", startRow, startCol, destRow, destCol);
+	}
 }
