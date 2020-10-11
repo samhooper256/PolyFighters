@@ -47,7 +47,7 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 			boolean found1 = false;
 			for(int r = uRow; r < rows && !found1; r++)
 			{
-				if(	b.getTileAt(r, uCol).getUnitOrNull() instanceof EnemyUnit || 
+				if(	isAgainstOrFalse(b.getTileAt(r, uCol).getUnitOrNull()) || 
 						b.getTileAt(r, uCol).hasObstacle())
 				
 				{
@@ -61,7 +61,7 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 			boolean found2 = false;
 			for(int r = uRow; r >= 0 && !found2; r--)
 			{
-				if(	b.getTileAt(r, uCol).getUnitOrNull() instanceof EnemyUnit || 
+				if(	isAgainstOrFalse(b.getTileAt(r, uCol).getUnitOrNull()) || 
 						b.getTileAt(r, uCol).hasObstacle())
 				
 				{
@@ -74,7 +74,7 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 			boolean found3 = false;
 			for(int c = uCol; c < cols && !found3; c++)
 			{
-				if(	b.getTileAt(uRow, c).getUnitOrNull() instanceof EnemyUnit || 
+				if(	isAgainstOrFalse(b.getTileAt(uRow, c).getUnitOrNull()) || 
 				b.getTileAt(uRow, c).hasObstacle())
 				
 				{
@@ -88,7 +88,7 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 			boolean found4 = false;
 			for(int c = uCol; c >= 0 && !found4; c--)
 			{
-				if(	b.getTileAt(uRow, c).getUnitOrNull() instanceof EnemyUnit || 
+				if(	isAgainstOrFalse(b.getTileAt(uRow, c).getUnitOrNull()) || 
 				b.getTileAt(uRow, c).hasObstacle())
 				
 				{

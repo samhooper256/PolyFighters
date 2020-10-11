@@ -136,7 +136,7 @@ public class TerrainGrid extends GridPane {
 	private volatile boolean moveNotify;
 	
 	private final MoveService MOVE_SERVICE = new MoveService();
-			
+	private final EnemyTurnService ENEMY_TURN_SERVICE = new EnemyTurnService();
 	class MoveService extends Service<Void> {
 		private volatile Move move;
 		@Override
@@ -163,12 +163,35 @@ public class TerrainGrid extends GridPane {
 		}
 	};
 	
+	class EnemyTurnService extends Service<Void> {
+		@Override
+		protected Task<Void> createTask() {
+			return new Task<>() {
+				@Override
+				protected Void call() throws Exception {
+					try {
+						playEnemyTurnInternal();
+					}
+					catch(Exception e) { 
+						e.printStackTrace();
+					}
+					return null;
+				}
+				
+			};
+		}
+		
+		public void playEnemyTurn() {
+			this.restart();
+		}
+	};
+	
 	public void executeMove(Move move) {
 		MOVE_SERVICE.executeMove(move);
 	}
 	
 	private void executeMoveInternal(final Move move) {
-//		System.out.printf("(enter) executeMoveInternal(%s), thread = %s%n", move, Thread.currentThread().getName());
+		System.out.printf("(enter) executeMoveInternal(%s), thread = %s%n", move, Thread.currentThread().getName());
 		final AbilityPane selectedAbilityPane = Level.current().getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane();
 		if(selectedAbilityPane != null)
 			Main.blockUntilFinished(() -> selectedAbilityPane.deselect());
@@ -232,14 +255,12 @@ public class TerrainGrid extends GridPane {
 						}
 					};
 					transition.setOnFinished(actionEvent -> {
-						Main.blockUntilFinished(() -> {
 							region.getChildren().remove(pane);
 							synchronized(lock) {
 								lock.notify();
 							}
 							moveNotify = true;
 							a.execute(backingBoard);
-						});
 					});
 					transition.setInterpolator(Interpolator.LINEAR);
 					transition.play();
@@ -269,6 +290,7 @@ public class TerrainGrid extends GridPane {
 				throw new UnsupportedOperationException("Unsupported action type: " + a.getClass());
 			}
 		}
+		System.out.printf("ESCAPED%n");
 	}
 
 	public Turn getTurn() {
@@ -279,11 +301,18 @@ public class TerrainGrid extends GridPane {
 	 * Assumes that the current {@link #getTurn() turn} is {@link Turn#PLAYER the player's}. Sets the turn to {@link Turn#ENEMY the enemy's}
 	 * and plays out the enemy's turn.
 	 */
-	void playEnemyTurn() {
+	public void playEnemyTurn() {
+		ENEMY_TURN_SERVICE.playEnemyTurn();
+	}
+	
+	/**
+	 * Must NOT be run on FX Thread.
+	 */
+	private void playEnemyTurnInternal() {
 		backingBoard.setToEnemyTurn();
 		while(backingBoard.hasNextEnemyMove()) {
 			Move nextMove = backingBoard.nextEnemyMove();
-			executeMove(nextMove);
+			executeMoveInternal(nextMove);
 		}
 	}
 	

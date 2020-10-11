@@ -211,6 +211,7 @@ public class Board {
 	 * Sets the {@link #getTurn() turn} of this {@link Board} to the {@link Turn#ENEMY enemy's} and prepares to play the turn. </b>Does not play the turn.</b>
 	 */
 	public void setToEnemyTurn() {
+		System.out.printf("Entered set to enemy Turn%n");
 		this.turn = Turn.ENEMY;
 		this.enemies = findEnemies();
 		this.enemyMovesRemaining = this.enemies.size() * MOVES_PER_ENEMY;
