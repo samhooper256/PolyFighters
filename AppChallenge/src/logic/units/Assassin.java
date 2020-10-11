@@ -1,10 +1,8 @@
 package logic.units;
 
-import java.util.EnumSet;
+import java.util.*;
 
-import logic.Board;
-import logic.Move;
-import logic.TileType;
+import logic.*;
 import logic.abilities.*;
 
 /**
@@ -34,7 +32,50 @@ public class Assassin extends AbstractEnemyUnit {
 
 	@Override
 	public Move chooseMove(Board board, int movesRemaining) {
-		// TODO Auto-generated method stub
-		return Move.EMPTY_MOVE;
+		Collection<int[]> meleeLegals = meleeAbility.getLegals();
+		Collection<int[]> teleportLegals = teleportAbility.getLegals();
+		if(meleeLegals.size() > 0) {
+			Unit bestUnit = null;
+			int bestHealth = Integer.MIN_VALUE;
+			for(int[] legal : meleeLegals) {
+				Unit unit = board.getUnitAtOrNull(legal[0], legal[1]);
+				if(!(unit instanceof TeamUnit))
+					continue;
+				if(unit.getHealth() > bestHealth) {
+					bestHealth = unit.getHealth();
+					bestUnit = unit;
+				}
+			}
+			if(bestUnit != null)
+				return meleeAbility.createMoveFor(bestUnit.getRow(), bestUnit.getCol(), bestUnit);
+		}
+		
+		//case 2: no legal attacks:
+		if(movesRemaining == 1) {
+			//case 2.1: no legal attacks, and no time to make one (only 1 move remaining)
+			int[][] teamUnitCounts = getRowColCountsOfTeamUnits(board);
+			int[] pref = leastVisibleSpotOf(teleportLegals, teamUnitCounts);
+			if(pref == null)
+				return Move.EMPTY_MOVE;
+			return teleportAbility.createMoveFor(pref, null);
+		}
+		//case 2.2: no legal attacks, but there may be time to make one on a future move.
+		int[] pref = null;
+		int fewestOptions = Integer.MAX_VALUE;
+		for(int[] legal : teleportLegals) {
+			if(!meleeAbility.canAttackFrom(board.getTileAt(legal).getType()))
+				continue;
+			int options = teamUnits8Adjacent(board, legal).size();
+			if(options > 0 && options < fewestOptions) {
+				pref = legal;
+				fewestOptions = options;
+			}
+		}
+		if(pref == null) {
+			if(movesRemaining > 2 && teleportLegals.size() > 0)
+				return teleportAbility.createMoveFor(teleportLegals.iterator().next(), null); //make random move, it might take us closer and we can attack on a future turn
+			return Move.EMPTY_MOVE; //no change of attakcing anything. We'll move to a better spot next move.
+		}
+		return teleportAbility.createMoveFor(pref, null);
 	}
 }

@@ -61,10 +61,10 @@ public abstract class AbilityPane extends StackPane	{
 				Melee melee = (Melee) a;
 				VBox vBox = new VBox();
 				getChildren().add(vBox);
-				Label label = new Label("Shoot with Damage: " + melee.damageProperty().get());
+				Label label = new Label("Melee: " + melee.damageProperty().get());
 				vBox.getChildren().add(label);
 				melee.damageProperty().addChangeListener((oldValue, newValue) -> {
-					label.setText("Shoot with Damage: " + newValue);
+					label.setText("Melee: " + newValue);
 				});
 			}
 		});

@@ -113,4 +113,10 @@ public class Lob extends AbstractAnyAbility implements SingleProjectileAbility
 	// TODO Auto-generated method stub
 	return null;
 	}
+
+	@Override
+	public boolean canAttackFrom(TileType type) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

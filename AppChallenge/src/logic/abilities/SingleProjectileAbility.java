@@ -5,6 +5,6 @@ package logic.abilities;
  * @author Sam Hooper
  *
  */
-public interface SingleProjectileAbility extends TargetingAbility {
+public interface SingleProjectileAbility extends TargetingAbility, AttackAbility {
 
 }

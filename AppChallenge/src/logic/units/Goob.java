@@ -52,9 +52,9 @@ public class Goob extends AbstractEnemyUnit {
 		final Collection<int[]> stepMoveLegals = stepMoveAbility.getLegals();
 		final Collection<int[]> shootLegals = shootAbility.getLegals();
 		final int myRow = getRow(), myCol = getCol();
-		System.out.printf("\tentered Goob::chooseMove for Goob@(%d,%d), shootLegals=%s%n", row, col, 
-				shootLegals.stream().map(Arrays::toString).collect(Collectors.joining(", ","[","]")
-				));
+//		System.out.printf("\tentered Goob::chooseMove for Goob@(%d,%d), shootLegals=%s%n", row, col, 
+//				shootLegals.stream().map(Arrays::toString).collect(Collectors.joining(", ","[","]")
+//				));
 		if(shootLegals.size() > 0) {
 			int[] min = null;
 			Unit minUnit = null;
@@ -70,70 +70,34 @@ public class Goob extends AbstractEnemyUnit {
 			if(minUnit != null)
 				return shootAbility.createMoveFor(min, minUnit);
 		}
-		int[] rowUnitCounts = new int[board.getRows()]; //do NOT include this unit
-		int[] colUnitCounts = new int[board.getCols()]; //do NOT include this unit
-		for(int i = 0; i < board.getRows(); i++) {
-			for(int j = 0; j < board.getCols(); j++) {
-				if(board.getUnitAtOrNull(i, j) instanceof TeamUnit) {
-					rowUnitCounts[i]++;
-					colUnitCounts[j]++;
-				}
-			}
-		}
+		
+		int[][] teamUnitCounts = getRowColCountsOfTeamUnits(board);
 		if(movesRemaining == 1) {
-			int[] pref = null;
-			int bestScore = Integer.MAX_VALUE;
-			for(int[] legal : stepMoveLegals) {
-				final int score = rowUnitCounts[legal[0]] + colUnitCounts[legal[1]];
-				if(score <  bestScore) {
-					pref = legal;
-					bestScore = score;
-				}
-			}
+			int[] pref = leastVisibleSpotOf(stepMoveLegals, teamUnitCounts);
 			if(pref == null)
 				return Move.EMPTY_MOVE;
 			return stepMoveAbility.createMoveFor(pref, null);
 		}
-		System.out.printf("\t\tcase 3: nothing to shoot rn, but more than one move:%n");
+//		System.out.printf("\t\tcase 3: nothing to shoot rn, but more than one move:%n");
 		// more than one move remaining, but there's nothing we can shoot immediately:
 		int[] pref = null;
 		int fewestOptions = Integer.MAX_VALUE; //search for the spot with the fewest (non-zero) number of units attackable, and attack there. That way we're not in the crossfire of several units.
 		for(int[] legal : stepMoveLegals) {
+			if(!shootAbility.canAttackFrom(board.getTileAt(legal[0], legal[1]).getType()))
+				continue;
 			int options = teamUnitsVisibleFrom(board, legal[0], legal[1]).size();
 			if(options > 0 && options < fewestOptions) {
 				pref = legal;
 				fewestOptions = options;
 			}
 		}
-		System.out.printf("\t\tpref=%s, fewestOptions=%s%n", Arrays.toString(pref), fewestOptions);
-		if(pref == null)
-			return Move.EMPTY_MOVE;
-		return stepMoveAbility.createMoveFor(pref, null);
-	}
-	
-	private Collection<TeamUnit> teamUnitsVisibleFrom(Board board, final int startRow, final int startCol) {
-		final int[][] deltas = {{0, -1}, {0, 1}, {1, 0}, {-1, 0}};
-		ArrayList<TeamUnit> unitsList = new ArrayList<>(4);
-		outer:
-		for(int[] delta : deltas) {
-			int dr = delta[0], dc = delta[1];
-			int r = startRow + dr, c = startCol + dc;
-			while(board.inBounds(r, c)) {
-				if(board.hasObstacle(r, c))
-					continue outer;
-				Unit unit = board.getUnitAtOrNull(r, c);
-				if(unit instanceof TeamUnit) {
-					unitsList.add((TeamUnit) unit);
-					continue outer;
-				}
-				else if(unit != null) {
-					continue outer;
-				}
-				r += dr;
-				c += dc;
-			}
+//		System.out.printf("\t\tpref=%s, fewestOptions=%s%n", Arrays.toString(pref), fewestOptions);
+		if(pref == null) {
+			if(movesRemaining > 2 && stepMoveLegals.size() > 0)
+				return stepMoveAbility.createMoveFor(stepMoveLegals.iterator().next(), null); //make a random move, we have enough moves left that we might be able to shoot on the next one.
+			return Move.EMPTY_MOVE; //not possible to make an attack during this turn. Do nothing. We'll move to a better spot on out next move.
 		}
-		return unitsList;
+		return stepMoveAbility.createMoveFor(pref, null);
 	}
 	
 	@Override

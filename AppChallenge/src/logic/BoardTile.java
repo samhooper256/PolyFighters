@@ -147,4 +147,9 @@ public class BoardTile {
 		}
 		return false;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("BoardTile[type=%s, objects=%s]", type, objects);
+	}
 }

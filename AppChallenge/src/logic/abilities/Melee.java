@@ -2,6 +2,7 @@ package logic.abilities;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.Objects;
 
 import logic.Board;
@@ -21,8 +22,10 @@ import utils.IntRef;
  *
  */
 
-public class Melee extends AbstractAnyAbility implements SingleProjectileAbility
-{
+public class Melee extends AbstractAnyAbility implements AttackAbility, TargetingAbility {
+	
+	private static final EnumSet<TileType> ATTACK_FROM = EnumSet.of(TileType.SOLID);
+	
 	private IntRef meleeDamage;
 	public Melee(Unit unit, int md) 
 	{
@@ -46,7 +49,7 @@ public class Melee extends AbstractAnyAbility implements SingleProjectileAbility
 		ArrayList<int[]> arr = new ArrayList<int[]>();
 		BoardTile tile = b.getTileAt(uRow, uCol);
 		
-		if(tile.getType() != TileType.LIQUID)
+		if(ATTACK_FROM.contains(tile.getType()))
 		{
 			for(int i = uRow - 1; i < uRow + 2; i++)
 			{
@@ -56,7 +59,7 @@ public class Melee extends AbstractAnyAbility implements SingleProjectileAbility
 					arr.add(arrC1);
 				}
 				
-				if(b.inBounds(i, uCol))
+				if(i != uRow && b.inBounds(i, uCol))
 				{
 					int[] arrC2 = new int[] {i, uCol};
 					arr.add(arrC2);
@@ -83,5 +86,10 @@ public class Melee extends AbstractAnyAbility implements SingleProjectileAbility
 		if(target instanceof HasHealth)
 			return new Move(this, new ChangeHealth((HasHealth) target, -meleeDamage.get()));
 		throw new UnsupportedOperationException("Cannot change the health of: " + target);
+	}
+
+	@Override
+	public boolean canAttackFrom(TileType type) {
+		return ATTACK_FROM.contains(type);
 	}
 }

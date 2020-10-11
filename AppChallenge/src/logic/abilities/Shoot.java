@@ -108,4 +108,9 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 	public boolean canTarget(GameObject object) {
 		return object instanceof Unit || object instanceof Obstacle;
 	}
+	
+	@Override
+	public boolean canAttackFrom(TileType type) {
+		return type == TileType.SOLID;
+	}
 }			

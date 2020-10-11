@@ -83,6 +83,10 @@ public class Board {
 		return cols;
 	}
 	
+	public BoardTile getTileAt(int[] spot) {
+		return getTileAt(spot[0], spot[1]);
+	}
+	
 	public BoardTile getTileAt(int row, int col) {
 		return tiles[row][col];
 	}
@@ -251,4 +255,12 @@ public class Board {
 		return list;
 	}
 	
+	@Override
+	public String toString() {
+		StringJoiner j = new StringJoiner("\n", "\n", "\n");
+		j.add("BOARD:");
+		for(BoardTile[] row : tiles)
+			j.add(Arrays.toString(row));
+		return j.toString();
+	}
 }
