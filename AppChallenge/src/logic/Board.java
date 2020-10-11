@@ -12,6 +12,11 @@ public class Board {
 	 */
 	public static final int[][] ADJACENT_8 = {{-1,-1}, {-1,0}, {-1,1}, {0,-1}, {0,1}, {1,-1}, {1,0}, {1,1}};
 	
+	/**
+	 * <b>CONTENTS MUST NOT BE MODIFIED.</b>
+	 */
+	public static final int[][] ADJACENT_4 = {{-1,0}, {0,1}, {1,0}, {0,-1}};
+	
 	public static final int MAX_ROWS = 20;
 	public static final int MAX_COLS = 20;
 	public static final int MIN_ROWS = 3;

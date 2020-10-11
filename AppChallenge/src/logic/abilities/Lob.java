@@ -1,106 +1,54 @@
 package logic.abilities;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
-import logic.Board;
-import logic.BoardTile;
-import logic.GameObject;
-import logic.Move;
-import logic.Obstacle;
-import logic.TileType;
-import logic.Unit;
+import logic.*;
 import utils.IntRef;
 
 public class Lob extends AbstractAnyAbility implements SingleProjectileAbility
 {
-	private IntRef lobDamage;
+	private IntRef damage, minimumDistance;
 	
 	
-	public Lob(Unit unit, int ld)
+	public Lob(Unit unit, int damage, int minimumDistance)
 	{
 		super(unit);
-		this.lobDamage = new IntRef(ld);
+		this.damage = new IntRef(damage);
+		this.minimumDistance = new IntRef(minimumDistance);
 	}
 	
-	public IntRef damageProperty() 
-	{
-		return lobDamage;
+	public IntRef damageProperty() {
+		return damage;
+	}
+	
+	public IntRef minimumDistanceProperty() {
+		return minimumDistance;
 	}
 	
 	@Override
 	public Collection<int[]> getLegals() 
 	{
-		Board b = unit.getBoard();
-		int rows = b.getRows();
-		int cols = b.getCols();
+		Board board = unit.getBoard();
 		int uRow = unit.getRow();
 		int uCol = unit.getCol();
-		ArrayList<int[]> arr = new ArrayList<>();
-		BoardTile tile = b.getTileAt(uRow, uCol);
-		
-		if(tile.getType() != TileType.LIQUID)
-		{
-			for(int i = uRow - 3; i < uRow + 4; i++)
-			{
-				if(isInBounds(i, uCol - 3))
-				{
-					int[] arrC1 = new int[] {i, uCol - 3};
-					arr.add(arrC1);
-				}
-				
-				if(isInBounds(i, uCol - 2))
-				{
-					int[] arrC2 = new int[] {i, uCol - 2};
-					arr.add(arrC2);
-				}
-				
-				if(isInBounds(i, uCol - 1))
-				{
-					int[] arrC3 = new int[] {i, uCol - 1};
-					arr.add(arrC3);
-				}
-				
-				if(isInBounds(i, uCol))
-				{
-					int[] arrC4 = new int[] {i, uCol};
-					arr.add(arrC4);
-				}
-				
-				if(isInBounds(i, uCol + 1))
-				{
-					int[] arrC5 = new int[] {i, uCol + 1};
-					arr.add(arrC5);
-				}
-				
-				if(isInBounds(i, uCol + 2))
-				{
-					int[] arrC6 = new int[] {i, uCol + 2};
-					arr.add(arrC6);
-				}
-				
-				if(isInBounds(i, uCol + 3))
-				{
-					int[] arrC7 = new int[] {i, uCol + 3};
-					arr.add(arrC7);
-				}
+		int minimumDistance = this.minimumDistance.get();
+		ArrayList<int[]> legals = new ArrayList<>();
+		BoardTile myTile = board.getTileAt(uRow, uCol);
+		if(!canAttackFrom(myTile.getType()))
+			return Collections.emptySet();
+		for(int[] mult : Board.ADJACENT_4) {
+			int rMult = mult[0], cMult = mult[1];
+			int r = uRow + minimumDistance * rMult, c = uCol + minimumDistance * cMult;
+			while(board.inBounds(r, c)) {
+				BoardTile tile = board.getTileAt(r, c);
+				if(tile.hasUnit() || tile.hasObstacle())
+					legals.add(new int[] {r, c});
+				r += rMult;
+				c += cMult;
 			}
 		}
-		return arr;
+		return legals;
 	}
-		
-	private boolean isInBounds(int row, int col)
-	{
-		Board b = unit.getBoard();
-		int rows = b.getRows();
-		int cols = b.getCols();
-		if((row >= 0 && row < rows) && (col >= 0 && col < cols))
-		{
-			return true;
-		}
-			
-			return false;
-		}
 	@Override
 	public boolean canTarget(GameObject object) 
 	{
@@ -110,13 +58,12 @@ public class Lob extends AbstractAnyAbility implements SingleProjectileAbility
 	@Override
 	public Move createMoveFor(int destRow, int destCol, GameObject target) 
 	{
-	// TODO Auto-generated method stub
-	return null;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public boolean canAttackFrom(TileType type) {
-		// TODO Auto-generated method stub
-		return false;
+		return type == TileType.SOLID;
 	}
 }

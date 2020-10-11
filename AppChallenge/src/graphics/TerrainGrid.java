@@ -18,6 +18,7 @@ import logic.actions.*;
  */
 public class TerrainGrid extends GridPane {
 	
+	public static final long ENEMY_MOVE_DELAY = 500; //in milliseconds. The wait time between each enemy move.
 	private final int rows, cols;
 	private final Board backingBoard;
 	private final TerrainTile[][] terrainTiles;
@@ -36,7 +37,6 @@ public class TerrainGrid extends GridPane {
 		this.rows = rows;
 		this.cols = cols;
 		this.wrap = wrap;
-//		backingBoard = new Board(rows, cols);
 		backingBoard = new BoardGenerator()
 				.setRowCount(rows)
 				.setColumnCount(cols)
@@ -314,6 +314,12 @@ public class TerrainGrid extends GridPane {
 		while(backingBoard.hasNextEnemyMove()) {
 			Move nextMove = backingBoard.nextEnemyMove();
 			executeMoveInternal(nextMove);
+			try {
+				Thread.sleep(ENEMY_MOVE_DELAY);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -66,7 +66,7 @@ public class Level extends Scene {
 		super(makeRoot(), width, height);
 		
 		this.theme = theme;
-		this.turnDifficulty = 2; //must be set before terrainPane construction.
+		this.turnDifficulty = 6; //must be set before terrainPane construction.
 		
 		endTurnButton = new Button("End Turn");
 		buttonPane = new VBox(endTurnButton);

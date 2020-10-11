@@ -85,6 +85,22 @@ public abstract class AbilityPane extends StackPane	{
 				});
 			}
 		});
+		paneFactories.put(Lob.class, a -> new AbilityPane(a) {
+			{
+				Lob lob = (Lob) a;
+				VBox vBox = new VBox();
+				getChildren().add(vBox);
+				Label label = new Label("Lob: " + lob.damageProperty().get() + " damage, " + lob.minimumDistanceProperty().get() + " minimum distance");
+				label.setWrapText(true);
+				vBox.getChildren().add(label);
+				lob.damageProperty().addChangeListener((oldValue, newValue) -> {
+					label.setText("Lob: " + newValue + " damage, " + lob.minimumDistanceProperty().get() + " minimum distance");
+				});
+				lob.minimumDistanceProperty().addChangeListener((oldValue, newValue) -> {
+					label.setText("Lob: " + lob.damageProperty().get() + " damage, " + newValue + " minimum distance");
+				});
+			}
+		});
 	}
 	
 	public static final <T extends Ability> AbilityPane of(T ability) {

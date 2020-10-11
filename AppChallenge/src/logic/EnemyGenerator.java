@@ -12,8 +12,11 @@ public final class EnemyGenerator {
 	private static Map<Class<? extends EnemyUnit>, EnemyFactory> map;
 	static {
 		map = new HashMap<>();
-		put(Goob.class, Goob::new, 1.0);
+		put(Goob.class, Goob::new, 1);
 		put(Assassin.class, Assassin::new, 1.5);
+		put(Brute.class, Brute::new, 2.5);
+//		put(Summoner.class, Summoner::new, 2);
+		put(Lobber.class, Lobber::new, 2);
 	}
 	
 	private static <T extends EnemyUnit> void put(Class<? extends T> enemyClass, Supplier<T> enemySupplier, double difficulty) {
