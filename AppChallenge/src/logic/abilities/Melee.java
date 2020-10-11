@@ -22,7 +22,7 @@ import utils.IntRef;
 public class Melee extends AbstractAnyAbility implements SingleProjectileAbility
 {
 	private IntRef meleeDamage;
-	Melee(Unit unit, int md) 
+	public Melee(Unit unit, int md) 
 	{
 		super(unit);
 		this.meleeDamage = new IntRef(md);
