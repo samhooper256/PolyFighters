@@ -46,67 +46,23 @@ public class Melee extends AbstractAnyAbility implements SingleProjectileAbility
 		
 		if(tile.getType() != TileType.LIQUID)
 		{
-			if((uRow != 0 && uRow != rows - 1) && (uCol != 0 && uCol != cols - 1))
+			for(int i = uRow - 1; i < uRow + 2; i++)
 			{
-				for(int i = uRow - 1; i < uRow + 2; i++)
+				if(isInBounds(i, uCol - 1))
 				{
 					int[] arrC1 = new int[] {i, uCol - 1};
+					arr.add(arrC1);
+				}
+				
+				if(isInBounds(i, uCol))
+				{
 					int[] arrC2 = new int[] {i, uCol};
+					arr.add(arrC2);
+				}
+				
+				if(isInBounds(i, uCol + 1))
+				{
 					int[] arrC3 = new int[] {i, uCol + 1};
-					arr.add(arrC1);
-					arr.add(arrC2);
-					arr.add(arrC3);
-				}
-			}
-			
-			if(uRow == 0)
-			{
-				for(int i = 0; i < 2; i++)
-				{
-					int[] arrC1 = new int[] {i, uCol - 1};
-					int[] arrC2 = new int[] {i, uCol};
-					int[] arrC3 = new int[] {i, uCol + 1};
-					arr.add(arrC1);
-					arr.add(arrC2);
-					arr.add(arrC3);
-				}
-			}
-			
-			if(uRow == rows)
-			{
-				for(int i = rows; i > rows - 2; i--)
-				{
-					int[] arrC1 = new int[] {i, uCol - 1};
-					int[] arrC2 = new int[] {i, uCol};
-					int[] arrC3 = new int[] {i, uCol + 1};
-					arr.add(arrC1);
-					arr.add(arrC2);
-					arr.add(arrC3);
-				}
-			}
-			
-			if(uCol == 0)
-			{
-				for(int i = 0; i < 2; i++)
-				{
-					int[] arrC1 = new int[] {uRow - 1, i};
-					int[] arrC2 = new int[] {uRow, i};
-					int[] arrC3 = new int[] {uRow + 1, i};
-					arr.add(arrC1);
-					arr.add(arrC2);
-					arr.add(arrC3);
-				}
-			}
-			
-			if(uCol == 0)
-			{
-				for(int i = 0; i < 2; i++)
-				{
-					int[] arrC1 = new int[] {uRow - 1, i};
-					int[] arrC2 = new int[] {uRow, i};
-					int[] arrC3 = new int[] {uRow + 1, i};
-					arr.add(arrC1);
-					arr.add(arrC2);
 					arr.add(arrC3);
 				}
 			}
@@ -114,7 +70,19 @@ public class Melee extends AbstractAnyAbility implements SingleProjectileAbility
 		
 		return arr;
 	}
-
+	
+	private boolean isInBounds(int row, int col)
+	{
+		Board b = unit.getBoard();
+		int rows = b.getRows();
+		int cols = b.getCols();
+		if((row >= 0 && row < rows) && (col >= 0 && col < cols))
+		{
+			return true;
+		}
+		
+		return false;
+	}
 	@Override
 	public boolean canTarget(GameObject object) {
 		return object instanceof Unit || object instanceof Obstacle;
