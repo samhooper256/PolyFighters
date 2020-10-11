@@ -51,6 +51,7 @@ public class Goob extends AbstractEnemyUnit {
 	public Move chooseMove(final Board board, final int movesRemaining) {
 		final Collection<int[]> stepMoveLegals = stepMoveAbility.getLegals();
 		final Collection<int[]> shootLegals = shootAbility.getLegals();
+		final int myRow = getRow(), myCol = getCol();
 		System.out.printf("\tentered Goob::chooseMove for Goob@(%d,%d), shootLegals=%s%n", row, col, 
 				shootLegals.stream().map(Arrays::toString).collect(Collectors.joining(", ","[","]")
 				));
@@ -69,7 +70,44 @@ public class Goob extends AbstractEnemyUnit {
 			if(minUnit != null)
 				return shootAbility.createMoveFor(min, minUnit);
 		}
-		return Move.EMPTY_MOVE; //TODO finish AI
+		int[] rowUnitCounts = new int[board.getRows()];
+		int[] colUnitCounts = new int[board.getCols()];
+		for(int i = 0; i < board.getRows(); i++) {
+			for(int j = 0; j < board.getCols(); j++) {
+				if(board.getUnitAtOrNull(i, j) instanceof TeamUnit) {
+					rowUnitCounts[i]++;
+					colUnitCounts[j]++;
+				}
+			}
+		}
+		if(movesRemaining == 1) {
+			
+			int[] pref = null;
+			int bestScore = Integer.MAX_VALUE;
+			for(int[] legal : stepMoveLegals) {
+				final int score = rowUnitCounts[legal[0]] + colUnitCounts[legal[1]];
+				if(score <  bestScore) {
+					pref = legal;
+					bestScore = score;
+				}
+			}
+			if(pref == null)
+				return Move.EMPTY_MOVE;
+			return stepMoveAbility.createMoveFor(pref, null);
+		}
+		// more than one move remaining, but there's nothing we can shoot immediately:
+		int[] pref = null;
+		int fewestOptions = Integer.MAX_VALUE; //search for the spot with the fewest (non-zero) number of units attackable, and attack there. That way we're not in the crossfire of several units.
+		for(int[] legal : stepMoveLegals) {
+			int options = rowUnitCounts[legal[0]] + colUnitCounts[legal[1]];
+			if(options > 0 && options < fewestOptions) {
+				pref = legal;
+				fewestOptions = options;
+			}
+		}
+		if(pref == null)
+			return Move.EMPTY_MOVE;
+		return stepMoveAbility.createMoveFor(pref, null);
 	}
 	
 }
