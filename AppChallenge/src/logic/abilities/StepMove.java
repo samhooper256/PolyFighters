@@ -65,6 +65,7 @@ public class StepMove extends AbstractAnyAbility implements MoveAbility {
 	 * @param type the type of the tile
 	 * @return {@code true} if the given {@code TileType} can be traversed using this {@code Ability}, {@code false} otherwise.
 	 */
+	@Override
 	public boolean canTraverse(TileType type) {
 		return unit.canTraverse(type) && (traversableTileTypes == null || traversableTileTypes.contains(type));
 	}

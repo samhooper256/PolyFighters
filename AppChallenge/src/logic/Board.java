@@ -101,6 +101,13 @@ public class Board {
 		return tiles[row][col].hasUnit();
 	}
 	
+	/**
+	 * Returns {@code true} if there is a {@link Obstacle} on the indicated tile, {@code false} otherwise.
+	 */
+	public boolean hasObstacle(int row, int col) {
+		return tiles[row][col].hasObstacle();
+	}
+	
 	
 	/**
 	 * Adds the given {@link GameObject} to the indicated {@link TerrainTile}, throwing an {@link IllegalStateException} if there is already a {@code GameObject}

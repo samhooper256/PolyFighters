@@ -5,8 +5,7 @@ import java.util.*;
 import logic.Ability;
 import logic.TeamUnit;
 import logic.TileType;
-import logic.abilities.Shoot;
-import logic.abilities.StepMove;
+import logic.abilities.*;
 
 /**
  * @author Sam Hooper
@@ -30,6 +29,7 @@ public class BasicUnit extends AbstractTeamUnit {
 		this.stepMoveAbility = new StepMove(this, DEFAULT_MOVE_DISTANCE);
 		this.shootAbility = new Shoot(this, DEFAULT_SHOOT_DAMAGE);
 		this.abilities.addAll(stepMoveAbility, shootAbility);
+		this.abilities.addAll(new DiamondTeleport(this, 3));
 	}
 
 	@Override

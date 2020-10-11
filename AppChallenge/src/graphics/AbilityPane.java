@@ -8,9 +8,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import logic.Ability;
-import logic.abilities.Shoot;
-import logic.abilities.StepMove;
-import logic.abilities.TargetingAbility;
+import logic.abilities.*;
 /**
  * @author Sam Hooper
  *
@@ -31,6 +29,18 @@ public abstract class AbilityPane extends StackPane	{
 				vBox.getChildren().add(label);
 				stepMove.distanceProperty().addChangeListener((oldValue, newValue) -> {
 					label.setText("Step Move: " + newValue);
+				});
+			}
+		});
+		paneFactories.put(DiamondTeleport.class, a -> new AbilityPane(a) {
+			{
+				DiamondTeleport diamondTp = (DiamondTeleport) a;
+				VBox vBox = new VBox();
+				getChildren().add(vBox);
+				Label label = new Label("Diamond Teleport: " + diamondTp.distanceProperty().get());
+				vBox.getChildren().add(label);
+				diamondTp.distanceProperty().addChangeListener((oldValue, newValue) -> {
+					label.setText("Diamond Teleport: " + newValue);
 				});
 			}
 		});
