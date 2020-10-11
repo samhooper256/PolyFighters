@@ -256,11 +256,11 @@ public class TerrainGrid extends GridPane {
 					};
 					transition.setOnFinished(actionEvent -> {
 							region.getChildren().remove(pane);
+							a.execute(backingBoard);
+							moveNotify = true;
 							synchronized(lock) {
 								lock.notify();
 							}
-							moveNotify = true;
-							a.execute(backingBoard);
 					});
 					transition.setInterpolator(Interpolator.LINEAR);
 					transition.play();

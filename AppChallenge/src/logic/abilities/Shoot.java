@@ -39,17 +39,15 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 		int cols = b.getCols();
 		int uRow = unit.getRow();
 		int uCol = unit.getCol();
-		ArrayList<int[]> arr = new ArrayList<int[]>();
+		ArrayList<int[]> arr = new ArrayList<>();
 		BoardTile tile = b.getTileAt(uRow, uCol);
 		
 		if(tile.getType() != TileType.LIQUID)
 		{
 			boolean found1 = false;
-			for(int r = uRow; r < rows && !found1; r++)
+			for(int r = uRow + 1; r < rows && !found1; r++)
 			{
-				if(	isAgainstOrFalse(b.getTileAt(r, uCol).getUnitOrNull()) || 
-						b.getTileAt(r, uCol).hasObstacle())
-				
+				if(b.hasUnit(r, uCol) || b.hasObstacle(r, uCol))
 				{
 					int[] tempArr = {r, uCol};
 					arr.add(tempArr);
@@ -59,11 +57,9 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 			}
 		
 			boolean found2 = false;
-			for(int r = uRow; r >= 0 && !found2; r--)
+			for(int r = uRow - 1; r >= 0 && !found2; r--)
 			{
-				if(	isAgainstOrFalse(b.getTileAt(r, uCol).getUnitOrNull()) || 
-						b.getTileAt(r, uCol).hasObstacle())
-				
+				if(b.hasUnit(r, uCol) || b.hasObstacle(r, uCol))
 				{
 					int[] tempArr = {r, uCol};
 					arr.add(tempArr);
@@ -72,11 +68,9 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 			}
 		
 			boolean found3 = false;
-			for(int c = uCol; c < cols && !found3; c++)
+			for(int c = uCol + 1; c < cols && !found3; c++)
 			{
-				if(	isAgainstOrFalse(b.getTileAt(uRow, c).getUnitOrNull()) || 
-				b.getTileAt(uRow, c).hasObstacle())
-				
+				if(b.hasUnit(uRow, c) ||  b.hasObstacle(uRow, c))
 				{
 					int[] tempArr = {uRow, c};
 					arr.add(tempArr);
@@ -86,11 +80,9 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 			}
 		
 			boolean found4 = false;
-			for(int c = uCol; c >= 0 && !found4; c--)
+			for(int c = uCol - 1; c >= 0 && !found4; c--)
 			{
-				if(	isAgainstOrFalse(b.getTileAt(uRow, c).getUnitOrNull()) || 
-				b.getTileAt(uRow, c).hasObstacle())
-				
+				if(b.hasUnit(uRow, c) || b.hasObstacle(uRow, c))
 				{
 					int[] tempArr = {uRow, c};
 					arr.add(tempArr);

@@ -147,6 +147,7 @@ public abstract class AbilityPane extends StackPane	{
 			tile.clearAllHighlights();
 			tile.clearGameObjectHighlights();
 			tile.setUseCandidate(false);
+			tile.setGameObjectUseCandidates(false);
 		}
 	}
 	

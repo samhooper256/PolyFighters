@@ -195,5 +195,15 @@ public class TerrainTile extends StackPane implements AbilityUseCandidate {
 			return Set.of(obstaclePane);
 		return Collections.emptySet();
 	}
+
+	/**
+	 * Sets the {@link AbilityUseCandidate} status of all of the {@link GameObjectRepresentation}s on this {@link TerrainTile}
+	 * to the given value
+	 */
+	public void setGameObjectUseCandidates(boolean value) {
+		for(Node node : getChildren())
+			if(node instanceof AbilityUseCandidate)
+				((AbilityUseCandidate) node).setUseCandidate(value);
+	}
 	
 }

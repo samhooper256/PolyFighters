@@ -60,7 +60,7 @@ public class Goob extends AbstractEnemyUnit {
 			Unit minUnit = null;
 			for(int[] legal : shootLegals) {
 				Unit unit = board.getUnitAtOrNull(legal[0], legal[1]);
-				if(unit == null)
+				if(unit == null || unit instanceof EnemyUnit)
 					continue;
 				if(minUnit == null || unit.getHealth() > minUnit.getHealth()) {
 					minUnit = unit;
@@ -70,8 +70,8 @@ public class Goob extends AbstractEnemyUnit {
 			if(minUnit != null)
 				return shootAbility.createMoveFor(min, minUnit);
 		}
-		int[] rowUnitCounts = new int[board.getRows()];
-		int[] colUnitCounts = new int[board.getCols()];
+		int[] rowUnitCounts = new int[board.getRows()]; //do NOT include this unit
+		int[] colUnitCounts = new int[board.getCols()]; //do NOT include this unit
 		for(int i = 0; i < board.getRows(); i++) {
 			for(int j = 0; j < board.getCols(); j++) {
 				if(board.getUnitAtOrNull(i, j) instanceof TeamUnit) {
@@ -80,8 +80,9 @@ public class Goob extends AbstractEnemyUnit {
 				}
 			}
 		}
+		rowUnitCounts[myRow]--;
+		colUnitCounts[myCol]--;
 		if(movesRemaining == 1) {
-			
 			int[] pref = null;
 			int bestScore = Integer.MAX_VALUE;
 			for(int[] legal : stepMoveLegals) {
