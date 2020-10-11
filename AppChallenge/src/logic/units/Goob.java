@@ -136,17 +136,6 @@ public class Goob extends AbstractEnemyUnit {
 		return unitsList;
 	}
 	
-	private boolean isClearPath(final Board board, int myRow, int myCol, int destRow, int destCol) {
-		int dr = myCol == destCol ? 0 : (myRow < destRow ? 1 : -1);
-		int dc = myRow == destRow ? 0 : (myCol < destCol ? 1 : -1);
-		int r = myCol + dr, c = myCol + dc;
-		while(r != destRow || c != destCol) {
-			if(board.hasUnit(r, c) || board.hasObstacle(r, c))
-				return false;
-		}
-		return true;
-	}
-	
 	@Override
 	public String toString() {
 		return String.format("Goob@%h", this);
