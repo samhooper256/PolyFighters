@@ -19,6 +19,8 @@ public enum UnitSkin {
 		public Image projectileImageFor(Class<? extends SingleProjectileAbility> clazz) {
 			if(clazz == Shoot.class)
 				return basicBullet.getImage();
+			else if(clazz == Lob.class)
+				return basicLobBullet.getImage();
 			throw new UnsupportedOperationException(clazz + " is not a recognized Ability of the UnitSkin: " + this);
 		}
 		@Override
@@ -40,6 +42,7 @@ public enum UnitSkin {
 	},
 	ASSASSIN(Assassin.class);
 	private static final ImageInfo basicBullet = new ImageInfo("BasicBullet.png");
+	private static final ImageInfo basicLobBullet = new ImageInfo("BasicLobBullet.png");
 	private static final Map<Class<? extends Unit>, UnitSkin> map;
 	static {
 		map = new HashMap<>();
