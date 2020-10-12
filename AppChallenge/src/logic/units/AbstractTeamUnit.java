@@ -1,12 +1,8 @@
 package logic.units;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-import logic.Ability;
-import logic.Board;
-import logic.TeamUnit;
+import logic.*;
 
 /**
  * @author Sam Hooper

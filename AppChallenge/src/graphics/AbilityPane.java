@@ -101,6 +101,32 @@ public abstract class AbilityPane extends StackPane	{
 				});
 			}
 		});
+		paneFactories.put(SelfHeal.class, a -> new AbilityPane(a) {
+			{
+				SelfHeal sh = (SelfHeal) a;
+				VBox vBox = new VBox();
+				getChildren().add(vBox);
+				Label label = new Label("Self Heal: " + sh.healProperty().get() + " heal");
+				label.setWrapText(true);
+				vBox.getChildren().add(label);
+				sh.healProperty().addChangeListener((oldValue, newValue) -> {
+					label.setText("Self Heal: " + newValue + " heal");
+				});
+			}
+		});
+		paneFactories.put(Summon.class, a -> new AbilityPane(a) {
+			{
+				Summon sum = (Summon) a;
+				VBox vBox = new VBox();
+				getChildren().add(vBox);
+				Label label = new Label("Summon " + sum.getUnitClass().getSimpleName() + ": " + sum.radiusProperty().get() + " radius");
+				label.setWrapText(true);
+				vBox.getChildren().add(label);
+				sum.radiusProperty().addChangeListener((oldValue, newValue) -> {
+					label.setText("Summon " + sum.getUnitClass().getSimpleName() + ": " + newValue + " radius");
+				});
+			}
+		});
 	}
 	
 	public static final <T extends Ability> AbilityPane of(T ability) {

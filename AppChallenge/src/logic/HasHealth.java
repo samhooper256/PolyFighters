@@ -34,6 +34,10 @@ public interface HasHealth extends GameObject {
 		return aliveProperty().get();
 	}
 	
+	default boolean isFullHealth() {
+		return getHealth() == getMaxHealth();
+	}
+	
 	/**
 	 * The {@link BooleanRef} stores {@code true} if this {@link GameObject} is alive, {@code false} otherwise.
 	 * @return

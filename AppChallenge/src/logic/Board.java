@@ -59,13 +59,6 @@ public class Board {
 					MIN_ROWS, MAX_ROWS, MIN_COLS, MAX_COLS));
 	}
 	
-	/**
-	 * @return {@code true} if the tile indicated by {@code row} and {@code col} is in this board, {@code false} otherwise.
-	 */
-	public boolean inBounds(int row, int col) {
-		return row >= 0 && row < rows && col >= 0 && col < cols; 
-	}
-	
 	private void initBoardTiles() {
 		for(int i = 0; i < rows; i++) {
 			for(int j = 0; j < cols; j++) {
@@ -73,6 +66,19 @@ public class Board {
 			}
 		}
 	}
+	
+	/**
+	 * @return {@code true} if the tile indicated by {@code row} and {@code col} is in this board, {@code false} otherwise.
+	 */
+	public boolean inBounds(int row, int col) {
+		return row >= 0 && row < rows && col >= 0 && col < cols; 
+	}
+	
+	public boolean isOccupied(int row, int col) {
+		return tiles[row][col].isOccupied();
+	}
+	
+	
 	
 	/**
 	 * Returns the legal spots that the given {@link Unit} currently has for the given {@link Ability} as a {@link Collection}

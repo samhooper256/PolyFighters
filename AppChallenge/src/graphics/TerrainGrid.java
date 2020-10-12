@@ -224,7 +224,8 @@ public class TerrainGrid extends GridPane {
 				if(actingAbility instanceof SingleProjectileAbility) {
 //					System.out.println("Entered the goof zone");
 					SingleProjectileAbility spa = (SingleProjectileAbility) actingAbility;
-					final TerrainTile destTile = getTileAt(fp.getDestRow(), fp.getDestCol());
+					final GameObject target = fp.getTarget();
+					final TerrainTile destTile = getTileAt(target.getRow(), target.getCol());
 					Image image = actingSkin.projectileImageFor(spa);
 					ImageWrap wrap = new ImageWrap(image, 0, 0);
 					double[] imgSize = actingSkin.projectileSizeFor(spa);

@@ -1,17 +1,8 @@
 package logic.abilities;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
-import logic.Board;
-import logic.BoardTile;
-import logic.EnemyUnit;
-import logic.GameObject;
-import logic.Move;
-import logic.Obstacle;
-import logic.TileType;
-import logic.Unit;
+import logic.*;
 import logic.actions.FireProjectile;
 import utils.IntRef;
 
@@ -101,7 +92,7 @@ public class Shoot extends AbstractAnyAbility implements SingleProjectileAbility
 	@Override
 	public Move createMoveFor(int destRow, int destCol, GameObject target) {
 		Objects.requireNonNull(target);
-		return new Move(this, new FireProjectile(unit.getRow(), unit.getCol(), destRow, destCol, bulletDamage.get(), target));
+		return new Move(this, new FireProjectile(unit.getRow(), unit.getCol(), bulletDamage.get(), target));
 	}
 
 	@Override

@@ -1,35 +1,64 @@
 package logic.abilities;
 
-import java.util.Collection;
+import java.util.*;
+import java.util.function.Supplier;
 
-import logic.GameObject;
-import logic.Move;
-import logic.Unit;
+import logic.*;
+import logic.actions.PlaceObject;
+import utils.*;
 
 /**
+ * Allows for a {@link Unit} to summon another in a radius around that {code Unit}.
  * @author Sam Hooper
  *
  */
 public class Summon extends AbstractAnyAbility {
-
+	
+	public static final int DEFAULT_RADIUS = 1;
+	
+	private final Supplier<Unit> unitSupplier;
+	private final Class<? extends Unit> unitClass;
+	private final IntRef radius;
 	/**
 	 * @param unit
 	 */
-	Summon(Unit unit) {
+	public Summon(Unit unit, Class<? extends Unit> unitClass, Supplier<Unit> unitSupplier, int radius) {
 		super(unit);
-		throw new UnsupportedOperationException("Unfinished class");
+		this.unitClass = unitClass;
+		this.unitSupplier = unitSupplier;
+		this.radius = new IntRef(radius);
+	}
+	
+	public IntRef radiusProperty() {
+		return radius;
+	}
+	
+	public Class<? extends Unit> getUnitClass() {
+		return unitClass;
 	}
 
 	@Override
 	public Collection<int[]> getLegals() {
-		// TODO Auto-generated method stub
-		return null;
+		final int myRow = unit.getRow(), myCol = unit.getCol(), radius = this.radius.get();
+		final Board board = unit.getBoard();
+		final List<int[]> legals = new ArrayList<>();
+		for(int r = myRow - radius; r <= myRow + radius; r++) {
+			for(int c = myCol - radius; c <= myCol + radius; c++) {
+				if(r == myRow && c == myCol || !board.inBounds(r, c) || board.isOccupied(r, c))
+					continue;
+				legals.add(new int[] {r, c});
+			}
+		}
+		return legals;
 	}
 
+	/**
+	 * {@code target} will be ignored and may be {@code null}.
+	 */
 	@Override
 	public Move createMoveFor(int destRow, int destCol, GameObject target) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Move(this, new PlaceObject(unitSupplier.get(), destRow, destCol));
 	}
+	
 
 }

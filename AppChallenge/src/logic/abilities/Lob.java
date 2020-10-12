@@ -3,10 +3,13 @@ package logic.abilities;
 import java.util.*;
 
 import logic.*;
+import logic.actions.FireProjectile;
 import utils.IntRef;
 
 public class Lob extends AbstractAnyAbility implements SingleProjectileAbility
 {
+	private static final EnumSet<TileType> ATTACK_FROM = EnumSet.of(TileType.SOLID);
+	
 	private IntRef damage, minimumDistance;
 	
 	
@@ -50,20 +53,17 @@ public class Lob extends AbstractAnyAbility implements SingleProjectileAbility
 		return legals;
 	}
 	@Override
-	public boolean canTarget(GameObject object) 
-	{
+	public boolean canTarget(GameObject object) {
 		return object instanceof Unit || object instanceof Obstacle;
 	}
 
 	@Override
-	public Move createMoveFor(int destRow, int destCol, GameObject target) 
-	{
-		// TODO Auto-generated method stub
-		return null;
+	public Move createMoveFor(int destRow, int destCol, GameObject target) {
+		return new Move(this, new FireProjectile(unit.getRow(), unit.getCol(), damageProperty().get(), target));
 	}
 
 	@Override
 	public boolean canAttackFrom(TileType type) {
-		return type == TileType.SOLID;
+		return ATTACK_FROM.contains(type);
 	}
 }

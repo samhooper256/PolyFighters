@@ -2,9 +2,7 @@ package logic.units;
 
 import java.util.*;
 
-import logic.Ability;
-import logic.TeamUnit;
-import logic.TileType;
+import logic.*;
 import logic.abilities.*;
 
 /**
@@ -29,7 +27,8 @@ public class BasicUnit extends AbstractTeamUnit {
 		this.stepMoveAbility = new StepMove(this, DEFAULT_MOVE_DISTANCE);
 		this.shootAbility = new Shoot(this, DEFAULT_SHOOT_DAMAGE);
 		this.abilities.addAll(stepMoveAbility, shootAbility);
-		this.abilities.addAll(new DiamondTeleport(this, 3), new Melee(this, 2), new Smash(this, 2, 1), new Lob(this, 2, 2)); //TODO REMOVE, BasicUnits should only have StepMove and Shoot, this line is for testing purposes only.
+		this.abilities.addAll(new DiamondTeleport(this, 3), new Melee(this, 2), new Smash(this, 2, 1), new Lob(this, 2, 2),
+				new SelfHeal(this, 1), new Summon(this, Goob.class, Goob::new, 2)); //TODO REMOVE, BasicUnits should only have StepMove and Shoot, this line is for testing purposes only.
 	}
 
 	@Override

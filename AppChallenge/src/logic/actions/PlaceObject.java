@@ -5,7 +5,7 @@ import logic.Board;
 import logic.GameObject;
 
 /**
- * An {@link Action} that places a {@link GameObject} on the board.
+ * An {@link Action} that places a {@link GameObject} on the board. Throws an excpetion when {@link #execute(Board) executing} if the object cannot be placed.
  * @author Sam Hooper
  *
  */

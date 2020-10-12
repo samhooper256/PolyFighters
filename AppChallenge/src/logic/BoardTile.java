@@ -159,6 +159,13 @@ public class BoardTile {
 		return Collections.unmodifiableList(objects);
 	}
 	
+	/**
+	 * Returns {@code true} if there are any {@link GameObject GameObject}s on this {@code BoardTile}, {@code false} otherwise.
+	 */
+	public boolean isOccupied() {
+		return objects.size() > 0;
+	}
+	
 	@Override
 	public String toString() {
 		return String.format("BoardTile[type=%s, objects=%s]", type, objects);
