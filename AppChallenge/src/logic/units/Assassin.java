@@ -66,7 +66,7 @@ public class Assassin extends AbstractEnemyUnit {
 		for(int[] legal : teleportLegals) {
 			if(!meleeAbility.canAttackFrom(board.getTileAt(legal).getType()))
 				continue;
-			int options = teamUnits8Adjacent(board, legal).size();
+			int options = playerUnits8Adjacent(board, legal).size();
 			if(options > 0 && options < fewestOptions) {
 				pref = legal;
 				fewestOptions = options;

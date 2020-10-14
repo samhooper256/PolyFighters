@@ -46,7 +46,7 @@ public abstract class AbstractEnemyUnit extends AbstractUnit implements EnemyUni
 		return new int[][] {rowUnitCounts, colUnitCounts};
 	}
 	
-	protected Collection<PlayerUnit> teamUnitsVisibleFrom(Board board, final int startRow, final int startCol) {
+	protected Collection<PlayerUnit> playerUnitsVisibleFrom(Board board, final int startRow, final int startCol) {
 		final int[][] deltas = {{0, -1}, {0, 1}, {1, 0}, {-1, 0}};
 		ArrayList<PlayerUnit> unitsList = new ArrayList<>(4);
 		outer:
@@ -71,14 +71,14 @@ public abstract class AbstractEnemyUnit extends AbstractUnit implements EnemyUni
 		return unitsList;
 	}
 	
-	protected Collection<PlayerUnit> teamUnits8Adjacent(Board board, int[] spot) {
-		return teamUnits8Adjacent(board, spot[0], spot[1]);
+	protected Collection<PlayerUnit> playerUnits8Adjacent(Board board, int[] spot) {
+		return playerUnits8Adjacent(board, spot[0], spot[1]);
 	}
 	
 	/**
 	 * Returns a {@link Collection} containg the {@link PlayerUnit TeamUnits} that on the 8 adjacent tiles to the given one.
 	 */
-	protected Collection<PlayerUnit> teamUnits8Adjacent(Board board, int row, int col) {
+	protected Collection<PlayerUnit> playerUnits8Adjacent(Board board, int row, int col) {
 		List<PlayerUnit> list = new ArrayList<>(8);
 		for(int[] adj : Board.ADJACENT_8) {
 			int nr = row + adj[0], nc = col + adj[1];
@@ -90,7 +90,7 @@ public abstract class AbstractEnemyUnit extends AbstractUnit implements EnemyUni
 	}
 	
 	/**
-	 * Returns the spot in the given {@link Collection} where the sum of the number of {@link PlayerUnit}s on that spot's row and the number of {@code TeamUnit}s
+	 * Returns the spot in the given {@link Collection} where the sum of the number of {@link PlayerUnit}s on that spot's row and the number of {@link PlayerUnit}s
 	 * on that spot's column is minimized. Returns {@code null} if {@code legals} is empty.
 	 */
 	protected int[] leastVisibleSpotOf(final Collection<int[]> legals, int[][] rowColCountsOfTeamUnits) {

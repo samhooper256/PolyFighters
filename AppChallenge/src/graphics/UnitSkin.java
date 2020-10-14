@@ -40,7 +40,19 @@ public enum UnitSkin {
 			return new double[] {0.1, 0.1};
 		}
 	},
-	ASSASSIN(Assassin.class);
+	ASSASSIN(Assassin.class),
+	BRUTE(Brute.class) {
+		@Override
+		public Image projectileImageFor(Class<? extends SingleProjectileAbility> clazz) {
+			if(clazz == Shoot.class)
+				return basicBullet.getImage();
+			throw new UnsupportedOperationException(clazz + " is not a recognized Ability of the UnitSkin: " + this);
+		}
+		@Override
+		public double[] projectileSizeFor(Class<? extends SingleProjectileAbility> clazz) {
+			return new double[] {0.1, 0.1};
+		}
+	};
 	private static final ImageInfo basicBullet = new ImageInfo("BasicBullet.png");
 	private static final ImageInfo basicLobBullet = new ImageInfo("BasicLobBullet.png");
 	private static final Map<Class<? extends Unit>, UnitSkin> map;

@@ -85,7 +85,7 @@ public class Goob extends AbstractEnemyUnit {
 		for(int[] legal : stepMoveLegals) {
 			if(!shootAbility.canAttackFrom(board.getTileAt(legal[0], legal[1]).getType()))
 				continue;
-			int options = teamUnitsVisibleFrom(board, legal[0], legal[1]).size();
+			int options = playerUnitsVisibleFrom(board, legal[0], legal[1]).size();
 			if(options > 0 && options < fewestOptions) {
 				pref = legal;
 				fewestOptions = options;

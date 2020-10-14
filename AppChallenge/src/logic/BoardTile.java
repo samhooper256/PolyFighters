@@ -86,6 +86,14 @@ public class BoardTile {
 		return getUnitOrNull() != null;
 	}
 	
+	public boolean hasPlayerUnit() {
+		return getUnitOrNull() instanceof PlayerUnit;
+	}
+	
+	public boolean hasEnemyUnit() {
+		return getUnitOrNull() instanceof EnemyUnit;
+	}
+	
 	/** If there is a {@link Unit} on this {@code BoardTile}, removes that {@code Unit} and returns it.
 	 *  Otherwise, does nothing but return {@code null}.
 	 *  <b>This method DOES NOT adjust the row and column values of the {@code Unit} removed, nor does it update

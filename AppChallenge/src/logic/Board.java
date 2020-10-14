@@ -12,6 +12,11 @@ public class Board {
 		void consume(BoardTile tile);
 	}
 	
+	@FunctionalInterface
+	public interface TilePredicate {
+		boolean test(BoardTile tile);
+	}
+	
 	/**
 	 * <b>CONTENTS MUST NOT BE MODIFIED.</b>
 	 */
@@ -112,11 +117,27 @@ public class Board {
 		return tiles[row][col];
 	}
 	
+	public Unit getUnitAtOrNull(final int[] spot) {
+		return getUnitAtOrNull(spot[0], spot[1]);
+	}
 	/**
 	 * Returns the {@link Unit} at the indicated tile, or {@code null} if no {@code Unit} is on that tile.
 	 */
 	public Unit getUnitAtOrNull(int row, int col) {
 		return tiles[row][col].getUnitOrNull();
+	}
+	
+	public Unit getUnitAtOrThrow(int[] spot) {
+		return getUnitAtOrThrow(spot[0], spot[1]);
+	}
+	/**
+	 * Returns the {@link Unit} on the indicated tile, or throws an {@link IllegalStateException} if there is none.
+	 */
+	public Unit getUnitAtOrThrow(int row, int col) {
+		Unit u = getUnitAtOrNull(row, col);
+		if(u == null)
+			throw new IllegalStateException("No unit on the indicated tile.");
+		return u;
 	}
 	
 	/**
@@ -326,11 +347,11 @@ public class Board {
 	/**
 	 * Executes the given {@link TileConsumer} on every tile surrounding the indicated one in a square with the given radius.
 	 * If {@code radius} is 0, this method has no effect. The given starting location need not be {@link #inBounds(int, int) in the bounds}
-	 * of this {@link Board}. If {@code includeStart} is {@code true} the start tile will be consumed, otherwise it will not.
+	 * of this {@link Board}. If {@code includeCenter} is {@code true} the center tile will be consumed, otherwise it will not.
 	 * @throws NullPointerException if the given {@link TileConsumer} is {@code null} <b>and</b> the given radius is not {@code 0}.
 	 * @throws IllegalArgumentException if the given radius is less than {@code 0}.
 	 */
-	public void forTilesInSquare(final int row, final int col, final int radius, final TileConsumer consumer, boolean includeStart) {
+	public void forTilesInSquare(final int row, final int col, final int radius, final TileConsumer consumer, boolean includeCenter) {
 		if(radius == 0)
 			return;
 		Objects.requireNonNull(consumer);
@@ -338,7 +359,7 @@ public class Board {
 			throw new IllegalArgumentException("Radius must be >= 0");
 		for(int i = row - radius; i <= row + radius; i++) {
 			for(int j = col - radius; j <= col + radius; j++) {
-				if(!inBounds(i, j) || !includeStart && i == row && j == col)
+				if(!inBounds(i, j) || !includeCenter && i == row && j == col)
 					continue;
 				consumer.consume(tiles[i][j]);
 			}
@@ -387,6 +408,91 @@ public class Board {
 				list.add((EnemyUnit) u);
 		});
 		return list;
+	}
+	
+	/**
+	 * <pre><code>anyInSquare(a, b, c)</code></pre>
+	 * is equivalent to:
+	 * <pre><code>anyInSquare(a[0], a[1], b, c)</code></pre>
+	 */
+	public boolean anyInSquare(final int[] spot, final int radius, final TilePredicate consumer) {
+		return anyInSquare(spot[0], spot[1], radius, consumer);
+	}
+	
+	/**
+	 * <pre><code>anyInSquare(a, b, c, d)</code></pre>
+	 * is equivalent to:
+	 * <pre><code>anyInSquare(a, b, c, d, false)</code></pre>
+	 * (In other words, this method does <b>not</b> test the start tile that is in the center of the square).
+	 */
+	public boolean anyInSquare(final int row, final int col, final int radius, final TilePredicate consumer) {
+		return anyInSquare(row, col, radius, consumer, false);
+	}
+	
+	/**
+	 * Returns {@code true} if any of the {@link BoardTile BoardTiles} in a square of the given radius around the given center
+	 * satisfies the given {@link TilePredicate}, {@code false} otherwise. Returns {@code false} if the given radius is {@code 0}.
+	 * The center need not be {@link #inBounds(int, int) in the bounds} of this {@link Board}.
+	 * @throws NullPointerException if the given {@link TilePredicate} if {@code null} <b>and</b> the given radius is not zero.
+	 * @throws IllegalArgumentException if the given radius is less than {@code 0}.
+	 */
+	public boolean anyInSquare(final int row, final int col, final int radius, TilePredicate predicate, boolean includeCenter) {
+		if(radius == 0)
+			return false;
+		Objects.requireNonNull(predicate);
+		if(radius < 0)
+			throw new IllegalArgumentException("Radius must be >= 0");
+		for(int i = row - radius; i <= row + radius; i++) {
+			for(int j = col - radius; j <= col + radius; j++) {
+				if(!inBounds(i, j) || !includeCenter && i == row && j == col)
+					continue;
+				if(predicate.test(tiles[i][j]))
+					return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * <pre><code>countSatisfyingInSquare(a, b, c)</code></pre>
+	 * is equivalent to:
+	 * <pre><code>countSatisfyingInSquare(a[0], b[1], c, d)</code></pre>
+	 * (In other words, this method does <b>not</b> count the start tile that is in the center of the square).
+	 */
+	public int countSatisfyingInSquare(final int[] spot, final int radius, TilePredicate predicate) {
+		return countSatisfyingInSquare(spot[0], spot[1], radius, predicate);
+	}
+	
+	/**
+	 * <pre><code>countSatisfyingInSquare(a, b, c, d)</code></pre>
+	 * is equivalent to:
+	 * <pre><code>countSatisfyingInSquare(a, b, c, d, false)</code></pre>
+	 * (In other words, this method does <b>not</b> count the start tile that is in the center of the square).
+	 */
+	public int countSatisfyingInSquare(final int row, final int col, final int radius, TilePredicate predicate) {
+		return countSatisfyingInSquare(row, col, radius, predicate, false);
+	}
+	
+	/**
+	 * Returns the number of {@link BoardTile BoardTiles} in a square of the given radius around the given center that satisfy the given
+	 * {@link TilePredicate}.
+	 */
+	public int countSatisfyingInSquare(final int row, final int col, final int radius, TilePredicate predicate, boolean includeCenter) {
+		if(radius == 0)
+			return 0;
+		Objects.requireNonNull(predicate);
+		if(radius < 0)
+			throw new IllegalArgumentException("Radius must be >= 0");
+		int count = 0;
+		for(int i = row - radius; i <= row + radius; i++) {
+			for(int j = col - radius; j <= col + radius; j++) {
+				if(!inBounds(i, j) || !includeCenter && i == row && j == col)
+					continue;
+				if(predicate.test(tiles[i][j]))
+					count++;
+			}
+		}
+		return count;
 	}
 
 	@Override
