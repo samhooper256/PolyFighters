@@ -7,7 +7,7 @@ import utils.CollectionRef;
 import logic.units.AbstractUnit;
 
 /**
- * <p>A {@link Unit} belonging to the player. {@code TeamUnit}s are encouraged to maintain their
+ * <p>A {@link Unit} belonging to the player. {@link PlayerUnit PlayerUnits} are encouraged to maintain their
  * list of abilities as a {@code ListRef<Ability>} (see {@link CollectionRef}).</p>
  * 
  * <p>Implementing classes may consider extending the {@link AbstractUnit} to make implementation
@@ -16,10 +16,10 @@ import logic.units.AbstractUnit;
  * @author Sam Hooper
  *
  */
-public interface TeamUnit extends Unit {
+public interface PlayerUnit extends Unit {
 	
 	/**
-	 * @return the name of this {@code Unit}, as it would be displayed to the user.
+	 * @return the name of this {@link Unit}, as it would be displayed to the user.
 	 */
 	String getName();
 	

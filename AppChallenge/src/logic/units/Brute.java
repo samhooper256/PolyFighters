@@ -47,7 +47,7 @@ public class Brute extends AbstractEnemyUnit {
 
 	@Override
 	public Move chooseMove(Board board, int movesRemaining) {
-		// TODO Auto-generated method stub
+		//step 1: If we can smash, DO IT!
 		return Move.EMPTY_MOVE;
 	}
 	

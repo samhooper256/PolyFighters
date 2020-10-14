@@ -4,7 +4,7 @@ import java.util.*;
 
 import logic.Ability;
 import logic.Board;
-import logic.TeamUnit;
+import logic.PlayerUnit;
 import logic.TileType;
 import logic.Unit;
 import utils.BooleanRef;
@@ -12,7 +12,7 @@ import utils.CollectionRef;
 import utils.IntRef;
 
 /**
- * Abstract base class that classes implementing {@link TeamUnit} may extend to make implementation easier.
+ * Abstract base class that classes implementing {@link PlayerUnit} may extend to make implementation easier.
  * 
  * @author Sam Hooper
  *

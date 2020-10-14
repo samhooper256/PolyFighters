@@ -44,7 +44,7 @@ public class Goob extends AbstractEnemyUnit {
 	}
 
 	/**
-	 * If this {@link Goob} can shoot a {@link TeamUnit} from its current position, it does so. Otherwise, if it has more than one move
+	 * If this {@link Goob} can shoot a {@link PlayerUnit} from its current position, it does so. Otherwise, if it has more than one move
 	 * remaining, it tries to get into a position where it could shoot a player's unit. Otherwise, if there's only one move remaining, it
 	 * tries to get into a position where it is not on the same row or column as any of the player's units.
 	 */
@@ -79,7 +79,6 @@ public class Goob extends AbstractEnemyUnit {
 				return Move.EMPTY_MOVE;
 			return stepMoveAbility.createMoveFor(pref, null);
 		}
-//		System.out.printf("\t\tcase 3: nothing to shoot rn, but more than one move:%n");
 		// more than one move remaining, but there's nothing we can shoot immediately:
 		int[] pref = null;
 		int fewestOptions = Integer.MAX_VALUE; //search for the spot with the fewest (non-zero) number of units attackable, and attack there. That way we're not in the crossfire of several units.
@@ -92,7 +91,6 @@ public class Goob extends AbstractEnemyUnit {
 				fewestOptions = options;
 			}
 		}
-//		System.out.printf("\t\tpref=%s, fewestOptions=%s%n", Arrays.toString(pref), fewestOptions);
 		if(pref == null) {
 			if(stepMoveLegals.size() > 0)
 				return stepMoveAbility.createMoveFor(Coll.getRandom(stepMoveLegals), null); //make a random move

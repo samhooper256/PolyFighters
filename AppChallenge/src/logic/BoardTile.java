@@ -160,6 +160,16 @@ public class BoardTile {
 	}
 	
 	/**
+	 * Returns a {@link Collection} containing 0 or 1 elements. If it contains 0 elements, this tile has no {@link Unit Units} on it.
+	 * If it contains 1 element, that element is the {@link Unit} on this tile.
+	 * @return
+	 */
+	public Collection<Unit> getUnitsUnmodifiable() {
+		Unit u = getUnitOrNull();
+		return u == null ? Collections.emptyList() : Set.of(u);
+	}
+	
+	/**
 	 * Returns {@code true} if there are any {@link GameObject GameObject}s on this {@code BoardTile}, {@code false} otherwise.
 	 */
 	public boolean isOccupied() {

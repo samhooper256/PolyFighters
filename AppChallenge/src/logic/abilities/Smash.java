@@ -41,7 +41,7 @@ public class Smash extends AbstractAnyAbility implements AttackAbility {
 		final int myRow = unit.getRow();
 		final int myCol = unit.getCol();
 		final Board board = unit.getBoard();
-		if(ATTACK_FROM.contains(board.getTileAt(myRow, myCol).getType()) && Types.containsInstanceOf(board.get8AdjacentGameObject(myRow, myCol), HasHealth.class))
+		if(ATTACK_FROM.contains(board.getTileAt(myRow, myCol).getType()) && Types.containsInstanceOf(board.get8AdjacentGameObjects(myRow, myCol), HasHealth.class))
 			return Set.of(new int[] {myRow, myCol});
 		return Collections.emptySet();
 	}

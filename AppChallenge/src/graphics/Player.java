@@ -10,29 +10,29 @@ import logic.*;
  */
 public class Player {
 	
-	private List<TeamUnit> units;
+	private List<PlayerUnit> units;
 	
 	public Player() {
 		units = new ArrayList<>();
 	}
 	
-	public void addUnit(TeamUnit unit) {
+	public void addUnit(PlayerUnit unit) {
 		units.add(unit);
 	}
 	
-	public void addUnits(TeamUnit... units) {
-		for(TeamUnit unit : units)
+	public void addUnits(PlayerUnit... units) {
+		for(PlayerUnit unit : units)
 			addUnit(unit);
 	}
 	
-	public List<TeamUnit> getUnitsUnmodifiable() {
+	public List<PlayerUnit> getUnitsUnmodifiable() {
 		return Collections.unmodifiableList(units);
 	}
 	
 	/**
-	 * Returns {@code true} if the {@link TeamUnit} was present and has been removed, {@code false} otherwise.
+	 * Returns {@code true} if the {@link PlayerUnit} was present and has been removed, {@code false} otherwise.
 	 */
-	public boolean removeUnit(TeamUnit unit) {
+	public boolean removeUnit(PlayerUnit unit) {
 		return units.remove(unit);
 	}
 }

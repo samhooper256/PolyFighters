@@ -27,10 +27,10 @@ public abstract class AbstractAnyAbility implements AnyAbility {
 	public boolean isAgainstOrFalse(Unit unitArg) {
 		if(unit == null)
 			return false;
-		if(unit instanceof TeamUnit)
+		if(unit instanceof PlayerUnit)
 			return unitArg instanceof EnemyUnit;
 		if(unit instanceof EnemyUnit)
-			return unitArg instanceof TeamUnit;
+			return unitArg instanceof PlayerUnit;
 		throw new UnsupportedOperationException("Unrecognized unit subtype: " + unitArg.getClass());
 	}
 }

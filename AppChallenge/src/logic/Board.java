@@ -7,6 +7,11 @@ import java.util.*;
  */
 public class Board {
 	
+	@FunctionalInterface
+	public interface TileConsumer {
+		void consume(BoardTile tile);
+	}
+	
 	/**
 	 * <b>CONTENTS MUST NOT BE MODIFIED.</b>
 	 */
@@ -260,13 +265,13 @@ public class Board {
 		return list;
 	}
 	
-	public Collection<TeamUnit> getCurrentTeamUnits() {
-		ArrayList<TeamUnit> list = new ArrayList<>();
+	public Collection<PlayerUnit> getCurrentTeamUnits() {
+		ArrayList<PlayerUnit> list = new ArrayList<>();
 		for(int i = 0; i < rows; i++) {
 			for(int j = 0; j < cols; j++) {
 				Unit unit = tiles[i][j].getUnitOrNull();
-				if(unit instanceof TeamUnit)
-					list.add((TeamUnit) unit);
+				if(unit instanceof PlayerUnit)
+					list.add((PlayerUnit) unit);
 			}
 		}
 		return list;
@@ -286,13 +291,101 @@ public class Board {
 		return false;
 	}
 	
-	public Collection<GameObject> get8AdjacentGameObject(final int row, final int col) {
-		Collection<GameObject> list = new ArrayList<>();
-		for(int[] adj : ADJACENT_8) {
-			int nr = row + adj[0], nc = col + adj[1];
-			if(inBounds(nr, nc))
-				list.addAll(tiles[nr][nc].getObjectsUnmodifiable());
+	/**
+	 * Executes the given {@link TileConsumer} on every {@link BoardTile} that is 8-Adjacent to the indicated tile. Only tiles whose row/col
+	 * values would be {@link #inBounds(int, int) in bounds} are passed to the consumer. The given row and column values may be out of range for this
+	 * {@link Board}. Any 8-Adjacent tiles to the given coordinates will be passed to the {@link TileConsumer}, regardless of whether the starting
+	 * location is in bounds.
+	 * @throws NullPointerException if the given {@link TileConsumer} is {@code null}.
+	 */
+	public void for8AdjacentTiles(final int row, final int col, final TileConsumer consumer) {
+		forTilesInSquare(row, col, 1, consumer);
+	}
+	
+	public Collection<GameObject> get8AdjacentGameObjects(final int row, final int col) {
+		return getGameObjectsInSquare(row, col, 1);
+	}
+	
+	public Collection<Unit> get8AdjacentUnits(final int row, final int col) {
+		return getUnitsInSquare(row, col, 1);
+	}
+	
+	public Collection<EnemyUnit> get8AdjacentEnemyUnits(final int row, final int col) {
+		return getEnemyUnitsInSquare(row, col, 1);
+	}
+	
+	/**
+	 * <pre><code>forTilesInSquare(a, b, c, d)</code></pre>
+	 * is equivalent to:
+	 * <pre><code>forTilesInSquare(a, b, c, d, false)</code></pre>
+	 * (In other words, this method does <b>not</b> consume the start tile that is in the center of the square).
+	 */
+	public void forTilesInSquare(final int row, final int col, final int radius, final TileConsumer consumer) {
+		forTilesInSquare(row, col, radius, consumer, false);
+	}
+	/**
+	 * Executes the given {@link TileConsumer} on every tile surrounding the indicated one in a square with the given radius.
+	 * If {@code radius} is 0, this method has no effect. The given starting location need not be {@link #inBounds(int, int) in the bounds}
+	 * of this {@link Board}. If {@code includeStart} is {@code true} the start tile will be consumed, otherwise it will not.
+	 * @throws NullPointerException if the given {@link TileConsumer} is {@code null} <b>and</b> the given radius is not {@code 0}.
+	 * @throws IllegalArgumentException if the given radius is less than {@code 0}.
+	 */
+	public void forTilesInSquare(final int row, final int col, final int radius, final TileConsumer consumer, boolean includeStart) {
+		if(radius == 0)
+			return;
+		Objects.requireNonNull(consumer);
+		if(radius < 0)
+			throw new IllegalArgumentException("Radius must be >= 0");
+		for(int i = row - radius; i <= row + radius; i++) {
+			for(int j = col - radius; j <= col + radius; j++) {
+				if(!inBounds(i, j) || !includeStart && i == row && j == col)
+					continue;
+				consumer.consume(tiles[i][j]);
+			}
 		}
+	}
+	
+	/**
+	 * Does not include the starting tile.
+	 */
+	public Collection<GameObject> getGameObjectsInSquare(final int row, final int col, final int radius) {
+		Collection<GameObject> list = new ArrayList<>();
+		forTilesInSquare(row, col, radius, tile -> list.addAll(tile.getObjectsUnmodifiable()));
+		return list;
+	}
+	
+	/**
+	 * Does not include the starting tile.
+	 */
+	public Collection<Unit> getUnitsInSquare(final int row, final int col, final int radius) {
+		Collection<Unit> list = new ArrayList<>();
+		forTilesInSquare(row, col, radius, tile -> list.addAll(tile.getUnitsUnmodifiable()));
+		return list;
+	}
+	
+	/**
+	 * Does not include the starting tile.
+	 */
+	public Collection<PlayerUnit> getPlayerUnitsInSquare(final int row, final int col, final int radius) {
+		Collection<PlayerUnit> list = new ArrayList<>();
+		forTilesInSquare(row, col, radius, tile -> {
+			Unit u = tile.getUnitOrNull();
+			if(u instanceof PlayerUnit)
+				list.add((PlayerUnit) u);
+		});
+		return list;
+	}
+	
+	/**
+	 * Does not include the starting tile.
+	 */
+	public Collection<EnemyUnit> getEnemyUnitsInSquare(final int row, final int col, final int radius) {
+		Collection<EnemyUnit> list = new ArrayList<>();
+		forTilesInSquare(row, col, radius, tile -> {
+			Unit u = tile.getUnitOrNull();
+			if(u instanceof EnemyUnit)
+				list.add((EnemyUnit) u);
+		});
 		return list;
 	}
 

@@ -5,7 +5,7 @@ import java.util.Collection;
 import utils.CollectionRef;
 
 /**
- * </p>A unit on a {@link Board}. This interface must not be implemented directly; rather, one of its subinterfaces {@link TeamUnit} or {@link EnemyUnit}
+ * </p>A unit on a {@link Board}. This interface must not be implemented directly; rather, one of its subinterfaces {@link PlayerUnit} or {@link EnemyUnit}
  * should be implemented instead.</p>
  * 
  * <p>Every {@code Unit} has a set of abilities, represented by a {@link Collection} of {@code Ability} objects that can be retrieved by calling {@link #getAbilitiesUnmodifiable()}.
@@ -20,22 +20,26 @@ import utils.CollectionRef;
 public interface Unit extends HasHealth {
 	
 	/**
-	 * @return an unmodifiable {@link Collection} containing this {@code Unit's} abilities.
+	 * Returns an unmodifiable {@link Collection} containing this {@code Unit's} abilities.
 	 */
 	default Collection<Ability> getAbilitiesUnmodifiable() {
 		return abilityCollectionRef().getUnmodifiable();
 	}
 	
+	/**
+	 * Returns a {@link CollectionRef} referring to a {@link Collection} that contains all of this {@link Unit Unit's} {@link Ability Abilities}.
+	 */
 	CollectionRef<Ability> abilityCollectionRef();
 	
-	/** Returns {@code true} if this {@code Unit} can traverse {@link BoardTile}s of the given {@link TileType}. */
+	/**
+	 * Returns {@code true} if this {@code Unit} can traverse {@link BoardTile}s of the given {@link TileType}.
+	 * */
 	boolean canTraverse(TileType type);
 	
 	/**
 	 * Returns a {@link Collection} of (row, col) ordered pairs. Each ordered
 	 * pair is a destination tile where this unit could legally use the given ability.
 	 * @param ability
-	 * @return
 	 * @throws IllegalArgumentException if this unit does not have the given ability.
 	 */
 	Collection<int[]> getLegalSpots(Ability ability);

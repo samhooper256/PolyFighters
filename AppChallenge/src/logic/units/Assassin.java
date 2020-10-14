@@ -40,7 +40,7 @@ public class Assassin extends AbstractEnemyUnit {
 			int bestHealth = Integer.MIN_VALUE;
 			for(int[] legal : meleeLegals) {
 				Unit unit = board.getUnitAtOrNull(legal[0], legal[1]);
-				if(!(unit instanceof TeamUnit))
+				if(!(unit instanceof PlayerUnit))
 					continue;
 				if(unit.getHealth() > bestHealth) {
 					bestHealth = unit.getHealth();

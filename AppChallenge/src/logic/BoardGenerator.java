@@ -21,7 +21,7 @@ public class BoardGenerator {
 	private int rowCount, colCount;
 	private double liquidPercent;
 	private double poolStrength;
-	private List<TeamUnit> teamUnits;
+	private List<PlayerUnit> teamUnits;
 	private double turnDifficulty;
 	
 	public BoardGenerator() {
@@ -68,7 +68,7 @@ public class BoardGenerator {
 	/**
 	 * Returns {@code this}.
 	 */
-	public BoardGenerator setTeamUnits(List<TeamUnit> teamUnits) {
+	public BoardGenerator setTeamUnits(List<PlayerUnit> teamUnits) {
 		this.teamUnits = teamUnits;
 		return this;
 	}
@@ -149,7 +149,7 @@ public class BoardGenerator {
 	private void placeTeamUnits(final Board board) {
 		int[] placeSpots = IntStream.range(0, rowCount * colCount).toArray();
 		int placeSpotsMaxIndex = placeSpots.length - 1;
-		for(final TeamUnit teamUnit : teamUnits) {
+		for(final PlayerUnit teamUnit : teamUnits) {
 			int row, col;
 			do {
 				if(placeSpotsMaxIndex < 0)

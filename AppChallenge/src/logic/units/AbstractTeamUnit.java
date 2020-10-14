@@ -8,7 +8,7 @@ import logic.*;
  * @author Sam Hooper
  *
  */
-public abstract class AbstractTeamUnit extends AbstractUnit implements TeamUnit {
+public abstract class AbstractTeamUnit extends AbstractUnit implements PlayerUnit {
 	
 	protected AbstractTeamUnit(int maxHealth) {
 		this(maxHealth, maxHealth);
