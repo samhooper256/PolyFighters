@@ -15,7 +15,7 @@ public final class EnemyGenerator {
 		put(Goob.class, Goob::new, 1);
 		put(Assassin.class, Assassin::new, 1.5);
 		put(Brute.class, Brute::new, 2.5);
-//		put(Summoner.class, Summoner::new, 2);
+		put(Summoner.class, Summoner::new, 2);
 		put(Lobber.class, Lobber::new, 2);
 	}
 	

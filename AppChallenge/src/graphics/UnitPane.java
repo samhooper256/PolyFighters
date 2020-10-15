@@ -24,18 +24,6 @@ import utils.SingleListener;
  */
 public class UnitPane extends StackPane implements GameObjectRepresentation {
 	
-	private static final Map<Class<? extends Unit>, ImageInfo> infoMap;
-	
-	static {
-		infoMap = new HashMap<>();
-		infoMap.put(BasicUnit.class, new ImageInfo("BasicUnit.png"));
-		infoMap.put(Goob.class, new ImageInfo("Goob.png"));
-		infoMap.put(Assassin.class, new ImageInfo("Assassin.png"));
-		infoMap.put(Brute.class, new ImageInfo("Brute.png"));
-		infoMap.put(Lobber.class, new ImageInfo("Lobber.png"));
-//		infoMap.put(Brute.class, new ImageInfo("Brute.png"));
-	}
-	
 	private static final EventHandler<? super MouseEvent> clickHandler = mouseEvent -> {
 		System.out.printf("Entered UnitPane click handler%n");
 		UnitPane pane = ((UnitWrap) mouseEvent.getSource()).getEnclosingInstance();
@@ -68,17 +56,6 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 		}
 		mouseEvent.consume();
 	};
-	
-	public static Image imageFor(Unit unit) {
-		return imageFor(unit.getClass());
-	}
-	
-	public static Image imageFor(Class<? extends Unit> unitClazz) {
-		ImageInfo info = infoMap.get(unitClazz);
-		if(info == null)
-			throw new IllegalArgumentException("There is no image associated with: " + unitClazz);
-		return info.getImage();
-	}
 	
 	private class UnitWrap extends ImageWrap {
 		UnitPane getEnclosingInstance() {
@@ -154,7 +131,7 @@ public class UnitPane extends StackPane implements GameObjectRepresentation {
 		healthBar.setVisible(true);
 		addListenersTo(this.unit);
 		clearAndFillPaneMap();
-		unitWrap.setImage(imageFor(this.unit));
+		unitWrap.setImage(UnitSkin.imageFor(this.unit));
 	}
 
 	/** Removes this {@link UnitPane}'s listeners from the given {@link Unit}. Should only be called when the given {@code Unit} has the listeners. */

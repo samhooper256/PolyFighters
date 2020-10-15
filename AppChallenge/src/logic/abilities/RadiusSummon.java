@@ -8,21 +8,20 @@ import logic.actions.PlaceObject;
 import utils.*;
 
 /**
- * Allows for a {@link Unit} to summon another in a radius around that {code Unit}.
+ * Allows for a {@link Unit} to summon another in a radius around that {@link Unit}.
  * @author Sam Hooper
  *
  */
-public class Summon extends AbstractAnyAbility {
-	
-	public static final int DEFAULT_RADIUS = 1;
+public class RadiusSummon extends AbstractAnyAbility {
 	
 	private final Supplier<Unit> unitSupplier;
 	private final Class<? extends Unit> unitClass;
 	private final IntRef radius;
+	
 	/**
 	 * @param unit
 	 */
-	public Summon(Unit unit, Class<? extends Unit> unitClass, Supplier<Unit> unitSupplier, int radius) {
+	public RadiusSummon(Unit unit, Class<? extends Unit> unitClass, Supplier<Unit> unitSupplier, int radius) {
 		super(unit);
 		this.unitClass = unitClass;
 		this.unitSupplier = unitSupplier;
@@ -53,7 +52,7 @@ public class Summon extends AbstractAnyAbility {
 	}
 
 	/**
-	 * {@code target} will be ignored and may be {@code null}.
+	 * The {@link GameObject} parameter will be ignored and may be {@code null}.
 	 */
 	@Override
 	public Move createMoveFor(int destRow, int destCol, GameObject target) {

@@ -11,15 +11,15 @@ import utils.IntRef;
  * @author Sam Hooper
  *
  */
-public class SelfHeal extends AbstractAnyAbility implements TargetingAbility {
+public class SelfHeal extends SingleHeal implements TargetingAbility {
 
-	private final IntRef heal;
-	
 	public SelfHeal(Unit unit, int heal) {
-		super(unit);
-		this.heal = new IntRef(heal);
+		super(unit, heal);
 	}
 
+	/**
+	 * Returns an empty {@link Collection} if this {@link Ability Ability's} {@link Unit} is at {@link HasHealth#isFullHealth() full health}. 
+	 */
 	@Override
 	public Collection<int[]> getLegals() {
 		if(unit.isFullHealth())
@@ -32,15 +32,13 @@ public class SelfHeal extends AbstractAnyAbility implements TargetingAbility {
 		return object == unit;
 	}
 
+	/**
+	 * The {@link GameObject} parameter is ignored and can be {@code null}.
+	 */
 	@Override
 	public Move createMoveFor(int destRow, int destCol, GameObject target) {
-		if(destRow != unit.getRow() || destCol != unit.getCol())
-			throw new IllegalArgumentException("Not a legal move.");
-		return new Move(this, new ChangeHealth(unit, heal.get()));
+		return super.createMoveFor(destRow, destCol, unit);
 	}
-
-	public IntRef healProperty() {
-		return heal;
-	}
-
+	
+	
 }

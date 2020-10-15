@@ -185,8 +185,8 @@ public class Board {
 	}
 	
 	public Move nextEnemyMove() {
-		System.out.printf("entered nextEnemyMove, enemies = %s%n", enemies);
 		EnemyUnit actingEnemy = enemies.get((enemies.size() * MOVES_PER_ENEMY - enemyMovesRemaining) / MOVES_PER_ENEMY);
+		System.out.printf("entered nextEnemyMove, enemies = %s%n\tactingEnemy=%s%n", enemies, actingEnemy);
 		int enemyMoves = enemyMovesRemaining % MOVES_PER_ENEMY;
 		if(enemyMoves == 0)
 			enemyMoves = MOVES_PER_ENEMY;

@@ -63,6 +63,29 @@ public enum UnitSkin {
 		}
 	}
 	
+	private static final Map<Class<? extends Unit>, ImageInfo> infoMap;
+	
+	static {
+		infoMap = new HashMap<>();
+		infoMap.put(BasicUnit.class, new ImageInfo("BasicUnit.png"));
+		infoMap.put(Goob.class, new ImageInfo("Goob.png"));
+		infoMap.put(Assassin.class, new ImageInfo("Assassin.png"));
+		infoMap.put(Brute.class, new ImageInfo("Brute.png"));
+		infoMap.put(Lobber.class, new ImageInfo("Lobber.png"));
+		infoMap.put(Summoner.class, new ImageInfo("Summoner.png"));
+	}
+	
+	public static Image imageFor(Unit unit) {
+		return imageFor(unit.getClass());
+	}
+	
+	public static Image imageFor(Class<? extends Unit> unitClazz) {
+		ImageInfo info = infoMap.get(unitClazz);
+		if(info == null)
+			throw new IllegalArgumentException("There is no image associated with: " + unitClazz);
+		return info.getImage();
+	}
+	
 	public static UnitSkin forUnitOrDefault(Unit unit) {
 		Objects.requireNonNull(unit);
 		return forUnitOrDefault(unit.getClass());
@@ -89,6 +112,10 @@ public enum UnitSkin {
 	
 	public Class<? extends Unit> getUnitClass() {
 		return unitClass;
+	}
+	
+	public Image getImage() {
+		return imageFor(unitClass);
 	}
 	
 	public Image projectileImageFor(Class<? extends SingleProjectileAbility> clazz) {

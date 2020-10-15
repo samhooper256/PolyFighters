@@ -114,9 +114,9 @@ public abstract class AbilityPane extends StackPane	{
 				});
 			}
 		});
-		paneFactories.put(Summon.class, a -> new AbilityPane(a) {
+		paneFactories.put(RadiusSummon.class, a -> new AbilityPane(a) {
 			{
-				Summon sum = (Summon) a;
+				RadiusSummon sum = (RadiusSummon) a;
 				VBox vBox = new VBox();
 				getChildren().add(vBox);
 				Label label = new Label("Summon " + sum.getUnitClass().getSimpleName() + ": " + sum.radiusProperty().get() + " radius");
