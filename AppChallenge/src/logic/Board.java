@@ -2,6 +2,8 @@ package logic;
 
 import java.util.*;
 import java.util.function.*;
+
+import utils.BFS;
 /**
  * @author Sam Hooper
  *
@@ -110,6 +112,14 @@ public class Board {
 	
 	public int getCols() {
 		return cols;
+	}
+	
+	/**
+	 * <b>IMPORTANT: the returned {@code BoardTile[][]} is the actual backing array for this {@link Board}. None of the elements or components of
+	 * the array should ever be assigned to under any circumstances. This method should be used with extreme care.</b>
+	 */
+	public BoardTile[][] getRawTiles() {
+		return tiles;
 	}
 	
 	public BoardTile getTileAt(int[] spot) {
@@ -289,7 +299,7 @@ public class Board {
 		return list;
 	}
 	
-	public Collection<PlayerUnit> getCurrentTeamUnits() {
+	public Collection<PlayerUnit> getCurrentPlayerUnits() {
 		ArrayList<PlayerUnit> list = new ArrayList<>();
 		for(int i = 0; i < rows; i++) {
 			for(int j = 0; j < cols; j++) {
@@ -498,6 +508,16 @@ public class Board {
 		return count;
 	}
 
+	/**
+	 * Returns {@code null} if there are no {@link PlayerUnit PlayerUnits} on this {@link Board}.
+	 */
+	public BoardTile getNearestTileWithPlayerUnit(int startRow, int startCol, EnumSet<TileType> traversables) {
+		BFS.Result<BoardTile> result = BFS.of(tiles, startRow, startCol, BoardTile::hasPlayerUnit, tile -> !traversables.contains(tile.getType())).search();
+		if(result.found())
+			return result.target();
+		return null;
+	}
+	
 	@Override
 	public String toString() {
 		StringJoiner j = new StringJoiner("\n", "\n", "\n");

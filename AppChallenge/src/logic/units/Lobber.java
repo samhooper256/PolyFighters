@@ -4,6 +4,7 @@ import java.util.*;
 
 import logic.*;
 import logic.abilities.*;
+import utils.BFS;
 import utils.Coll;
 
 /**
@@ -31,12 +32,9 @@ public class Lobber extends AbstractEnemyUnit {
 
 	@Override
 	public Move chooseMove(Board board, int movesRemaining) {
-		System.out.printf("\tEntered Lobber::chooseMove%n");
 		final int myRow = getRow(), myCol = getCol();
 		//case 1: if we can lob, do so:
-		System.out.printf("\t\tcase 1: if we can lob, do so%n");
 		Collection<int[]> lobLegals = lobAbility.getLegals();
-		System.out.printf("\t\tlobLegals.size()=%d%n", lobLegals.size());
 		final int lobMin = lobAbility.getMinimumDistance();
 		int[] best = null;
 		int bestHealth = Integer.MIN_VALUE;
@@ -53,14 +51,32 @@ public class Lobber extends AbstractEnemyUnit {
 		if(best != null) {
 			return lobAbility.createMoveFor(best, board.getTileAt(best).getPlayerUnitOrThrow());
 		}
-		//case 2: we can't lob, so try to move to a spot where we could next time:
-		System.out.printf("\t\tcase 2: we can't lob, so try to move to a spot where we could next time%n");
+		//case 2: we can't lob, so try to move to a spot where we could in the future:
 		Collection<int[]> stepMoveLegals = stepMoveAbility.getLegals();
-		if(movesRemaining > 1) {
-			//TODO find the nearest enemy and move towards it.
+		BoardTile nearestTile = board.getNearestTileWithPlayerUnit(myRow, myCol, traversableTileTypes);
+		int nearestRow = nearestTile.getRow(), nearestCol = nearestTile.getCol();
+		best = null;
+		int minDist = Integer.MAX_VALUE;
+		for(int[] legal : stepMoveLegals) {
+			BFS.Result<BoardTile> bfsResult = BFS.of(board.getRawTiles(), legal[0], legal[1], tile -> {
+				final int tileRow = tile.getRow(), tileCol = tile.getCol();
+				return 	tileRow == nearestRow && Math.abs(tileCol - nearestCol) >= lobMin ||
+						tileCol == nearestCol && Math.abs(tileRow - nearestRow) >= lobMin;
+			}, tile -> !traversableTileTypes.contains(tile.getType()))
+					.setIncludeStart(true)
+					.search();
+			if(bfsResult.found()) {
+				int pathLength = bfsResult.startNode().length();
+				if(pathLength < minDist) {
+					minDist = pathLength;
+					best = legal;
+				}
+			}
 		}
-		//case 4: can't do anything.
-		System.out.printf("\t\tcase 4: can't do anything%n");
+		if(best != null) {
+			return stepMoveAbility.createMoveFor(best, null);
+		}
+		//case 3: can't do anything.
 		return Move.EMPTY_MOVE;
 	}
 	

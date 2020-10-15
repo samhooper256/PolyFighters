@@ -6,6 +6,11 @@ import logic.*;
 import logic.actions.FireProjectile;
 import utils.IntRef;
 
+/**
+ * The {@link GameObject GameObjects} that can be leally attacked must be at least the {@link #minimumDistanceProperty() minimum distance} away from this {@link Lobber}.
+ * @author Sam Hooper
+ *
+ */
 public class Lob extends AbstractAnyAbility implements SingleProjectileAbility
 {
 	private static final EnumSet<TileType> ATTACK_FROM = EnumSet.of(TileType.SOLID);

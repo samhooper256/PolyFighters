@@ -193,6 +193,6 @@ public class BoardTile {
 	
 	@Override
 	public String toString() {
-		return String.format("BoardTile[type=%s, objects=%s]", type, objects);
+		return String.format("BoardTile[location=(%d, %d), type=%s, objects=%s]", row, col, type, objects);
 	}
 }

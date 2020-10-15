@@ -34,29 +34,29 @@ public class Summoner extends AbstractEnemyUnit {
 
 	@Override
 	public Move chooseMove(Board board, int movesRemaining) {
-		//case 0: Randomly move sometimes, because otherwise this Unit would never have a reason to do so:
-		if(Math.random() < MOVE_CHANCE) {
-			Collection<int[]> moveLegals = stepMoveAbility.getLegals();
-			if(moveLegals.size() > 0) {
-				return stepMoveAbility.createMoveFor(Coll.getRandom(moveLegals), null);
-			} //otherwise, fall through and maybe we can heal instead.
-		}
 		// case 1: if we're below half health and we can heal, do so.
 		final int maxHealth = getMaxHealth();
 		final Collection<int[]> healLegals = selfHealAbility.getLegals();
 		if(healLegals.size() > 0 && getHealth() < maxHealth / 2.0) {
 			return selfHealAbility.createMoveFor(healLegals.iterator().next(), null);
 		}
-		//case 2: we don't want to/can't heal, so if we can summon, do it:
+		//case 2: Randomly move sometimes, because otherwise this Unit would never have a reason to do so:
+		if(Math.random() < MOVE_CHANCE) {
+			Collection<int[]> moveLegals = stepMoveAbility.getLegals();
+			if(moveLegals.size() > 0) {
+				return stepMoveAbility.createMoveFor(Coll.getRandom(moveLegals), null);
+			} //otherwise, fall through and maybe we can heal or summon instead.
+		}
+		//case 3: we don't want to/can't heal, so if we can summon, do it:
 		final Collection<int[]> summonLegals = summonAbility.getLegals();
 		if(summonLegals.size() > 0) {
 			return summonAbility.createMoveFor(Coll.getRandom(summonLegals), null);
 		}
-		//case 3: we're above half health, but we can't summon. Let's heal then (if we're not at full health).
+		//case 4: we're above half health, but we can't summon. Let's heal then (if we're not at full health).
 		if(healLegals.size() > 0) {
 			return selfHealAbility.createMoveFor(healLegals.iterator().next(), null);
 		}
-		//case 4: We're at full health and we can't summon. We can't move, since if we could move we could necessarily summon in one of the spots we could move to. Do nothing.
+		//case 5: We're at full health and we can't summon. We can't move, since if we could move we could necessarily summon in one of the spots we could move to. Do nothing.
 		return Move.EMPTY_MOVE;
 	}
 	
