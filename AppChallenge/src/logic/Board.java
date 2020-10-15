@@ -1,6 +1,7 @@
 package logic;
 
 import java.util.*;
+import java.util.function.*;
 /**
  * @author Sam Hooper
  *
@@ -8,12 +9,14 @@ import java.util.*;
 public class Board {
 	
 	@FunctionalInterface
-	public interface TileConsumer {
-		void consume(BoardTile tile);
+	public interface TileConsumer extends Consumer<BoardTile> {
+		@Override
+		void accept(BoardTile t);
 	}
 	
 	@FunctionalInterface
-	public interface TilePredicate {
+	public interface TilePredicate extends Predicate<BoardTile> {
+		@Override
 		boolean test(BoardTile tile);
 	}
 	
@@ -361,7 +364,7 @@ public class Board {
 			for(int j = col - radius; j <= col + radius; j++) {
 				if(!inBounds(i, j) || !includeCenter && i == row && j == col)
 					continue;
-				consumer.consume(tiles[i][j]);
+				consumer.accept(tiles[i][j]);
 			}
 		}
 	}
