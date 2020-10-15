@@ -82,6 +82,13 @@ public class BoardTile {
 		return null;
 	}
 	
+	public PlayerUnit getPlayerUnitOrThrow() {
+		Unit u = getUnitOrNull();
+		if(u instanceof PlayerUnit)
+			return (PlayerUnit) u;
+		throw new IllegalStateException("This tile does not have a PlayerUnit");
+	}
+	
 	public boolean hasUnit() {
 		return getUnitOrNull() != null;
 	}

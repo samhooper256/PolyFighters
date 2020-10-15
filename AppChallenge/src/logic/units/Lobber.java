@@ -1,11 +1,10 @@
 package logic.units;
 
-import java.util.EnumSet;
+import java.util.*;
 
-import logic.Board;
-import logic.Move;
-import logic.TileType;
+import logic.*;
 import logic.abilities.*;
+import utils.Coll;
 
 /**
  * @author Sam Hooper
@@ -32,7 +31,41 @@ public class Lobber extends AbstractEnemyUnit {
 
 	@Override
 	public Move chooseMove(Board board, int movesRemaining) {
-		// TODO Auto-generated method stub
+		System.out.printf("\tEntered Lobber::chooseMove%n");
+		final int myRow = getRow(), myCol = getCol();
+		//case 1: if we can lob, do so:
+		System.out.printf("\t\tcase 1: if we can lob, do so%n");
+		Collection<int[]> lobLegals = lobAbility.getLegals();
+		System.out.printf("\t\tlobLegals.size()=%d%n", lobLegals.size());
+		final int lobMin = lobAbility.getMinimumDistance();
+		int[] best = null;
+		int bestHealth = Integer.MIN_VALUE;
+		for(int[] legal : lobLegals) {
+			Unit u = board.getTileAt(legal).getUnitOrNull();
+			if(u instanceof PlayerUnit) {
+				int uHealth = u.getHealth();
+				if(uHealth > bestHealth) {
+					bestHealth = uHealth;
+					best = legal;
+				}
+			}
+		}
+		if(best != null) {
+			return lobAbility.createMoveFor(best, board.getTileAt(best).getPlayerUnitOrThrow());
+		}
+		//case 2: we can't lob, so try to move to a spot where we could next time:
+		System.out.printf("\t\tcase 2: we can't lob, so try to move to a spot where we could next time%n");
+		Collection<int[]> stepMoveLegals = stepMoveAbility.getLegals();
+		if(movesRemaining > 1) {
+			//TODO find the nearest enemy and move towards it.
+		}
+		//case 4: can't do anything.
+		System.out.printf("\t\tcase 4: can't do anything%n");
 		return Move.EMPTY_MOVE;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("Lobber[health=%d, maxHealth=%d]", getHealth(), getMaxHealth());
 	}
 }

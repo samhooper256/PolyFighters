@@ -28,6 +28,10 @@ public class Lob extends AbstractAnyAbility implements SingleProjectileAbility
 		return minimumDistance;
 	}
 	
+	public int getMinimumDistance() {
+		return minimumDistance.get();
+	}
+	
 	@Override
 	public Collection<int[]> getLegals() 
 	{
