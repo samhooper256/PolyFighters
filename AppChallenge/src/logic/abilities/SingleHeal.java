@@ -11,26 +11,26 @@ import utils.IntRef;
  */
 public abstract class SingleHeal extends AbstractAnyAbility {
 	
-	protected final class HealRef extends IntRef {
-		public HealRef(int value) {
+	protected final class HealProperty extends IntRef {
+		public HealProperty(int value) {
 			super(value);
 		}
 
 		@Override
-		public void set(int newValue) {
+		public boolean set(int newValue) {
 			if(newValue < 0)
 				throw new IllegalArgumentException("Heal amount must not be negative. Was: " + newValue);
-			super.set(newValue);
+			return super.set(newValue);
 		}
 	}
 	
-	protected final HealRef heal;
+	protected final HealProperty heal;
 	
 	public SingleHeal(Unit unit, final int heal) {
 		super(unit);
 		if(heal < 0)
 			throw new IllegalArgumentException("Heal amount must not be negative. Was: " + heal);
-		this.heal = new HealRef(heal);
+		this.heal = new HealProperty(heal);
 	}
 
 	public IntRef healProperty() {

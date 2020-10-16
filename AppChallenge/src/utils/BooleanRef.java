@@ -35,14 +35,16 @@ public class BooleanRef {
 	
 	/**
 	 * Does <b>not</b> trigger the {@link BooleanChangeListener}s if {@code newValue} is the same as the {@code boolean} currently stored by this
-	 * {@code booleanRef}.
+	 * {@code booleanRef}. Returns {@code false} if the new value is the same as the current one, {@code true} otherwise.
 	 * @param newValue
 	 */
-	public void set(boolean newValue) {
-		if(value == newValue) return;
+	public boolean set(boolean newValue) {
+		if(value == newValue)
+			return false;
 		boolean oldValue = this.value;
 		this.value = newValue;
 		runChangeListeners(oldValue, newValue);
+		return true;
 	}
 
 	private void runChangeListeners(boolean oldValue, boolean newValue) {

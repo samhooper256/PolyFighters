@@ -4,6 +4,7 @@ import java.util.*;
 
 import logic.Board;
 import logic.GameObject;
+import logic.HasHealth;
 import logic.Move;
 import logic.TileType;
 import logic.Unit;

@@ -29,16 +29,18 @@ public class IntRef {
 	
 	/**
 	 * Does <b>not</b> trigger the {@link IntChangeListener}s if {@code newValue} is the same as {@code int} currently stored by this
-	 * {@code IntRef}.
+	 * {@code IntRef}. Returns {@code false} if the new value is the same as from the existing one, {@code true} otherwise.
 	 * @param newValue
 	 */
-	public void set(int newValue) {
-		if(value == newValue) return;
+	public boolean set(int newValue) {
+		if(value == newValue)
+			return false;
 		int oldValue = this.value;
 		this.value = newValue;
 		if(changeListeners != null)
 			for(IntChangeListener listener : changeListeners)
 				listener.changed(oldValue, newValue);
+		return true;
 	}
 	
 	/**

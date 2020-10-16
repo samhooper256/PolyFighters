@@ -1,9 +1,6 @@
 package logic.obstacles;
 
-import logic.Board;
-import logic.Obstacle;
-import logic.ObstacleSize;
-import utils.BooleanRef;
+import logic.*;
 import utils.IntRef;
 
 /**
@@ -11,11 +8,9 @@ import utils.IntRef;
  * @author Sam Hooper
  *
  */
-public class ObstacleBase implements Obstacle {
+public class ObstacleBase extends AbstractHasHealth implements Obstacle {
 	private final ObstacleSize size;
 	
-	private IntRef maxHealth, health;
-	private BooleanRef aliveProperty;
 	private int row, col;
 	private Board board;
 	
@@ -32,15 +27,11 @@ public class ObstacleBase implements Obstacle {
 	}
 	
 	public ObstacleBase(Board board, int row, int col, ObstacleSize size, int maxHealth, int currentHealth) {
-		if(currentHealth < 0 || currentHealth > maxHealth)
-			throw new IllegalArgumentException("current health of " + currentHealth + " is out of bounds for maxHealth: " + maxHealth);
+		super(maxHealth, currentHealth);
 		this.board = board;
 		this.row = row;
 		this.col = col;
 		this.size = size;
-		this.maxHealth = new IntRef(maxHealth);
-		this.health = new IntRef(currentHealth);
-		this.aliveProperty = new BooleanRef(currentHealth == 0 ? false : true);
 	}
 
 	@Override
@@ -64,16 +55,6 @@ public class ObstacleBase implements Obstacle {
 	}
 
 	@Override
-	public IntRef maxHealthProperty() {
-		return maxHealth;
-	}
-
-	@Override
-	public IntRef healthProperty() {
-		return health;
-	}
-
-	@Override
 	public ObstacleSize getSize() {
 		return size;
 	}
@@ -86,10 +67,5 @@ public class ObstacleBase implements Obstacle {
 	@Override
 	public void setCol(int col) {
 		this.col = col;
-	}
-	
-	@Override
-	public BooleanRef aliveProperty() {
-		return aliveProperty;
 	}
 }

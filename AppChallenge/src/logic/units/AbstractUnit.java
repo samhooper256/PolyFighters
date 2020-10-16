@@ -2,14 +2,9 @@ package logic.units;
 
 import java.util.*;
 
-import logic.Ability;
-import logic.Board;
-import logic.PlayerUnit;
-import logic.TileType;
-import logic.Unit;
-import utils.BooleanRef;
-import utils.CollectionRef;
-import utils.IntRef;
+import logic.*;
+import logic.HasHealth.EtherealDeathListener;
+import utils.*;
 
 /**
  * Abstract base class that classes implementing {@link PlayerUnit} may extend to make implementation easier.
@@ -17,7 +12,7 @@ import utils.IntRef;
  * @author Sam Hooper
  *
  */
-public abstract class AbstractUnit implements Unit {
+public abstract class AbstractUnit extends AbstractHasHealth implements Unit {
 	
 	protected final CollectionRef<Ability> abilities;
 	
@@ -29,12 +24,10 @@ public abstract class AbstractUnit implements Unit {
 	protected final EnumSet<TileType> traversableTileTypes;
 	
 	protected Board board;
-	protected IntRef maxHealth, health;
 	/** {@code -1} if not on a board. */
 	protected int row;
 	/** {@code -1} if not on a board. */
 	protected int col;
-	protected BooleanRef aliveProperty;
 	
 	/**
 	 * Constructs a new {@code AbstractUnit} with the given maximum health. The current health of the {@link Unit} will be set to
@@ -62,16 +55,12 @@ public abstract class AbstractUnit implements Unit {
 	 * @throws IllegalArgumentException if {@code currentHealth} is negative or greater than {@code maxHealth}.
 	 */
 	protected AbstractUnit(Board board, int row, int col, int maxHealth, int currentHealth, List<Ability> abilities) {
-		if(currentHealth < 0 || currentHealth > maxHealth)
-			throw new IllegalArgumentException("Current health value (" + currentHealth + ") is invalid for max health " + maxHealth);
+		super(maxHealth, currentHealth);
 		this.abilities = new CollectionRef<>(Objects.requireNonNull(abilities));
-		this.maxHealth = new IntRef(maxHealth);
-		this.health = new IntRef(currentHealth);
 		this.board = board;
 		this.traversableTileTypes = EnumSet.noneOf(TileType.class);
 		this.row = row;
 		this.col = col;
-		this.aliveProperty = new BooleanRef(currentHealth == 0 ? false : true);
 	}
 	
 	@Override
@@ -157,20 +146,5 @@ public abstract class AbstractUnit implements Unit {
 	@Override
 	public void setCol(int col) {
 		this.col = col;
-	}
-	
-	@Override
-	public IntRef maxHealthProperty() {
-		return maxHealth;
-	}
-	
-	@Override
-	public IntRef healthProperty() {
-		return health;
-	}
-	
-	@Override
-	public BooleanRef aliveProperty() {
-		return aliveProperty;
 	}
 }
