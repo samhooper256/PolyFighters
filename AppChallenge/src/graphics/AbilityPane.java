@@ -114,6 +114,22 @@ public abstract class AbilityPane extends StackPane	{
 				});
 			}
 		});
+		paneFactories.put(SquareSingleHeal.class, a -> new AbilityPane(a) {
+			{
+				SquareSingleHeal ssh = (SquareSingleHeal) a;
+				VBox vBox = new VBox();
+				getChildren().add(vBox);
+				Label label = new Label(String.format("Other Heal: %d heal, %d radius", ssh.healProperty().get(), ssh.radiusProperty().get()));
+				label.setWrapText(true);
+				vBox.getChildren().add(label);
+				ssh.healProperty().addChangeListener((oldValue, newValue) -> {
+					label.setText(String.format("Other Heal: %d heal, %d radius", newValue, ssh.radiusProperty().get()));
+				});
+				ssh.radiusProperty().addChangeListener((oldValue, newValue) -> {
+					label.setText(String.format("Other Heal: %d heal, %d radius", ssh.healProperty().get(), newValue));
+				});
+			}
+		});
 		paneFactories.put(RadiusSummon.class, a -> new AbilityPane(a) {
 			{
 				RadiusSummon sum = (RadiusSummon) a;

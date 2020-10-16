@@ -236,7 +236,7 @@ public class BoardGenerator {
 				emptySpots[emptyMax] = spotValue;
 				emptyMax--;
 			}
-			while(board.getTileAt(row, col).isOccupied());
+			while(board.getTileAt(row, col).isOccupied() || board.getTileAt(row, col).getType() == TileType.LIQUID);
 			Obstacle obstacle = Math.random() < largeObstaclePercent ?
 					new ObstacleBase(ObstacleSize.LARGE, largeObstacleHealth) :
 					new ObstacleBase(ObstacleSize.SMALL, smallObstacleHealth);

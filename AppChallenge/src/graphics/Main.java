@@ -24,7 +24,7 @@ public class Main extends Application {
 	private static final Player player = new Player();
 	
 	static {
-		player.addUnits(new BasicUnit(), new Rex(), new Jules());
+		player.addUnits(new Rex(), new Jules(), new Kot(), new Scales());
 	}
 	
 	private static Stage primaryStage;

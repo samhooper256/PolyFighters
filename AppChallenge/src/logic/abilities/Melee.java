@@ -7,6 +7,8 @@ import logic.actions.*;
 import utils.*;
 
 /**
+ * A melee {@link AttackAbility} that allows a {@link Unit} to attack a {@link GameObject}
+ * in the 8 adjacent tiles
  * @author Ayuj Verma
  *
  */
@@ -43,7 +45,7 @@ public class Melee extends AbstractAnyAbility implements AttackAbility, Targetin
 		Board b = unit.getBoard();
 		int uRow = unit.getRow();
 		int uCol = unit.getCol();
-		ArrayList<int[]> arr = new ArrayList<int[]>();
+		ArrayList<int[]> arr = new ArrayList<>();
 		BoardTile tile = b.getTileAt(uRow, uCol);
 		
 		if(attackFrom.contains(tile.getType()))

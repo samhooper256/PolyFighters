@@ -101,6 +101,16 @@ public class BoardTile {
 		return getUnitOrNull() instanceof EnemyUnit;
 	}
 	
+	/**
+	 * Returns {@code true} if this {@link BoardTile} has one or more {@link HasHealth HasHealths} on it.
+	 */
+	public boolean hasHasHealth() {
+		for(GameObject obj : objects)
+			if(obj instanceof HasHealth)
+				return true;
+		return false;
+	}
+	
 	/** If there is a {@link Unit} on this {@code BoardTile}, removes that {@code Unit} and returns it.
 	 *  Otherwise, does nothing but return {@code null}.
 	 *  <b>This method DOES NOT adjust the row and column values of the {@code Unit} removed, nor does it update
