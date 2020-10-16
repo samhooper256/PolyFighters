@@ -147,4 +147,5 @@ public abstract class AbstractUnit extends AbstractHasHealth implements Unit {
 	public void setCol(int col) {
 		this.col = col;
 	}
+	
 }

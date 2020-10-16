@@ -1,11 +1,9 @@
 package graphics;
 
-import fxutils.*;
 import javafx.beans.property.DoublePropertyBase;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import logic.Turn;
 
 /**
@@ -18,6 +16,8 @@ public class Level extends Scene {
 	private static final int MIN_STACKROOT_WIDTH = 640, MIN_STACKROOT_HEIGHT = 360; //16:9 ratio TODO maybe make these proportional to the user's screen dimensions?
 	private static final int DEFAULT_WIDTH = MIN_STACKROOT_WIDTH, DEFAULT_HEIGHT = MIN_STACKROOT_HEIGHT;
 	private static final double INFO_SCREEN_PERCENT = 0.15; //percentage of the screen the InfoPanel will take up
+	private static final int MOVES_PER_ENEMY_UNIT = 2;
+	private static final int MOVES_PER_PLAYER_UNIT = 2;
 	
 	/**
 	 * {@code Level.current()} is equivalent to {@link Main#currentLevel()}.
@@ -139,5 +139,13 @@ public class Level extends Scene {
 	 */
 	public void enemyTurnFinished() {
 		endTurnButton.setDisable(false);
+	}
+	
+	public int getMovesPerEnemyUnit() {
+		return MOVES_PER_ENEMY_UNIT;
+	}
+	
+	public int getMovesPerPlayerUnit() {
+		return MOVES_PER_PLAYER_UNIT;
 	}
 }

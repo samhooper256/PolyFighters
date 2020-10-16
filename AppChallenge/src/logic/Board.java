@@ -36,10 +36,10 @@ public class Board {
 	public static final int MAX_COLS = 20;
 	public static final int MIN_ROWS = 3;
 	public static final int MIN_COLS = 3;
-	public static final int MOVES_PER_ENEMY = 2;
+	public static final int DEFAULT_MOVES_PER_ENEMY = 2, DEFAULT_MOVES_PER_PLAYER = 2;
 	
 	private final BoardTile[][] tiles;
-	private final int rows, cols;
+	private final int rows, cols, movesPerPlayer, movesPerEnemy;
 	/**
 	 * The amount of enemy {@link Move}s that have yet to be played on the Enemy's turn. This value is not used during the Player's turn.
 	 */
@@ -50,20 +50,19 @@ public class Board {
 	 */
 	private List<EnemyUnit> enemies;
 	private Turn turn;
-	/** Creates a new {@code Board} with {@code size} rows and {@code size} columns. All of the tiles on the board will be empty, solid tiles
-	 * by default.*/
-	public Board(int size) {
-		this(size, size);
-	}
 	
-	/** Creates a new {@code Board} with the given amount of rows and columns. All of the tiles on the board will be empty, solid tiles
-	 * by default. */
-	public Board(int rows, int cols) {
+	/** Creates a new {@code Board} with the given amount of rows and columns, as well as the given amount of moves for the {@link Turn turns}.
+	 * All of the tiles on the board will be empty, solid tiles
+	 * by default.
+	 * */
+	public Board(int rows, int cols, int movesPerPlayer, int movesPerEnemy) {
 		verifySize(rows, cols);
 		this.rows = rows;
 		this.cols = cols;
 		tiles = new BoardTile[rows][cols];
 		turn = Turn.PLAYER;
+		this.movesPerPlayer = movesPerPlayer;
+		this.movesPerEnemy = movesPerEnemy;
 		initBoardTiles();
 	}
 	
@@ -198,11 +197,11 @@ public class Board {
 	}
 	
 	public Move nextEnemyMove() {
-		EnemyUnit actingEnemy = enemies.get((enemies.size() * MOVES_PER_ENEMY - enemyMovesRemaining) / MOVES_PER_ENEMY);
+		EnemyUnit actingEnemy = enemies.get((enemies.size() * movesPerEnemy - enemyMovesRemaining) / movesPerEnemy);
 		System.out.printf("entered nextEnemyMove, enemies = %s%n\tactingEnemy=%s%n", enemies, actingEnemy);
-		int enemyMoves = enemyMovesRemaining % MOVES_PER_ENEMY;
+		int enemyMoves = enemyMovesRemaining % movesPerEnemy;
 		if(enemyMoves == 0)
-			enemyMoves = MOVES_PER_ENEMY;
+			enemyMoves = movesPerEnemy;
 		enemyMovesRemaining--;
 		Move chosenMove = actingEnemy.chooseMove(this, enemyMoves);
 		System.out.printf("nextEnemyMove chose: %s%n", chosenMove);
@@ -272,16 +271,35 @@ public class Board {
 	public void setToEnemyTurn() {
 		this.turn = Turn.ENEMY;
 		this.enemies = findEnemies();
-		this.enemyMovesRemaining = this.enemies.size() * MOVES_PER_ENEMY;
+		this.enemyMovesRemaining = this.enemies.size() * movesPerEnemy;
 	}
 	
 	/**
 	 * Sets the {@link #getTurn() turn} of this {@link Board} to the {@link Turn#ENEMY player's} and prepares for the turn to be played.
+	 * Sets the moves remaining value to {@link #getMovesPerPlayer() the number of moves per player unit} for every {@link PlayerUnit}.
 	 * */
 	public void setToPlayerTurn() {
 		this.turn = Turn.PLAYER;
 		this.enemies = null;
 		this.enemyMovesRemaining = -1;
+		for(int i = 0; i < tiles.length; i++) {
+			for(int j = 0; j < tiles[i].length; j++) {
+				BoardTile tile = tiles[i][j];
+				Unit unit = tile.getUnitOrNull();
+				if(unit instanceof PlayerUnit) {
+					PlayerUnit pu = (PlayerUnit) unit;
+					pu.setMovesRemaining(movesPerPlayer);
+				}
+			}
+		}
+	}
+	
+	public int getMovesPerPlayer() {
+		return movesPerPlayer;
+	}
+	
+	public int getMovesPerEnemy() {
+		return movesPerEnemy;
 	}
 	
 	/**

@@ -4,19 +4,10 @@ import java.util.*;
 
 import fxutils.ImageWrap;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.scene.effect.*;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import logic.Ability;
-import logic.Move;
-import logic.Unit;
-import logic.units.*;
-import utils.BooleanChangeListener;
-import utils.IntChangeListener;
-import utils.SingleListener;
+import logic.*;
+import utils.*;
 
 /**
  * @author Sam Hooper

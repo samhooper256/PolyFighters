@@ -24,7 +24,7 @@ public class BoardGenerator {
 	public static final int DEFAULT_SMALL_OBSTACLE_HEALTH = 1;
 	private static final int[][] ADJACENTS = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
 	
-	private int rowCount, colCount, largeObstacleHealth, smallObstacleHealth;
+	private int rowCount, colCount, largeObstacleHealth, smallObstacleHealth, movesPerPlayer, movesPerEnemy;
 	private double liquidPercent, poolStrength, obstaclePercent, largeObstaclePercent, turnDifficulty;
 	private List<PlayerUnit> teamUnits;
 	
@@ -38,6 +38,8 @@ public class BoardGenerator {
 		this.largeObstaclePercent = DEFAULT_LARGE_OBSTACLE_PERCENT;
 		this.largeObstacleHealth = DEFAULT_LARGE_OBSTACLE_HEALTH;
 		this.smallObstacleHealth = DEFAULT_SMALL_OBSTACLE_HEALTH;
+		this.movesPerPlayer = Board.DEFAULT_MOVES_PER_PLAYER;
+		this.movesPerEnemy = Board.DEFAULT_MOVES_PER_ENEMY;
 		this.turnDifficulty = 0;
 	}
 	
@@ -89,12 +91,40 @@ public class BoardGenerator {
 		return this;
 	}
 	
+	/**
+	 * Returns {@code this}.
+	 */
+	public BoardGenerator setMovesPerPlayer(int movesPerPlayer) {
+		this.movesPerPlayer = movesPerPlayer;
+		return this;
+	}
+	
+	public int getMovesPerPlayer() {
+		return movesPerPlayer;
+	}
+	/**
+	 * Returns {@code this}.
+	 */
+	public BoardGenerator setMovesPerEnemy(int movesPerEnemy) {
+		this.movesPerEnemy = movesPerEnemy;
+		return this;
+	}
+	
+	public int getMovesPerEnemy() {
+		return movesPerEnemy;
+	}
+	
 	private int liquidRemaining;
 	
+	/**
+	 * Returns a {@link Board} using all of the settings of this {@link BoardGenerator}. The number of {@link PlayerUnit#getMovesRemaining() moves remaining} for
+	 * each {@link PlayerUnit} will be set to the number of {@link #getMovesPerPlayer() moves per player}  configured for this {@link BoardGenerator}.
+	 * @return
+	 */
 	public Board build() {
-		final Board board = new Board(rowCount, colCount);
+		final Board board = new Board(rowCount, colCount, movesPerPlayer, movesPerEnemy);
 		placeLiquid(board);
-		placeTeamUnits(board);
+		placePlayerUnits(board);
 		placeEnemyUnits(board);
 		placeObstacles(board);
 		return board;
@@ -154,11 +184,14 @@ public class BoardGenerator {
 			}
 		}
 	}
-
-	private void placeTeamUnits(final Board board) {
+	
+	/**
+	 * Sets the {@link PlayerUnit#getMovesRemaining() moves remaining} values for the {@link PlayerUnit PlayerUnits}.
+	 */
+	private void placePlayerUnits(final Board board) {
 		int[] placeSpots = IntStream.range(0, rowCount * colCount).toArray();
 		int placeSpotsMaxIndex = placeSpots.length - 1;
-		for(final PlayerUnit teamUnit : teamUnits) {
+		for(final PlayerUnit playerUnit : teamUnits) {
 			int row, col;
 			do {
 				if(placeSpotsMaxIndex < 0)
@@ -172,9 +205,11 @@ public class BoardGenerator {
 				placeSpotsMaxIndex--;
 				
 			} while(board.getTileAt(row, col).getType() == TileType.LIQUID);
-			board.addUnitOrThrow(teamUnit, row, col);
+			board.addUnitOrThrow(playerUnit, row, col);
+			playerUnit.setMovesRemaining(movesPerPlayer);
 		}
 	}
+	
 	
 	private void placeEnemyUnits(final Board board) {
 		EnemyFactory[] factories = EnemyGenerator.factories().toArray(EnemyFactory[]::new);

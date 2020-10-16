@@ -189,6 +189,11 @@ public class TerrainGrid extends GridPane {
 		}
 	};
 	
+	/**
+	 * Executes the {@link Move} on a background thread. Updates the moves remaining value of the {@link Move Move's} unit. Disables the
+	 * {@link AbilityInfoPanel} if the moves remaining value becomes zero.
+	 * @param move
+	 */
 	public void executeMove(Move move) {
 		MOVE_SERVICE.executeMove(move);
 	}
@@ -198,11 +203,15 @@ public class TerrainGrid extends GridPane {
 		final AbilityPane selectedAbilityPane = Level.current().getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane();
 		if(selectedAbilityPane != null)
 			Main.blockUntilFinished(() -> selectedAbilityPane.deselect());
+		final Ability actingAbility = move.getAbility();
+		final Unit actingUnit = actingAbility.getUnit();
+		if(actingUnit instanceof PlayerUnit) {
+			PlayerUnit pu = (PlayerUnit) actingUnit;
+			pu.setMovesRemaining(pu.getMovesRemaining() - 1); //TODO this should probably be done by the Board? But how when we have to delay between actions b/c of projectiles and the like?
+		}
 		if(move.isEmpty())
 			 return;
 		final Pane region = wrap.getRegion();
-		final Ability actingAbility = move.getAbility();
-		final Unit actingUnit = actingAbility.getUnit();
 		final TerrainTile actingStartTile = getTileAt(actingUnit.getRow(), actingUnit.getCol());
 		final UnitPane actingUnitPane = getTileAt(actingUnit.getRow(), actingUnit.getCol()).getUnitPane();
 		final int actingRow = actingUnit.getRow();

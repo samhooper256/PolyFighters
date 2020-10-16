@@ -48,4 +48,5 @@ public interface Unit extends HasHealth {
 	 * The {@link Turn} this {@link Unit} plays on.
 	 */
 	Turn playingTurn();
+	
 }

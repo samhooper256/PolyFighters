@@ -3,7 +3,7 @@ package logic;
 import java.util.Collection;
 
 import utils.CollectionRef;
-
+import utils.IntRef;
 import logic.units.AbstractUnit;
 
 /**
@@ -26,5 +26,20 @@ public interface PlayerUnit extends Unit {
 	@Override
 	default Turn playingTurn() {
 		return Turn.PLAYER;
+	}
+	
+	/**
+	 * The number of moves this {@link Unit} can still make in the current {@link Turn}.
+	 */
+	IntRef movesRemainingProperty();
+	
+	default int getMovesRemaining() {
+		return movesRemainingProperty().get();
+	}
+	/**
+	 * Sets the number of {@link #getMovesRemaining() moves remaining}.
+	 */
+	default void setMovesRemaining(int movesRemaining) {
+		movesRemainingProperty().set(movesRemaining);
 	}
 }

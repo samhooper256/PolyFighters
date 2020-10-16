@@ -8,7 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
-import logic.Ability;
+import logic.*;
 import logic.abilities.*;
 import utils.*;
 /**
@@ -106,15 +106,33 @@ public abstract class AbilityPane extends StackPane	{
 	/** can optionally be used by subclasses store the legal moves computed in the select method for use in the deselect method. */
 	protected Collection<int[]> legalsCache = null;
 	private boolean selected;
+	private boolean selectionEnabled;
 	
 	protected AbilityPane(Ability ability) {
 		this(ability, ability.getClass().getSimpleName().replaceAll("(?=[A-Z])", " "));
 	}
+	
+	/**
+	 * The {@link Ability} must be associated with a {@link Unit} when this constructor is called.
+	 */
 	protected AbilityPane(Ability ability, String buttonText) {
 		this.infoContent = new StackPane();
 		this.vBox = new VBox();
 		this.ability = ability;
 		this.button = new Button(buttonText);
+		Unit unit = this.ability.getUnit();
+		this.selectionEnabled = true;
+		if(unit instanceof PlayerUnit) {
+			PlayerUnit pu = (PlayerUnit) unit;
+			pu.movesRemainingProperty().addChangeListener((oldValue, newValue) -> {
+				if(newValue == 0)
+					disableSelection();
+				else
+					enableSelection();
+			});
+			if(pu.getMovesRemaining() == 0)
+				disableSelection();
+		}
 		selected = false;
 		button.setOnMouseClicked(mouseEvent -> {
 			if(mouseEvent.getButton() != MouseButton.PRIMARY) //only left clicks
@@ -213,6 +231,20 @@ public abstract class AbilityPane extends StackPane	{
 			tile.clearGameObjectHighlights();
 			tile.setUseCandidate(false);
 			tile.setGameObjectUseCandidates(false);
+		}
+	}
+	
+	public void disableSelection() {
+		if(selectionEnabled) {
+			button.setDisable(true);
+			selectionEnabled = false;
+		}
+	}
+	
+	public void enableSelection() {
+		if(!selectionEnabled) {
+			button.setDisable(false);
+			selectionEnabled = true;
 		}
 	}
 	

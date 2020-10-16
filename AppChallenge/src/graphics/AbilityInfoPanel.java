@@ -3,7 +3,9 @@ package graphics;
 import java.util.Objects;
 
 import fxutils.Borders;
+import javafx.geometry.Insets;
 import javafx.scene.layout.*;
+import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import logic.Ability;
 import logic.Unit;
@@ -19,13 +21,14 @@ public class AbilityInfoPanel extends BorderPane {
 	private Pane bottomInfo;
 	private AbilityPane selectedAbilityPane;
 	private Unit unit;
-	
+	private boolean panesEnabled;
 	public AbilityInfoPanel() {
 		super();
 		this.abilityPaneBox = new VBox(10);
+		this.abilityPaneBox.setPadding(new Insets(10));
 		selectedAbilityPane = null;
 		unit = null;
-		this.setBorder(Borders.of(Color.PURPLE));
+		this.panesEnabled = true;
 		setTop(abilityPaneBox);
 	}
 	
@@ -100,5 +103,14 @@ public class AbilityInfoPanel extends BorderPane {
 		Objects.requireNonNull(info);
 		bottomInfo = info;
 		setBottom(bottomInfo);
+	}
+	
+	public void disableSelectionForAllAbilityPanes() {
+		if(!panesEnabled)
+			return;
+		for(Node n : abilityPaneBox.getChildren()) {
+			((AbilityPane) n).disableSelection();
+		}
+		panesEnabled = false;
 	}
 }
