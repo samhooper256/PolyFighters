@@ -13,7 +13,7 @@ import logic.Turn;
  *
  */
 public class Level extends Scene {
-	public static final Theme DEFAULT_THEME = Theme.TEST_THEME;
+	public static final Theme DEFAULT_THEME = Theme.DEFAULT_THEME;
 	
 	private static final int MIN_STACKROOT_WIDTH = 640, MIN_STACKROOT_HEIGHT = 360; //16:9 ratio TODO maybe make these proportional to the user's screen dimensions?
 	private static final int DEFAULT_WIDTH = MIN_STACKROOT_WIDTH, DEFAULT_HEIGHT = MIN_STACKROOT_HEIGHT;

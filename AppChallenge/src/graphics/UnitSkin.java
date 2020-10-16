@@ -18,9 +18,9 @@ public enum UnitSkin {
 		@Override
 		public Image projectileImageFor(Class<? extends SingleProjectileAbility> clazz) {
 			if(clazz == Shoot.class)
-				return basicBullet.getImage();
+				return bulletInfo.getImage();
 			else if(clazz == Lob.class)
-				return basicLobBullet.getImage();
+				return rockInfo.getImage();
 			throw new UnsupportedOperationException(clazz + " is not a recognized Ability of the UnitSkin: " + this);
 		}
 		@Override
@@ -32,7 +32,7 @@ public enum UnitSkin {
 		@Override
 		public Image projectileImageFor(Class<? extends SingleProjectileAbility> clazz) {
 			if(clazz == Shoot.class)
-				return basicBullet.getImage();
+				return bulletInfo.getImage();
 			throw new UnsupportedOperationException(clazz + " is not a recognized Ability of the UnitSkin: " + this);
 		}
 		@Override
@@ -45,7 +45,7 @@ public enum UnitSkin {
 		@Override
 		public Image projectileImageFor(Class<? extends SingleProjectileAbility> clazz) {
 			if(clazz == Shoot.class)
-				return basicBullet.getImage();
+				return bulletInfo.getImage();
 			throw new UnsupportedOperationException(clazz + " is not a recognized Ability of the UnitSkin: " + this);
 		}
 		@Override
@@ -57,7 +57,7 @@ public enum UnitSkin {
 		@Override
 		public Image projectileImageFor(Class<? extends SingleProjectileAbility> clazz) {
 			if(clazz == Lob.class)
-				return basicLobBullet.getImage();
+				return rockInfo.getImage();
 			throw new UnsupportedOperationException(clazz + " is not a recognized Ability of the UnitSkin: " + this);
 		}
 		@Override
@@ -65,8 +65,8 @@ public enum UnitSkin {
 			return new double[] {0.1, 0.1};
 		}
 	};
-	private static final ImageInfo basicBullet = new ImageInfo("BasicBullet.png");
-	private static final ImageInfo basicLobBullet = new ImageInfo("BasicLobBullet.png");
+	private static final ImageInfo bulletInfo = new ImageInfo("Bullet.png");
+	private static final ImageInfo rockInfo = new ImageInfo("Rock.png");
 	private static final Map<Class<? extends Unit>, UnitSkin> map;
 	static {
 		map = new HashMap<>();

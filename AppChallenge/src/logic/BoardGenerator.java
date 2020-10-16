@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import logic.EnemyGenerator.EnemyFactory;
+import logic.obstacles.ObstacleBase;
 
 /**
  * @author Sam Hooper
@@ -16,13 +17,16 @@ public class BoardGenerator {
 	public static final double DEFAULT_LIQUID_PERCENT = 0.2;
 	public static final double DEFAULT_POOL_STRENGTH = 0.4;
 	public static final double DEFAULT_TURN_DIFFICULTY = 0;
-	private static final int DIFFICULTY_MULTIPLY_THRESHOLD = 2; //the sum of the difficulties of the EnemyUnits added must be no more than turnDifficulty * DIFFICULTY_MULTIPLY_THRESHOLD
+	public static final int DIFFICULTY_MULTIPLY_THRESHOLD = 2; //the sum of the difficulties of the EnemyUnits added must be no more than turnDifficulty * DIFFICULTY_MULTIPLY_THRESHOLD
+	public static final double DEFAULT_OBSTACLE_PERCENT = 0.08;
+	public static final double DEFAULT_LARGE_OBSTACLE_PERCENT = 0.4;
+	public static final int DEFAULT_LARGE_OBSTACLE_HEALTH = 3;
+	public static final int DEFAULT_SMALL_OBSTACLE_HEALTH = 1;
 	private static final int[][] ADJACENTS = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
-	private int rowCount, colCount;
-	private double liquidPercent;
-	private double poolStrength;
+	
+	private int rowCount, colCount, largeObstacleHealth, smallObstacleHealth;
+	private double liquidPercent, poolStrength, obstaclePercent, largeObstaclePercent, turnDifficulty;
 	private List<PlayerUnit> teamUnits;
-	private double turnDifficulty;
 	
 	public BoardGenerator() {
 		this.rowCount = DEFAULT_ROW_COUNT;
@@ -30,6 +34,10 @@ public class BoardGenerator {
 		this.liquidPercent = DEFAULT_LIQUID_PERCENT;
 		this.poolStrength = DEFAULT_POOL_STRENGTH;
 		this.teamUnits = Collections.emptyList();
+		this.obstaclePercent = DEFAULT_OBSTACLE_PERCENT;
+		this.largeObstaclePercent = DEFAULT_LARGE_OBSTACLE_PERCENT;
+		this.largeObstacleHealth = DEFAULT_LARGE_OBSTACLE_HEALTH;
+		this.smallObstacleHealth = DEFAULT_SMALL_OBSTACLE_HEALTH;
 		this.turnDifficulty = 0;
 	}
 	
@@ -88,6 +96,7 @@ public class BoardGenerator {
 		placeLiquid(board);
 		placeTeamUnits(board);
 		placeEnemyUnits(board);
+		placeObstacles(board);
 		return board;
 	}
 
@@ -206,5 +215,32 @@ public class BoardGenerator {
 			currentDifficulty += factories[factoryIndex].getDifficulty();
 		}
 		//TODO Finish up this methodical
+	}
+
+	private void placeObstacles(final Board board) {
+		int obstacleCount = (int) Math.round(rowCount * colCount * obstaclePercent);
+		int[] emptySpots = IntStream.range(0, rowCount * colCount).toArray();
+		int emptyMax = emptySpots.length - 1;
+		obstacle_gen:
+		while(obstacleCount > 0) {
+			obstacleCount--;
+			int row, col;
+			do {
+				if(emptyMax < 0)
+					break obstacle_gen;
+				int index = (int) (Math.random() * (emptyMax + 1));
+				int spotValue = emptySpots[index];
+				row = spotValue / colCount;
+				col = spotValue % colCount;
+				emptySpots[index] = emptySpots[emptyMax];
+				emptySpots[emptyMax] = spotValue;
+				emptyMax--;
+			}
+			while(board.getTileAt(row, col).isOccupied());
+			Obstacle obstacle = Math.random() < largeObstaclePercent ?
+					new ObstacleBase(ObstacleSize.LARGE, largeObstacleHealth) :
+					new ObstacleBase(ObstacleSize.SMALL, smallObstacleHealth);
+			board.addObstacleOrThrow(obstacle, row, col);
+		}
 	}
 }

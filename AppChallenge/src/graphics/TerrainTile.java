@@ -60,7 +60,6 @@ public class TerrainTile extends StackPane implements AbilityUseCandidate {
 		highlightCount = 0;
 		isUseCandidate = false;
 		tileWrap = new ImageWrap(grid.getTheme().imageForTileType(boardTile.getType()));
-		setBorder(Borders.of(Color.PURPLE));
 		setMinSize(0, 0);
 		unitPane = new UnitPane();
 		Unit unit = boardTile.getUnitOrNull();
@@ -68,6 +67,9 @@ public class TerrainTile extends StackPane implements AbilityUseCandidate {
 			unitPane.setUnit(unit);
 		setOnMouseClicked(clickHandler);
 		obstaclePane = new ObstaclePane();
+		Obstacle obstacle = boardTile.getObstacleOrNull();
+		if(obstacle != null)
+			obstaclePane.setObstacle(obstacle, getTheme());
 		getChildren().addAll(tileWrap, obstaclePane, unitPane);
 	}
 	

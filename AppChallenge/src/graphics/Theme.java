@@ -13,18 +13,17 @@ import logic.TileType;
  *
  */
 public enum Theme {
-	TEST_THEME {
-		private static final String TILE_DESCRIPTION = "A Desert Tile.";
+	DEFAULT_THEME {
+		private static final String TILE_DESCRIPTION = "A Grass Tile.";
 		
-		private final ImageInfo solidTileInfo = new ImageInfo("desert.png");
-		private final ImageInfo liquidTileInfo = new ImageInfo("Water.png");
-		private final ImageInfo smallObstacleInfo = new ImageInfo("small_obstacle.png");
-		private final ImageInfo largeObstacleInfo = new ImageInfo("large_obstacle.png");
+		private final ImageInfo grass1 = new ImageInfo("Grass1.png");
+		private final ImageInfo grass2 = new ImageInfo("Grass2.png");
+		private final ImageInfo water1 = new ImageInfo("Water1.png");
+		private final ImageInfo water2 = new ImageInfo("Water2.png");
+		private final ImageInfo smallObstacleInfo = new ImageInfo("Tree.png");
+		private final ImageInfo largeObstacleInfo = new ImageInfo("Mountain.png");
 		private final Effect highlightEffect = new InnerShadow(BlurType.GAUSSIAN, Color.LAWNGREEN, 8, .1, 0, 0);
-		@Override
-		public Image solidTileImage() {
-			return solidTileInfo.getImage();
-		}
+		
 		@Override
 		public Image imageFor(Obstacle obstacle) {
 			return switch(obstacle.getSize()) {
@@ -39,8 +38,12 @@ public enum Theme {
 			return TILE_DESCRIPTION;
 		}
 		@Override
+		public Image solidTileImage() {
+			return (Math.random() < 0.5 ? grass1 : grass2).getImage();
+		}
+		@Override
 		public Image liquidTileImage() {
-			return liquidTileInfo.getImage();
+			return (Math.random() < 0.5 ? water1 : water2).getImage();
 		}
 		@Override
 		public Effect highlightEffect() {
