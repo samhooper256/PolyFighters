@@ -16,6 +16,7 @@ public enum Theme {
 	DEFAULT_THEME {
 		private static final String TILE_DESCRIPTION = "A Grass Tile.";
 		
+		private final ImageInfo background = new ImageInfo("Background.png");
 		private final ImageInfo grass1 = new ImageInfo("Grass1.png");
 		private final ImageInfo grass2 = new ImageInfo("Grass2.png");
 		private final ImageInfo water1 = new ImageInfo("Water1.png");
@@ -49,6 +50,10 @@ public enum Theme {
 		public Effect highlightEffect() {
 			return highlightEffect;
 		}
+		@Override
+		public Image backgroundImage() {
+			return background.getImage();
+		}
 	};
 	
 	public Image imageForTileType(TileType type) {
@@ -60,6 +65,7 @@ public enum Theme {
 	}
 	public abstract Image solidTileImage();
 	public abstract Image liquidTileImage();
+	public abstract Image backgroundImage();
 	public abstract Image imageFor(Obstacle obstacle);
 	/**
 	 * The description that will be displayed in the {@link InfoPanel} when a tile is clicked on.

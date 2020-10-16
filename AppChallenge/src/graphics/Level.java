@@ -92,8 +92,9 @@ public class Level extends Scene {
 		stackRoot.setMinSize(MIN_STACKROOT_WIDTH, MIN_STACKROOT_HEIGHT);
 		stackRoot.prefWidthProperty().bind(stackRootWidth);
 		stackRoot.prefHeightProperty().bind(stackRootHeight);
-		stackRoot.setBorder(Borders.of(Color.RED));
-		stackRoot.setBackground(Backgrounds.of(Color.SANDYBROWN));
+		stackRoot.setBackground(new Background(
+				new BackgroundImage(getTheme().backgroundImage(), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT)
+		));
 		stackRoot.getChildren().add(0, borderPane);
 		
 		root.getChildren().add(stackRoot);
