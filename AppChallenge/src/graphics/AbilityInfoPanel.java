@@ -1,6 +1,10 @@
 package graphics;
 
+import java.util.Objects;
+
+import fxutils.Borders;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import logic.Ability;
 import logic.Unit;
 
@@ -9,15 +13,20 @@ import logic.Unit;
  * @author Sam Hooper
  *
  */
-public class AbilityInfoPanel extends VBox {
+public class AbilityInfoPanel extends BorderPane {
 	
+	private final VBox abilityPaneBox;
+	private Pane bottomInfo;
 	private AbilityPane selectedAbilityPane;
 	private Unit unit;
 	
 	public AbilityInfoPanel() {
 		super();
+		this.abilityPaneBox = new VBox(10);
 		selectedAbilityPane = null;
 		unit = null;
+		this.setBorder(Borders.of(Color.PURPLE));
+		setTop(abilityPaneBox);
 	}
 	
 	/**
@@ -76,15 +85,20 @@ public class AbilityInfoPanel extends VBox {
 			selectedAbilityPane.deselect();
 			selectedAbilityPane = null;
 		}
-		getChildren().clear();
+		abilityPaneBox.getChildren().clear();
 	}
 	
 	public void addPane(AbilityPane pane) {
-		getChildren().add(pane);
+		abilityPaneBox.getChildren().add(pane);
 	}
 	
 	public void clearPanes() {
-		getChildren().clear();
+		abilityPaneBox.getChildren().clear();
 	}
 	
+	public void setInfo(Pane info) {
+		Objects.requireNonNull(info);
+		bottomInfo = info;
+		setBottom(bottomInfo);
+	}
 }

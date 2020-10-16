@@ -1,12 +1,15 @@
 package graphics;
 
+import fxutils.Borders;
 import fxutils.ImageWrap;
 import javafx.animation.*;
 import javafx.beans.binding.DoubleBinding;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import logic.*;
 import logic.abilities.SingleProjectileAbility;
@@ -222,14 +225,20 @@ public class TerrainGrid extends GridPane {
 			else if(a instanceof FireProjectile) {
 				FireProjectile fp = (FireProjectile) a;
 				if(actingAbility instanceof SingleProjectileAbility) {
-//					System.out.println("Entered the goof zone");
 					SingleProjectileAbility spa = (SingleProjectileAbility) actingAbility;
 					final GameObject target = fp.getTarget();
 					final TerrainTile destTile = getTileAt(target.getRow(), target.getCol());
+					double defRot = actingSkin.getDefaultRotationFor(spa);
 					Image image = actingSkin.projectileImageFor(spa);
 					ImageWrap wrap = new ImageWrap(image, 0, 0);
 					double[] imgSize = actingSkin.projectileSizeFor(spa);
 					StackPane pane = new StackPane(wrap);
+					final int rowDiff = actingRow - destTile.getRow();
+					final int colDiff = actingCol - destTile.getCol();
+					double rot = Math.atan(1.0 * rowDiff / colDiff) / Math.PI * 180;
+					if(colDiff > 0)
+						rot += 180;
+					pane.setRotate(defRot - rot);
 					final DoubleBinding widthBinding = actingStartTile.widthProperty().multiply(imgSize[0]);
 					final DoubleBinding heightBinding = actingStartTile.heightProperty().multiply(imgSize[1]);
 					final DoubleBinding startX = actingStartTile.layoutXProperty().add(actingStartTile.widthProperty().divide(2)).subtract(widthBinding.divide(2));

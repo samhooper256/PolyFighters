@@ -76,7 +76,7 @@ public class Level extends Scene {
 		});
 		
 		terrainPane = new TerrainPane(this, theme);
-		terrainPane.setBorder(Borders.of(Color.BLACK));
+//		terrainPane.setBorder(Borders.of(Color.BLACK));
 		borderPane = new BorderPane();
 		
 		infoPanel = new InfoPanel();

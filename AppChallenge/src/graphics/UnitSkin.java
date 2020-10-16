@@ -14,20 +14,6 @@ import logic.units.*;
  */
 public enum UnitSkin {
 	DEFAULT_SKIN(Unit.class),
-	BASIC_UNIT(BasicUnit.class) {
-		@Override
-		public Image projectileImageFor(Class<? extends SingleProjectileAbility> clazz) {
-			if(clazz == Shoot.class)
-				return bulletInfo.getImage();
-			else if(clazz == Lob.class)
-				return rockInfo.getImage();
-			throw new UnsupportedOperationException(clazz + " is not a recognized Ability of the UnitSkin: " + this);
-		}
-		@Override
-		public double[] projectileSizeFor(Class<? extends SingleProjectileAbility> clazz) {
-			return new double[] {0.1, 0.1};
-		}
-	},
 	REX(Rex.class) {
 		@Override
 		public Image projectileImageFor(Class<? extends SingleProjectileAbility> clazz) {
@@ -37,7 +23,7 @@ public enum UnitSkin {
 		}
 		@Override
 		public double[] projectileSizeFor(Class<? extends SingleProjectileAbility> clazz) {
-			return new double[] {0.1, 0.1};
+			return new double[] {1,1};
 		}
 	},
 	JULES(Jules.class),
@@ -51,7 +37,7 @@ public enum UnitSkin {
 		}
 		@Override
 		public double[] projectileSizeFor(Class<? extends SingleProjectileAbility> clazz) {
-			return new double[] {0.1, 0.1};
+			return new double[] {1,1};
 		}
 	},
 	GOOB(Goob.class) {
@@ -63,7 +49,7 @@ public enum UnitSkin {
 		}
 		@Override
 		public double[] projectileSizeFor(Class<? extends SingleProjectileAbility> clazz) {
-			return new double[] {0.1, 0.1};
+			return new double[] {1,1};
 		}
 	},
 	ASSASSIN(Assassin.class),
@@ -76,7 +62,7 @@ public enum UnitSkin {
 		}
 		@Override
 		public double[] projectileSizeFor(Class<? extends SingleProjectileAbility> clazz) {
-			return new double[] {0.1, 0.1};
+			return new double[] {1,1};
 		}
 	},
 	LOBBER(Lobber.class) {
@@ -88,7 +74,7 @@ public enum UnitSkin {
 		}
 		@Override
 		public double[] projectileSizeFor(Class<? extends SingleProjectileAbility> clazz) {
-			return new double[] {0.1, 0.1};
+			return new double[] {1,1};
 		}
 	};
 	private static final ImageInfo bulletInfo = new ImageInfo("Bullet.png");
@@ -105,7 +91,6 @@ public enum UnitSkin {
 	
 	static {
 		infoMap = new HashMap<>();
-		infoMap.put(BasicUnit.class, new ImageInfo("BasicUnit.png"));
 		infoMap.put(Rex.class, new ImageInfo("Rex.png"));
 		infoMap.put(Jules.class, new ImageInfo("Jules.png"));
 		infoMap.put(Kot.class, new ImageInfo("Kot.png"));
@@ -187,4 +172,17 @@ public enum UnitSkin {
 		Objects.requireNonNull(ability);
 		return projectileSizeFor(ability.getClass());
 	}
+	
+	/**
+	 * In degrees north of east.
+	 */
+	public double getDefaultRotationFor(Class<? extends SingleProjectileAbility> clazz) {
+		return 0;
+	}
+	
+	public double getDefaultRotationFor(SingleProjectileAbility ability) {
+		Objects.requireNonNull(ability);
+		return getDefaultRotationFor(ability.getClass());
+	}
 }
+

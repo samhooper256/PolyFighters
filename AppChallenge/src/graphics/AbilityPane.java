@@ -3,165 +3,120 @@ package graphics;
 import java.util.*;
 import java.util.function.Function;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import logic.Ability;
 import logic.abilities.*;
-import utils.IntChangeListener;
+import utils.*;
 /**
  * @author Sam Hooper
  *
  */
 public abstract class AbilityPane extends StackPane	{
 	
-	private static Map<Class<? extends Ability>, Function<Ability, AbilityPane>> paneFactories;
+	private static class PaneMap extends HashMap<Class<? extends Ability>, Function<? extends Ability, AbilityPane>>{
+		
+		public <T extends Ability> Function<T, AbilityPane> getOrThrow(Class<? extends Ability> clazz) {
+			Function<T, AbilityPane> function = null;
+			boolean error = false;
+			try {
+				function = (Function<T, AbilityPane>) get(clazz);
+				if(function == null)
+					error = true;
+			}
+			catch(ClassCastException e) {
+				throw new IllegalStateException("An invalid AbilityPane is registered with the class: " + clazz);
+			}
+			catch(Exception e) {
+				error = true;
+			}
+			if(error) {
+				throw new UnsupportedOperationException("No AbilityPane is registered with the class: " + clazz);
+			}
+			return function;
+		}
+	}
+	
+	private static PaneMap paneFactories;
+	
+	@FunctionalInterface
+	protected interface IntToString {
+		String convert(int i);
+	}
+	
+	@FunctionalInterface
+	protected interface BoolToString {
+		String convert(boolean b);
+	}
 	
 	static {
-		paneFactories = new HashMap<>();
-		
-		paneFactories.put(StepMove.class, a -> new AbilityPane(a) {
-			{
-				StepMove stepMove = (StepMove) a;
-				VBox vBox = new VBox();
-				getChildren().add(vBox);
-				Label label = new Label("Step Move: " + stepMove.distanceProperty().get());
-				vBox.getChildren().add(label);
-				stepMove.distanceProperty().addChangeListener((oldValue, newValue) -> {
-					label.setText("Step Move: " + newValue);
-				});
-			}
-		});
-		paneFactories.put(DiamondTeleport.class, a -> new AbilityPane(a) {
-			{
-				DiamondTeleport diamondTp = (DiamondTeleport) a;
-				VBox vBox = new VBox();
-				getChildren().add(vBox);
-				Label label = new Label("Diamond Teleport: " + diamondTp.distanceProperty().get());
-				vBox.getChildren().add(label);
-				diamondTp.distanceProperty().addChangeListener((oldValue, newValue) -> {
-					label.setText("Diamond Teleport: " + newValue);
-				});
-			}
-		});
-		paneFactories.put(Shoot.class, a -> new AbilityPane(a) {
-			{
-				Shoot shoot = (Shoot) a;
-				VBox vBox = new VBox();
-				getChildren().add(vBox);
-				Label label = new Label("Shoot with Damage: " + shoot.damageProperty().get());
-				vBox.getChildren().add(label);
-				shoot.damageProperty().addChangeListener((oldValue, newValue) -> {
-					label.setText("Shoot with Damage: " + newValue);
-				});
-			}
-		});
-		paneFactories.put(Melee.class, a -> new AbilityPane(a) {
-			{
-				Melee melee = (Melee) a;
-				VBox vBox = new VBox();
-				getChildren().add(vBox);
-				Label label = new Label("Melee: " + melee.damageProperty().get());
-				vBox.getChildren().add(label);
-				melee.damageProperty().addChangeListener((oldValue, newValue) -> {
-					label.setText("Melee: " + newValue);
-				});
-			}
-		});
-		paneFactories.put(Smash.class, a -> new AbilityPane(a) {
-			{
-				Smash smash = (Smash) a;
-				VBox vBox = new VBox();
-				getChildren().add(vBox);
-				Label label = new Label("Smash: " + smash.damageProperty().get() + " damage, " + smash.radiusProperty().get() + " radius");
-				label.setWrapText(true);
-				vBox.getChildren().add(label);
-				smash.damageProperty().addChangeListener((oldValue, newValue) -> {
-					label.setText("Smash: " + newValue + " damage, " + smash.radiusProperty().get() + " radius");
-				});
-				smash.radiusProperty().addChangeListener((oldValue, newValue) -> {
-					label.setText("Smash: " + smash.damageProperty().get() + " damage, " + newValue + " radius");
-				});
-			}
-		});
-		paneFactories.put(Lob.class, a -> new AbilityPane(a) {
-			{
-				Lob lob = (Lob) a;
-				VBox vBox = new VBox();
-				getChildren().add(vBox);
-				Label label = new Label("Lob: " + lob.damageProperty().get() + " damage, " + lob.minimumDistanceProperty().get() + " minimum distance");
-				label.setWrapText(true);
-				vBox.getChildren().add(label);
-				lob.damageProperty().addChangeListener((oldValue, newValue) -> {
-					label.setText("Lob: " + newValue + " damage, " + lob.minimumDistanceProperty().get() + " minimum distance");
-				});
-				lob.minimumDistanceProperty().addChangeListener((oldValue, newValue) -> {
-					label.setText("Lob: " + lob.damageProperty().get() + " damage, " + newValue + " minimum distance");
-				});
-			}
-		});
-		paneFactories.put(SelfHeal.class, a -> new AbilityPane(a) {
-			{
-				SelfHeal sh = (SelfHeal) a;
-				VBox vBox = new VBox();
-				getChildren().add(vBox);
-				Label label = new Label("Self Heal: " + sh.healProperty().get() + " heal");
-				label.setWrapText(true);
-				vBox.getChildren().add(label);
-				sh.healProperty().addChangeListener((oldValue, newValue) -> {
-					label.setText("Self Heal: " + newValue + " heal");
-				});
-			}
-		});
-		paneFactories.put(SquareSingleHeal.class, a -> new AbilityPane(a) {
-			{
-				SquareSingleHeal ssh = (SquareSingleHeal) a;
-				VBox vBox = new VBox();
-				getChildren().add(vBox);
-				Label label = new Label(String.format("Other Heal: %d heal, %d radius", ssh.healProperty().get(), ssh.radiusProperty().get()));
-				label.setWrapText(true);
-				vBox.getChildren().add(label);
-				ssh.healProperty().addChangeListener((oldValue, newValue) -> {
-					label.setText(String.format("Other Heal: %d heal, %d radius", newValue, ssh.radiusProperty().get()));
-				});
-				ssh.radiusProperty().addChangeListener((oldValue, newValue) -> {
-					label.setText(String.format("Other Heal: %d heal, %d radius", ssh.healProperty().get(), newValue));
-				});
-			}
-		});
-		paneFactories.put(RadiusSummon.class, a -> new AbilityPane(a) {
-			{
-				RadiusSummon sum = (RadiusSummon) a;
-				VBox vBox = new VBox();
-				getChildren().add(vBox);
-				Label label = new Label("Summon " + sum.getUnitClass().getSimpleName() + ": " + sum.radiusProperty().get() + " radius");
-				label.setWrapText(true);
-				vBox.getChildren().add(label);
-				sum.radiusProperty().addChangeListener((oldValue, newValue) -> {
-					label.setText("Summon " + sum.getUnitClass().getSimpleName() + ": " + newValue + " radius");
-				});
-			}
-		});
+		paneFactories = new PaneMap();
+		put(StepMove.class, a -> new AbilityPane(a) {{
+			prop(a.distanceProperty(), "Distance");
+		}});
+		put(DiamondTeleport.class, a -> new AbilityPane(a) {{
+			prop(a.distanceProperty(), "Distance");
+		}});
+		put(Shoot.class, a -> new AbilityPane(a) {{
+			prop(a.damageProperty(), "Damage");
+		}});
+		put(Melee.class, a -> new AbilityPane(a) {{
+			prop(a.damageProperty(), "Damage");
+		}});
+		put(Smash.class, a -> new AbilityPane(a) {{
+			prop(a.damageProperty(), "Damage");
+			prop(a.radiusProperty(), "Radius");
+		}});
+		put(Lob.class, a -> new AbilityPane(a) {{
+			prop(a.damageProperty(), "Damage");
+			prop(a.minimumDistanceProperty(), "Minimum Distance");
+		}});
+		put(SelfHeal.class, a -> new AbilityPane(a) {{
+			prop(a.healProperty(), "Heal Amount");
+		}});
+		put(SquareSingleHeal.class, a -> new AbilityPane(a) {{
+			prop(a.healProperty(), "Heal Amount");
+			prop(a.radiusProperty(), "Radius");
+		}});
+		put(RadiusSummon.class, a -> new AbilityPane(a) {{
+			prop("Sumons " + a.getUnitClass());
+			prop(a.radiusProperty(), "Radius");
+		}});
+	}
+	
+	private static <T extends Ability> void put(Class<T> clazz, Function<T, AbilityPane> function) {
+		paneFactories.put(clazz, function);
 	}
 	
 	public static final <T extends Ability> AbilityPane of(T ability) {
 		Objects.requireNonNull(ability);
-		Function<Ability, AbilityPane> factory = paneFactories.get(ability.getClass());
+		Function<T, AbilityPane> factory = paneFactories.getOrThrow(ability.getClass());
 		if(factory == null)
 			throw new UnsupportedOperationException("Unsupported ability type: " + ability.getClass());
 		return factory.apply(ability);
 	}
 	
+	protected final StackPane infoContent;
+	protected final VBox vBox;
 	protected final Ability ability;
+	protected final Button button;
 	/** can optionally be used by subclasses store the legal moves computed in the select method for use in the deselect method. */
 	protected Collection<int[]> legalsCache = null;
 	private boolean selected;
 	
 	protected AbilityPane(Ability ability) {
+		this(ability, ability.getClass().getSimpleName().replaceAll("(?=[A-Z])", " "));
+	}
+	protected AbilityPane(Ability ability, String buttonText) {
+		this.infoContent = new StackPane();
+		this.vBox = new VBox();
 		this.ability = ability;
+		this.button = new Button(buttonText);
 		selected = false;
-		this.setOnMouseClicked(mouseEvent -> {
+		button.setOnMouseClicked(mouseEvent -> {
 			if(mouseEvent.getButton() != MouseButton.PRIMARY) //only left clicks
 				return;
 			if(isSelected()) {
@@ -172,6 +127,27 @@ public abstract class AbilityPane extends StackPane	{
 			}
 			mouseEvent.consume();
 		});
+		infoContent.getChildren().add(vBox);
+		this.getChildren().add(button);
+	}
+	
+	protected void prop(IntRef property, IntToString list) {
+		Label label = new Label();
+		label.setText(list.convert(property.get()));
+		property.addChangeListener((o, n) -> label.setText(list.convert(n))); //TODO do we need to remove the listeners at some point?
+		vBox.getChildren().add(label);
+	}
+	
+	protected void prop(IntRef property, String name) {
+		prop(property, v -> name + ":" + v);
+	}
+	
+	protected void prop(String text) {
+		vBox.getChildren().add(new Label(text));
+	}
+	
+	public Pane getInfoContent() {
+		return infoContent;
 	}
 	
 	public Ability getAbility() {
@@ -201,7 +177,8 @@ public abstract class AbilityPane extends StackPane	{
 	 * immediately before this method is invoked and is set to {@code true} immediately after this method is invoked.
 	 */
 	public void selectAction() {
-		Level.current().getInfoPanel().getAbilityInfoPanel().setSelectedAbilityPane(this);
+		final AbilityInfoPanel abilityInfoPanel = Level.current().getInfoPanel().getAbilityInfoPanel();
+		abilityInfoPanel.setSelectedAbilityPane(this);
 		TerrainGrid grid = Level.current().getTerrainPane().getGrid();
 		legalsCache = ability.getLegals();
 		for(int[] legalSpot : legalsCache) {
@@ -219,6 +196,7 @@ public abstract class AbilityPane extends StackPane	{
 				tile.setUseCandidate(true);
 			}
 		}
+		abilityInfoPanel.setInfo(infoContent);
 	}
 	
 	/**
