@@ -28,6 +28,19 @@ public enum UnitSkin {
 			return new double[] {0.1, 0.1};
 		}
 	},
+	REX(Rex.class) {
+		@Override
+		public Image projectileImageFor(Class<? extends SingleProjectileAbility> clazz) {
+			if(clazz == Shoot.class)
+				return bulletInfo.getImage();
+			throw new UnsupportedOperationException(clazz + " is not a recognized Ability of the UnitSkin: " + this);
+		}
+		@Override
+		public double[] projectileSizeFor(Class<? extends SingleProjectileAbility> clazz) {
+			return new double[] {0.1, 0.1};
+		}
+	},
+	JULES(Jules.class),
 	GOOB(Goob.class) {
 		@Override
 		public Image projectileImageFor(Class<? extends SingleProjectileAbility> clazz) {
@@ -80,6 +93,8 @@ public enum UnitSkin {
 	static {
 		infoMap = new HashMap<>();
 		infoMap.put(BasicUnit.class, new ImageInfo("BasicUnit.png"));
+		infoMap.put(Rex.class, new ImageInfo("Rex.png"));
+		infoMap.put(Jules.class, new ImageInfo("Jules.png"));
 		infoMap.put(Goob.class, new ImageInfo("Goob.png"));
 		infoMap.put(Assassin.class, new ImageInfo("Assassin.png"));
 		infoMap.put(Brute.class, new ImageInfo("Brute.png"));

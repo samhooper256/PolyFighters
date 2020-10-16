@@ -1,21 +1,10 @@
 package logic.abilities;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Objects;
+import java.util.*;
 
-import logic.Board;
-import logic.BoardTile;
-import logic.GameObject;
-import logic.HasHealth;
-import logic.Move;
-import logic.Obstacle;
-import logic.TileType;
-import logic.Unit;
-import logic.actions.ChangeHealth;
-import logic.actions.FireProjectile;
-import utils.IntRef;
+import logic.*;
+import logic.actions.*;
+import utils.*;
 
 /**
  * @author Ayuj Verma
@@ -24,32 +13,40 @@ import utils.IntRef;
 
 public class Melee extends AbstractAnyAbility implements AttackAbility, TargetingAbility {
 	
-	private static final EnumSet<TileType> ATTACK_FROM = EnumSet.of(TileType.SOLID);
+	private static final EnumSet<TileType> DEFAULT_ATTACK_FROM = EnumSet.of(TileType.SOLID);
 	
-	private IntRef meleeDamage;
-	public Melee(Unit unit, int md) 
+	private final EnumSet<TileType> attackFrom;
+	
+	private IntRef damage;
+	
+	public Melee(Unit unit, int damage) {
+		this(unit, damage, DEFAULT_ATTACK_FROM);
+	}
+	/**
+	 * Copies the given {@link EnumSet} (does not keep a reference to it or modify it at all).
+	 */
+	public Melee(Unit unit, int damage, EnumSet<TileType> attackFrom) 
 	{
 		super(unit);
-		this.meleeDamage = new IntRef(md);
+		this.damage = new IntRef(damage);
+		this.attackFrom = EnumSet.copyOf(attackFrom);
 	}
 	
 	public IntRef damageProperty() 
 	{
-		return meleeDamage;
+		return damage;
 	}
 	
 	@Override
 	public Collection<int[]> getLegals() 
 	{
 		Board b = unit.getBoard();
-		int rows = b.getRows();
-		int cols = b.getCols();
 		int uRow = unit.getRow();
 		int uCol = unit.getCol();
 		ArrayList<int[]> arr = new ArrayList<int[]>();
 		BoardTile tile = b.getTileAt(uRow, uCol);
 		
-		if(ATTACK_FROM.contains(tile.getType()))
+		if(attackFrom.contains(tile.getType()))
 		{
 			for(int i = uRow - 1; i < uRow + 2; i++)
 			{
@@ -84,12 +81,12 @@ public class Melee extends AbstractAnyAbility implements AttackAbility, Targetin
 	@Override
 	public Move createMoveFor(int destRow, int destCol, GameObject target) {
 		if(target instanceof HasHealth)
-			return new Move(this, new ChangeHealth((HasHealth) target, -meleeDamage.get()));
+			return new Move(this, new ChangeHealth((HasHealth) target, -damage.get()));
 		throw new UnsupportedOperationException("Cannot change the health of: " + target);
 	}
 
 	@Override
 	public boolean canAttackFrom(TileType type) {
-		return ATTACK_FROM.contains(type);
+		return attackFrom.contains(type);
 	}
 }

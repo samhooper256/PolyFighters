@@ -8,17 +8,17 @@ import logic.*;
  * @author Sam Hooper
  *
  */
-public abstract class AbstractTeamUnit extends AbstractUnit implements PlayerUnit {
+public abstract class AbstractPlayerUnit extends AbstractUnit implements PlayerUnit {
 	
-	protected AbstractTeamUnit(int maxHealth) {
+	protected AbstractPlayerUnit(int maxHealth) {
 		this(maxHealth, maxHealth);
 	}
 	
-	protected AbstractTeamUnit(int maxHealth, int currentHealth) {
+	protected AbstractPlayerUnit(int maxHealth, int currentHealth) {
 		this(null, -1, -1, maxHealth, currentHealth, new ArrayList<>());
 	}
 	
-	protected AbstractTeamUnit(Board board, int row, int col, int maxHealth, int currentHealth, List<Ability> abilities) {
+	protected AbstractPlayerUnit(Board board, int row, int col, int maxHealth, int currentHealth, List<Ability> abilities) {
 		super(board, row, col, maxHealth, currentHealth, abilities);
 	}
 	

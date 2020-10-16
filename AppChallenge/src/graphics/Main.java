@@ -3,12 +3,10 @@ package graphics;
 import java.io.InputStream;
 import java.util.Optional;
 
-import javafx.application.Application;
-import javafx.application.Platform;
+import javafx.application.*;
 import javafx.stage.Stage;
-import logic.ObstacleSize;
-import logic.obstacles.ObstacleBase;
-import logic.units.BasicUnit;
+
+import logic.units.*;
 
 /**
  * The {@link Application} class for the project. No instances of this class should be created. It only has a public constructor
@@ -26,7 +24,7 @@ public class Main extends Application {
 	private static final Player player = new Player();
 	
 	static {
-		player.addUnits(new BasicUnit(), new BasicUnit(), new BasicUnit());
+		player.addUnits(new BasicUnit(), new Rex(), new Jules());
 	}
 	
 	private static Stage primaryStage;
