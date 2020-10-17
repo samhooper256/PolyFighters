@@ -200,14 +200,16 @@ public class TerrainGrid extends GridPane {
 	
 	private void executeMoveInternal(final Move move) {
 		System.out.printf("(enter) executeMoveInternal(%s), thread = %s%n", move, Thread.currentThread().getName());
-		final AbilityPane selectedAbilityPane = Level.current().getInfoPanel().getAbilityInfoPanel().getSelectedAbilityPane();
+		final AbilityInfoPanel abilityInfoPanel = Level.current().getInfoPanel().getAbilityInfoPanel();
+		final AbilityPane selectedAbilityPane = abilityInfoPanel.getSelectedAbilityPane();
 		if(selectedAbilityPane != null)
-			Main.blockUntilFinished(() -> selectedAbilityPane.deselect());
+			Main.runOnFXAndBlock(() -> selectedAbilityPane.deselect());
 		final Ability actingAbility = move.getAbility();
 		final Unit actingUnit = actingAbility.getUnit();
 		if(actingUnit instanceof PlayerUnit) {
 			PlayerUnit pu = (PlayerUnit) actingUnit;
 			pu.setMovesRemaining(pu.getMovesRemaining() - 1); //TODO this should probably be done by the Board? But how when we have to delay between actions b/c of projectiles and the like?
+			Main.runOnFXAndBlock(() -> abilityInfoPanel.updateMovesRemaining());
 		}
 		if(move.isEmpty())
 			 return;
@@ -220,7 +222,7 @@ public class TerrainGrid extends GridPane {
 		for(Action a : move.getActionsUnmodifiable()) {
 //			System.out.printf("\tentered loop, a=%s%n", a);
 			if(a instanceof Relocate) {
-				Main.blockUntilFinished(() -> {
+				Main.runOnFXAndBlock(() -> {
 					Relocate r = (Relocate) a;
 					r.execute(backingBoard);
 					TerrainTile startTile = terrainTiles[r.getStartRow()][r.getStartCol()];
@@ -258,7 +260,7 @@ public class TerrainGrid extends GridPane {
 					pane.setLayoutY(startY.get());
 					pane.prefWidthProperty().bind(widthBinding);
 					pane.prefHeightProperty().bind(heightBinding);
-					Main.blockUntilFinished(() -> region.getChildren().add(pane));
+					Main.runOnFXAndBlock(() -> region.getChildren().add(pane));
 					double tileDistance = Math.sqrt(Math.pow(destTile.getRow() - actingRow, 2) + Math.pow(destTile.getCol() - actingCol, 2));
 					Object lock = new Object();
 					moveNotify = false;
@@ -297,20 +299,19 @@ public class TerrainGrid extends GridPane {
 				}
 			}
 			else if(a instanceof ChangeHealth) {
-				Main.blockUntilFinished(() -> a.execute(backingBoard)); //needs to be on FX thread since this will trigger listeners, which modify the HealthBar display.
+				Main.runOnFXAndBlock(() -> a.execute(backingBoard)); //needs to be on FX thread since this will trigger listeners, which modify the HealthBar display.
 			}
 			else if(a instanceof PlaceObject) {
 				PlaceObject po = (PlaceObject) a;
 				final GameObject obj = po.getObject();
 				final int row = po.getRow(), col = po.getCol();
-				Main.blockUntilFinished(() -> addOrThrow(obj, row, col)); //don't even need to execute the action, this updates the backing board.
+				Main.runOnFXAndBlock(() -> addOrThrow(obj, row, col)); //don't even need to execute the action, this updates the backing board.
 			}
 			else {
 				throw new UnsupportedOperationException("Unsupported action type: " + a.getClass());
 			}
 		}
 		System.out.printf("ESCAPED%n");
-//		System.out.println("BACKING " + backingBoard);
 	}
 
 	public Turn getTurn() {
@@ -330,6 +331,7 @@ public class TerrainGrid extends GridPane {
 	 */
 	private void playEnemyTurnInternal() {
 		backingBoard.setToEnemyTurn();
+		Main.runOnFXAndBlock(() -> Level.current().getInfoPanel().clearContent());
 		while(backingBoard.hasNextEnemyMove()) {
 			Move nextMove = backingBoard.nextEnemyMove();
 			executeMoveInternal(nextMove);

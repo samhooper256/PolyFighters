@@ -89,7 +89,7 @@ public class Main extends Application {
 	 * Must NOT be called on FX Thread.
 	 * @param runnable
 	 */
-	public static void blockUntilFinished(Runnable runnable) {
+	public static void runOnFXAndBlock(Runnable runnable) {
 		class Blocker {
 			volatile Object lock;
 			volatile boolean notified;

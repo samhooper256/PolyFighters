@@ -3,6 +3,7 @@ package graphics;
 import java.util.*;
 import java.util.function.Function;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
@@ -100,7 +101,7 @@ public abstract class AbilityPane extends StackPane	{
 	}
 	
 	protected final StackPane infoContent;
-	protected final VBox vBox;
+	protected final VBox bottomVBox;
 	protected final Ability ability;
 	protected final Button button;
 	/** can optionally be used by subclasses store the legal moves computed in the select method for use in the deselect method. */
@@ -117,7 +118,9 @@ public abstract class AbilityPane extends StackPane	{
 	 */
 	protected AbilityPane(Ability ability, String buttonText) {
 		this.infoContent = new StackPane();
-		this.vBox = new VBox();
+		this.bottomVBox = new VBox(5);
+		bottomVBox.setSpacing(5);
+		bottomVBox.setAlignment(Pos.CENTER);
 		this.ability = ability;
 		this.button = new Button(buttonText);
 		Unit unit = this.ability.getUnit();
@@ -145,7 +148,7 @@ public abstract class AbilityPane extends StackPane	{
 			}
 			mouseEvent.consume();
 		});
-		infoContent.getChildren().add(vBox);
+		infoContent.getChildren().add(bottomVBox);
 		this.getChildren().add(button);
 	}
 	
@@ -153,7 +156,7 @@ public abstract class AbilityPane extends StackPane	{
 		Label label = new Label();
 		label.setText(list.convert(property.get()));
 		property.addChangeListener((o, n) -> label.setText(list.convert(n))); //TODO do we need to remove the listeners at some point?
-		vBox.getChildren().add(label);
+		bottomVBox.getChildren().add(label);
 	}
 	
 	protected void prop(IntRef property, String name) {
@@ -161,7 +164,7 @@ public abstract class AbilityPane extends StackPane	{
 	}
 	
 	protected void prop(String text) {
-		vBox.getChildren().add(new Label(text));
+		bottomVBox.getChildren().add(new Label(text));
 	}
 	
 	public Pane getInfoContent() {

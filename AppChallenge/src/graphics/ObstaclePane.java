@@ -78,12 +78,7 @@ public class ObstaclePane extends StackPane implements GameObjectRepresentation 
 		if(obstacleInfo == null) {
 			obstacleInfo = new ObstacleInfo(this) {
 				{
-					String descriptor = switch(obstacle.getSize()) {
-					case SMALL -> "small";
-					case LARGE -> "large";
-					default -> "extremely strange";
-					};
-					getChildren().add(new Label(String.format("A %s obstacle.", descriptor)));
+					getChildren().add(new Label(Level.current().getTheme().obstacleDescription(obstacle)));
 				}
 			};
 		}

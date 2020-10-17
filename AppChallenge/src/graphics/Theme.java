@@ -15,6 +15,8 @@ import logic.TileType;
 public enum Theme {
 	DEFAULT_THEME {
 		private static final String TILE_DESCRIPTION = "A Grass Tile.";
+		private static final String SMALL_OBSTACLE_DESCRIPTION = "A tree.";
+		private static final String LARGE_OBSTACLE_DESCRIPTION = "A mountain.";
 		
 		private final ImageInfo background = new ImageInfo("Background.png");
 		private final ImageInfo grass1 = new ImageInfo("Grass1.png");
@@ -54,6 +56,14 @@ public enum Theme {
 		public Image backgroundImage() {
 			return background.getImage();
 		}
+		@Override
+		protected String obstacleDescription(Obstacle obstacle) {
+			return switch(obstacle.getSize()) {
+			case SMALL -> SMALL_OBSTACLE_DESCRIPTION;
+			case LARGE -> LARGE_OBSTACLE_DESCRIPTION;
+			default -> throw new UnsupportedOperationException("Unsupported Obstacle size: " + obstacle.getSize());
+			};
+		}
 	};
 	
 	public Image imageForTileType(TileType type) {
@@ -72,4 +82,9 @@ public enum Theme {
 	 */
 	public abstract String tileDescription();
 	public abstract Effect highlightEffect();
+	/**
+	 * @param obstacle
+	 * @return
+	 */
+	protected abstract String obstacleDescription(Obstacle obstacle);
 }

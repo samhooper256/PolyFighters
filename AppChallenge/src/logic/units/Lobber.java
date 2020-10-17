@@ -54,6 +54,9 @@ public class Lobber extends AbstractEnemyUnit {
 		//case 2: we can't lob, so try to move to a spot where we could in the future:
 		Collection<int[]> stepMoveLegals = stepMoveAbility.getLegals();
 		BoardTile nearestTile = board.getNearestTileWithPlayerUnit(myRow, myCol, traversableTileTypes);
+		if(nearestTile == null) { //no PlayerUnits on the board
+			return Move.EMPTY_MOVE;
+		}
 		int nearestRow = nearestTile.getRow(), nearestCol = nearestTile.getCol();
 		best = null;
 		int minDist = Integer.MAX_VALUE;

@@ -1,9 +1,14 @@
 package graphics;
 
+import fxutils.*;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoublePropertyBase;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import logic.Turn;
 
 /**
@@ -15,10 +20,11 @@ public class Level extends Scene {
 	
 	private static final int MIN_STACKROOT_WIDTH = 640, MIN_STACKROOT_HEIGHT = 360; //16:9 ratio TODO maybe make these proportional to the user's screen dimensions?
 	private static final int DEFAULT_WIDTH = MIN_STACKROOT_WIDTH, DEFAULT_HEIGHT = MIN_STACKROOT_HEIGHT;
-	private static final double INFO_SCREEN_PERCENT = 0.15; //percentage of the screen the InfoPanel will take up
+	private static final double SIDE_PANEL_SCREEN_PERCENT = 0.15; //percentage of the screen the InfoPanel will take up
 	private static final int MOVES_PER_ENEMY_UNIT = 2;
 	private static final int MOVES_PER_PLAYER_UNIT = 2;
-	
+	private static final ImageInfo buttonInfo = new ImageInfo("EndTurnButton.png");
+	private static final ImageInfo buttonDisabledInfo = new ImageInfo("EndTurnButtonDisabled.png");
 	/**
 	 * {@code Level.current()} is equivalent to {@link Main#currentLevel()}.
 	 */
@@ -32,10 +38,10 @@ public class Level extends Scene {
 	/** The right component of {@link #borderPane} */
 	private final InfoPanel infoPanel;
 	/** The left component of {@link #borderPane} */
-	private final Pane buttonPane;
+	private final AnchorPane buttonPane;
 	/** The center component of {@link #borderPane} */
 	private final TerrainPane terrainPane;
-	private final Button endTurnButton;
+	private final ImageWrap buttonImage;
 	private final Theme theme;
 	//the sum of the difficulties of the EnemyUnits added on each turn must be no more than twice turnDifficulty.
 	private final double turnDifficulty;
@@ -57,6 +63,8 @@ public class Level extends Scene {
 		@Override public Object getBean() { return null; }
 		@Override public String getName() { return "stackRootHeight"; }
 	};
+
+	
 	
 	public Level() {
 		this(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_THEME);
@@ -66,22 +74,29 @@ public class Level extends Scene {
 		super(makeRoot(), width, height);
 		
 		this.theme = theme;
-		this.turnDifficulty = 6; //must be set before terrainPane construction.
+		this.turnDifficulty = 6; //must be set before terrainPane construction. TODO make it a constant
 		
-		endTurnButton = new Button("End Turn");
-		buttonPane = new VBox(endTurnButton);
-		endTurnButton.setOnAction(actionEvent -> {
-			endTurnButton.setDisable(true);
+		borderPane = new BorderPane();
+		final DoubleBinding sidePanelWidthBinding = borderPane.widthProperty().multiply(SIDE_PANEL_SCREEN_PERCENT);
+		buttonImage = new ImageWrap(buttonInfo.getImage());
+		buttonPane = new AnchorPane(new StackPane(buttonImage));
+		buttonPane.setMaxWidth(100);
+		buttonPane.setPrefWidth(100);
+		AnchorPane.setTopAnchor(buttonImage, 10d);
+//		buttonPane.setPadding(new Insets(20));
+//		buttonPane.prefWidthProperty().bind(sidePanelWidthBinding);
+		buttonImage.setOnMouseClicked(actionEvent -> {
+			buttonImage.setImage(buttonDisabledInfo.getImage());
 			playEnemyTurn();
 		});
 		
 		terrainPane = new TerrainPane(this, theme);
 //		terrainPane.setBorder(Borders.of(Color.BLACK));
-		borderPane = new BorderPane();
 		
 		infoPanel = new InfoPanel();
-		infoPanel.prefWidthProperty().bind(borderPane.widthProperty().multiply(INFO_SCREEN_PERCENT));
+		infoPanel.prefWidthProperty().bind(sidePanelWidthBinding);
 		
+		buttonPane.setBorder(Borders.of(Color.PURPLE));
 		borderPane.setLeft(buttonPane);
 		borderPane.setRight(infoPanel);
 		borderPane.setCenter(terrainPane);
@@ -135,10 +150,11 @@ public class Level extends Scene {
 	}
 
 	/**
-	 * Called to notify when the enemy turn finishes.
+	 * Called to notify when the enemy turn finishes. Must not be called on FX Thread.
 	 */
 	public void enemyTurnFinished() {
-		endTurnButton.setDisable(false);
+		buttonImage.setImage(buttonInfo.getImage());
+		Main.runOnFXAndBlock(() -> getInfoPanel().getAbilityInfoPanel().updateMovesRemaining());
 	}
 	
 	public int getMovesPerEnemyUnit() {
