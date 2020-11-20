@@ -9,6 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import logic.Turn;
 
 /**
@@ -38,10 +40,10 @@ public class Level extends Scene {
 	/** The right component of {@link #borderPane} */
 	private final InfoPanel infoPanel;
 	/** The left component of {@link #borderPane} */
-	private final AnchorPane buttonPane;
+	private final VBox buttonPane;
+	private final Button endTurnButton;
 	/** The center component of {@link #borderPane} */
 	private final TerrainPane terrainPane;
-	private final ImageWrap buttonImage;
 	private final Theme theme;
 	//the sum of the difficulties of the EnemyUnits added on each turn must be no more than twice turnDifficulty.
 	private final double turnDifficulty;
@@ -78,25 +80,22 @@ public class Level extends Scene {
 		
 		borderPane = new BorderPane();
 		final DoubleBinding sidePanelWidthBinding = borderPane.widthProperty().multiply(SIDE_PANEL_SCREEN_PERCENT);
-		buttonImage = new ImageWrap(buttonInfo.getImage());
-		buttonPane = new AnchorPane(new StackPane(buttonImage));
-		buttonPane.setMaxWidth(100);
-		buttonPane.setPrefWidth(100);
-		AnchorPane.setTopAnchor(buttonImage, 10d);
-//		buttonPane.setPadding(new Insets(20));
-//		buttonPane.prefWidthProperty().bind(sidePanelWidthBinding);
-		buttonImage.setOnMouseClicked(actionEvent -> {
-			buttonImage.setImage(buttonDisabledInfo.getImage());
+		endTurnButton = new Button("END TURN");
+		endTurnButton.setFont(Font.font("Lucida Console",FontWeight.BOLD, 16));
+		endTurnButton.setOnMouseClicked(actionEvent -> {
+			endTurnButton.setDisable(true);
 			playEnemyTurn();
 		});
+		buttonPane = new VBox(endTurnButton);
+		buttonPane.setPadding(new Insets(10));
+		buttonPane.setAlignment(Pos.TOP_CENTER);
+		buttonPane.prefWidthProperty().bind(sidePanelWidthBinding);
 		
 		terrainPane = new TerrainPane(this, theme);
-//		terrainPane.setBorder(Borders.of(Color.BLACK));
 		
 		infoPanel = new InfoPanel();
 		infoPanel.prefWidthProperty().bind(sidePanelWidthBinding);
 		
-		buttonPane.setBorder(Borders.of(Color.PURPLE));
 		borderPane.setLeft(buttonPane);
 		borderPane.setRight(infoPanel);
 		borderPane.setCenter(terrainPane);
@@ -153,8 +152,11 @@ public class Level extends Scene {
 	 * Called to notify when the enemy turn finishes. Must not be called on FX Thread.
 	 */
 	public void enemyTurnFinished() {
-		buttonImage.setImage(buttonInfo.getImage());
-		Main.runOnFXAndBlock(() -> getInfoPanel().getAbilityInfoPanel().updateMovesRemaining());
+		Main.runOnFXAndBlock(() -> {
+			getInfoPanel().getAbilityInfoPanel().updateMovesRemaining();
+			endTurnButton.setDisable(false);
+			
+		});
 	}
 	
 	public int getMovesPerEnemyUnit() {
