@@ -1,4 +1,7 @@
 # Poly Fighters
+
+[![PolyFighters Video](https://img.youtube.com/vi/haLagI1jd2c/0.jpg)](https://www.youtube.com/watch?v=haLagI1jd2c)
+
 Poly Fighters is a turn-based, two-dimensional, singleplayer strategy game built by Sam Hooper and Ayuj Verma with graphics by Ayush Kumar.
 
 A starting game:
